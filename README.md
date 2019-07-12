@@ -35,8 +35,7 @@ const isFalsy = p`${a => !a}`;
 const isTruthy = p`${a => !!a}`;
 
 // TODO
-const isFalsy = p`(!)`;
-const isTruthy = p`(!!)`;
+
 const isArrayWithLength4 = p`${Array} && {length:${4}}`;
 const isArrayContaining7 = p`[${7}]`;
 const isArrayContaining7AndStringFoo = p`[${7},${"foo"}]`; // [1,7,'foo']
@@ -64,4 +63,7 @@ const isComplexObject = p`{
     "foo-bar":${6}
   }
 }`;
+
+const isFalsy = p`(!)`;
+const isTruthy = p`(!!)`;
 ```

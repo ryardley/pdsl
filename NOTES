@@ -15,21 +15,30 @@ hello ${foo}    world ${bar}  thing ${plop}
 
 Operand list
 ================
-E0 - ExternalPredicate (index on ext array)
-[]5 - ArrayContains(itemPredicateList)
-{}4 - ObjectProperty(entryPredicateList)
-
+En - ExternalPredicate (index on ext array)
 
 Operator list
 ================
-: - ObjectEntryTuple(key,predicate)
-! - Not(predicate)
-|| - Or(leftPredicate, rightPredicate)
-&& - And(leftPredicate, rightPredicate)
+: - ObjectEntryTuple(key,operand)
+! - Not(operand)
+&& - And(leftoperand, rightoperand)
+|| - Or(leftoperand, rightoperand)
+[]n - ArrayContains(...itemOperandList)
+{}n - ObjectProperty(...entryOperandList)
 () - Bracket
 
+!E0              -> E0 !
+E0||E1           -> E0 E1 ||
+E0&&E1||E2       -> E0 E1 && E2 ||
+E0&&(E1||E2)     -> E0 E1 E2 || &&
+![E0,E1]         -> E0 E1 []2 !
+![!E0,E1,E2||E3] -> E0 ! E1 E2 E3 || []3 !
+{name}           -> "name" undefined : {}1
+{name:E0}        -> "name" E0 : {}1
+{name:E0,age:E1} -> "name" E0 : "age" E1 : {}2
 
-
+![a,!b,c,e||d] -> a b ! c e d || [] !
+[a, b, [c, d]] -> a b c d []2 []2
 ----
 
 Dark Energy And The Cosmic HorizonUnderstanding BCn Texture Compression Formats
@@ -82,3 +91,4 @@ Array subscripts using square brackets can be handled in the same way as functio
 
 After all this, the algorithm has grown a bit, and is a little trickier to get right in all the corner cases—but it’s still pretty simple, and certainly less work than a full-blown syntax-directed parser! In my opinion, it’s a shame that the shunting-yard algorithm isn’t more widely discussed as part of standard texts and computer-science university courses. Even the Dragon Book doesn’t so much as mention it! I never heard of this algorithm until I happened to see a forum post that referenced it, but its simplicity, elegance, and efficiency make it a superior solution for many use-cases of processing arithmetic expressions.
 
+___
