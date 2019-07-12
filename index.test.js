@@ -6,6 +6,11 @@ function funToPredicate(fun) {
   return fun;
 }
 
+function deepValToPredicate(val) {
+  const stVal = JSON.stringify(val);
+  return a => stVal === JSON.stringify(a);
+}
+
 function regExToPredicate(regEx) {
   return regEx.test.bind(regEx);
 }
@@ -35,6 +40,10 @@ function isPrimative(primative) {
   );
 }
 
+function isDeepVal(val) {
+  return ["{}", "[]", '""'].indexOf(JSON.stringify(val)) > -1;
+}
+
 function isFunction(fun) {
   return typeof fun === "function";
 }
@@ -43,12 +52,12 @@ function getInputParser(input) {
   if (isFunction(input) && isPrimative(input)) return primativeToPredicate;
   if (isFunction(input) && !isPrimative(input)) return funToPredicate;
   if (isRegEx(input)) return regExToPredicate;
+  if (isDeepVal(input)) return deepValToPredicate;
   return valToPredicate;
 }
 
 function p(_, input) {
   const parseInput = getInputParser(input);
-
   return parseInput(input);
 }
 
@@ -70,10 +79,8 @@ describe("value predicates", () => {
 
 describe("function predicates", () => {
   it("should use the given function ", () => {
-    const isBetween6And9 = p`${n => n > 6 && n < 9}`; // will match 7 or 8
-
-    expect(isBetween6And9(7)).toBe(true);
-    expect(isBetween6And9(6)).toBe(false);
+    expect(p`${n => n > 6 && n < 9}`(7)).toBe(true);
+    expect(p`${n => n > 6 && n < 9}`(6)).toBe(false);
   });
 });
 
@@ -95,5 +102,16 @@ describe("Javascript Primitives", () => {
     expect(p`${Array}`([1, 2, 3, 4])).toBe(true);
     expect(p`${Array}`(1234)).toBe(false);
     expect(p`${Object}`({ foo: "foo" })).toBe(true);
+  });
+});
+
+describe("Deep value predicates", () => {
+  it("should interperet stuff on the deep value whitelist as being value checked", () => {
+    expect(p`${{}}`({})).toBe(true);
+    expect(p`${[]}`([])).toBe(true);
+    expect(p`${""}`("")).toBe(true);
+    expect(p`${{}}`([])).toBe(false);
+    expect(p`${[]}`({})).toBe(false);
+    expect(p`${""}`([])).toBe(false);
   });
 });
