@@ -1,4 +1,4 @@
-# Predicate Filter Interpolator
+# Predicate Function Interpolator
 
 #### A short hand for creating predicate functions
 
