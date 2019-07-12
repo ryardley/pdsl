@@ -30,7 +30,7 @@ describe("RegEx predicates", () => {
   });
 });
 
-describe("Javascript Primitives", () => {
+describe("Javascript primitives", () => {
   it("should accept primative classes and test typeof associations", () => {
     expect(p`${Number}`(5)).toBe(true);
     expect(p`${String}`(5)).toBe(false);
