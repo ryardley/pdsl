@@ -5,6 +5,7 @@
 ## Goals
 
 - No dependencies
+- Avoid eval
 - Bundle size as small as possible
 - As fast as possible
 
@@ -35,7 +36,6 @@ const isTruthy = p`${a => !!a}`;
 const isFalsy = p`(!)`;
 const isTruthy = p`(!!)`;
 const isArrayWithLength4 = p`${Array} && {length:${4}}`;
-const isArrayWithLength4 = a => Array.isArray(a) && a.length === 4;
 const isArrayContaining7 = p`[${7}]`;
 const isArrayContaining7AndStringFoo = p`[${7},${"foo"}]`; // [1,7,'foo']
 const isNotArrayContaining7 = p`![${7}]`; // Will match anything such as {} apart from [1,2,3,4,7] or [7]
