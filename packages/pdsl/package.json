@@ -1,0 +1,11 @@
+{
+  "name": "pfi",
+  "version": "0.0.0",
+  "description": "predicate filter interpolator",
+  "main": "index.js",
+  "author": "Rudi Yardley",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^24.8.0"
+  }
+}
