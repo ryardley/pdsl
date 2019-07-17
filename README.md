@@ -1,6 +1,6 @@
-# Predicate Function Interpolator
+# Predicate DSL
 
-Under construction come back next week!!
+## NOTE: Work in progress not ready yet
 
 #### A short hand for creating predicate functions
 

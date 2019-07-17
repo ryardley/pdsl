@@ -1,7 +1,7 @@
 {
-  "name": "pfi",
-  "version": "0.0.2",
-  "description": "predicate filter interpolator",
+  "name": "pdsl",
+  "version": "0.0.0",
+  "description": "Predicate DSL",
   "main": "index.js",
   "author": "Rudi Yardley",
   "license": "MIT",
