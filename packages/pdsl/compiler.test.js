@@ -21,6 +21,7 @@ function tokenizer(input) {
 }
 
 const operators = {
+  ":": 4,
   "!": 3,
   "&&": 2,
   "||": 1
@@ -28,12 +29,18 @@ const operators = {
 
 function parser(input) {
   const peek = a => a[a.length - 1];
+  const isMultiArg = Array.isArray;
+  const incrementMultiArgCount = a => a[1]++;
   const stack = [];
-  const argsstack = [];
 
   return (
     input
       .reduce((output, token) => {
+        // console.log({
+        //   output: output.join(" "),
+        //   stack: stack.map(a => (Array.isArray(a) ? a.join("") : a)).join(" "),
+        //   token
+        // });
         // TODO: add array list
         // TODO: add object list
         // SEE example-shunting-yard-algo.csv
@@ -41,6 +48,9 @@ function parser(input) {
         // if its an operand push it to the output
 
         if (/(_E\d+|[a-zA-Z0-9_-]+)/g.test(token)) {
+          if (isMultiArg(peek(stack))) {
+            incrementMultiArgCount(peek(stack));
+          }
           output.push(token);
           return output;
         }
@@ -55,6 +65,26 @@ function parser(input) {
             output.push(stack.pop());
           }
           stack.push(token);
+          return output;
+        }
+
+        // start array
+        if (token === "[" || token === "{") {
+          if (isMultiArg(peek(stack))) {
+            incrementMultiArgCount(peek(stack));
+          }
+          stack.push([token, 0]);
+          return output;
+        }
+
+        if (token === ",") {
+          while (!isMultiArg(peek(stack))) output.push(stack.pop());
+          return output;
+        }
+
+        if (token === "]" || token === "}") {
+          while (!isMultiArg(peek(stack))) output.push(stack.pop());
+          output.push(stack.pop().join(""));
           return output;
         }
 
@@ -92,18 +122,31 @@ it("tokens", () => {
   ]);
 });
 
-it("parses", () => {
-  expect(parser(tokenizer("_E0 || _E1")).join(" ")).toEqual("_E0 _E1 ||");
+[
+  { input: "_E0 || _E1", output: "_E0 _E1 ||" },
+  { input: "_E0 || _E1 && _E3", output: "_E0 _E1 _E3 && ||" },
+  { input: "!_E0 || _E1 && _E3", output: "_E0 ! _E1 _E3 && ||" },
+  { input: "!(_E0 || _E1) && _E3", output: "_E0 _E1 || ! _E3 &&" },
+  {
+    input: "[ _E0 , _E1 , _E2 , _E3 ] || _E4",
+    output: "_E0 _E1 _E2 _E3 [4 _E4 ||"
+  },
+  {
+    input: "[ _E0, _E1, [ _E2 || _E3, _E4 ] ] && _E5",
+    output: "_E0 _E1 _E2 _E3 || _E4 [2 [3 _E5 &&"
+  },
+  {
+    input: "{ name, age }",
+    output: "name age {2"
+  },
+  {
+    input: "{ name : _E0, age : _E1 }",
+    output: "name _E0 : age _E1 : {2"
+  }
+].forEach(({ input, output, skip, only }) => {
+  const itFunc = skip ? it.skip : only ? it.only : it;
 
-  expect(parser(tokenizer("_E0 || _E1 && _E3")).join(" ")).toEqual(
-    "_E0 _E1 _E3 && ||"
-  );
-
-  expect(parser(tokenizer("!_E0 || _E1 && _E3")).join(" ")).toEqual(
-    "_E0 ! _E1 _E3 && ||"
-  );
-
-  expect(parser(tokenizer("!(_E0 || _E1) && _E3")).join(" ")).toEqual(
-    "_E0 _E1 || ! _E3 &&"
-  );
+  itFunc(input, () => {
+    expect(parser(tokenizer(input)).join(" ")).toEqual(output);
+  });
 });
