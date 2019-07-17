@@ -1,8 +1,8 @@
 # Predicate DSL
 
-## NOTE: Work in progress not ready yet
+_NOTE: Work in progress not ready yet_
 
-#### A short hand for creating predicate functions
+#### A short hand domain language for creating predicate functions
 
 ## Goals
 
