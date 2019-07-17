@@ -12,7 +12,7 @@
 - As fast as possible
 
 ```js
-import p from "pfi";
+import p from "pdsl";
 
 // DONE
 const isTrue = p`${true}`; // will only match true
