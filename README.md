@@ -4,6 +4,62 @@ _NOTE: Work in progress not ready yet_
 
 #### A short hand domain language for creating predicate functions
 
+## Examples
+
+### Check for deep equality
+
+```js
+const is4 = p`${4}`;
+```
+
+Is the same as 
+
+```js
+const is4 = a => a === 4;
+```
+
+### Check for object type
+
+```js
+const isArray = p`${Array}`;
+```
+
+Is the same as
+
+```js
+const isArray = a => Array.isArray(a);
+```
+
+### Check for truthy object properties
+
+Check for truthy object properties
+
+```js
+const hasName = p`{name}`;
+```
+
+Is the same as:
+
+```js
+const hasNameOrNum = (obj) => !!obj.name;
+```
+
+### Combining predicates
+
+```js
+const hasNameOrNum = p`{name}||{num}`;
+```
+Is the same as:
+
+```js
+const hasNameOrNum = a => a.name || a.num;
+```
+
+```js
+const hasStringNameAndNumericNum = p`{name:${String},num:${Number}`;
+```
+
+
 ## Goals
 
 - No dependencies
