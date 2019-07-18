@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Rudi Yardley",
   "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "jest": "^24.8.0"
   }
