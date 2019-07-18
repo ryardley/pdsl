@@ -1,10 +1,28 @@
-# Predicate DSL
+# PDSL
 
-#### A short hand domain language for creating predicate functions
+**A short hand domain language for creating predicate functions**
 
-## Problem statement
+```js
+const isUsernameOrUser = p`${String} || {username, password}`;
+
+isUsernameOrUser({ username: "Foo", password: "123" }); // true
+
+isUsernameOrUser("Foo"); // true
+
+isUsernameOrUser(45); // false
+```
+
+## Coding predicates without boilerplate
 
 Often when programming we need to create predicate functions to assert facts about a given input value. Creating predicate functions in JavaScript is usually verbose especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand syntax for defining predicate functions that is easy to understand.
+
+PDSL helps developers by providing an intuitive API for assembling predicates without the boilerplater required to
+
+### Complex object example
+
+Let's compare writing a complex predicate object by hand with using PDSL.
+
+#### Without a DSL
 
 ```js
 const isComplexObject = obj =>
@@ -17,6 +35,8 @@ const isComplexObject = obj =>
   /^.+foo$/.test(obj.payload.bar.baz) &&
   obj.payload.bar.foo;
 ```
+
+#### With PDSL
 
 ```js
 import p from "pdsl";
@@ -35,6 +55,16 @@ const isComplexObject = p`
     }
   }
 `;
+```
+
+### Checking for undefined or nill
+
+```js
+const isNotNil = a => !(a === null || a === undefined);
+```
+
+```js
+const isNotNil = p`!(${null}||${undefined})`;
 ```
 
 ## More examples
@@ -100,7 +130,7 @@ const hasNameAndNum = p`{name,num}`;
 const isNotUndefined = p`!${undefined}`;
 const isNil = p`${null}||${undefined}`;
 const isNotNil = p`!${p`${null}||${undefined}`}`;
-const isNotNil = p`!(${null}||${undefined})`; //this cn be phase 2
+const isNotNil = p`!(${null}||${undefined})`;
 ```
 
 ## Goals
