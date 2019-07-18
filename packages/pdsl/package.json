@@ -1,6 +1,6 @@
 {
   "name": "pdsl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Predicate DSL",
   "main": "index.js",
   "author": "Rudi Yardley",
