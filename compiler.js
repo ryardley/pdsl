@@ -93,4 +93,4 @@ function parser(input) {
   );
 }
 
-module.exports = { parser, tokenizer };
+module.exports = { parser, tokenizer, TOKENS };

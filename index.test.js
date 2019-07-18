@@ -54,3 +54,11 @@ describe("Deep value predicates", () => {
     expect(p`${""}`([])).toBe(false);
   });
 });
+
+// TODO add more tests
+it("should work!", () => {
+  expect(p`{name:${"Rudi"}}`({ name: "Rudi" })).toBe(true);
+  expect(p`{name:(${"Rudi"} ||${"Gregor"})}`({ name: "Rudi" })).toBe(true);
+  expect(p`{name:(${"Rudi"} ||${"Gregor"})}`({ name: "Gregor" })).toBe(true);
+  expect(p`{name:(${"Rudi"} ||${"Gregor"})}`({ name: "Other" })).toBe(false);
+});
