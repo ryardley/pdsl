@@ -1,3 +1,5 @@
+const { tokenizer, parser } = require("./compiler");
+const { generator } = require("./generator");
 function valToPredicate(val) {
   return a => a === val;
 }
@@ -48,7 +50,7 @@ function isFunction(fun) {
   return typeof fun === "function";
 }
 
-function getInputParser(input) {
+function createExpressionParser(input) {
   if (isFunction(input) && isPrimative(input)) return primativeToPredicate;
   if (isFunction(input) && !isPrimative(input)) return funToPredicate;
   if (isRegEx(input)) return regExToPredicate;
@@ -56,9 +58,24 @@ function getInputParser(input) {
   return valToPredicate;
 }
 
-function p(_, input) {
-  const parseInput = getInputParser(input);
-  return parseInput(input);
+function preTokenizer(stringArray) {
+  return stringArray.reduce(
+    (acc, item, index) =>
+      index > 0 ? acc + `_E${index - 1}` + item : acc + item,
+    ""
+  );
+}
+
+function toPredicate(input) {
+  return createExpressionParser(input)(input);
+}
+
+function p(strArray, ...expressions) {
+  const fns = expressions.map(toPredicate);
+  const pretokenized = preTokenizer(strArray);
+  const tokenized = tokenizer(pretokenized);
+  const ast = parser(tokenized);
+  return generator(ast, fns);
 }
 
 module.exports = p;
