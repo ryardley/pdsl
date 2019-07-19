@@ -4,6 +4,8 @@
 
 Often when programming we need to create predicate or boolean returning functions to assert facts about a given input value. This is often the case when filtering an array, validating input or determining type. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. `pdsl` provides the developer a simple but powerful shorthand based on a combination of template strings and helper functions for defining predicate functions that makes it easy to understand intent.
 
+With `pdsl` we can easily visualize the expected input's structure and intent.
+
 ```js
 // `pdsl` expressively defines an input value's constraints
 const isComplexObject = p`
@@ -51,61 +53,6 @@ npm install pdsl
 ```
 
 ## Usage
-
-### Complex object example
-
-Let's compare writing a complex predicate object by hand with using `pdsl`.
-
-What if we want to test to see if an input object satisfies a large number of predicate tests:
-
-```js
-// It is difficult to understand this code's intent clearly.
-function isComplexObject(obj) {
-  return (
-    /^.+foo$/.test(obj.type) &&
-    obj.payload &&
-    obj.payload.email &&
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/.test(
-      obj.payload.email
-    ) &&
-    obj.payload.email.length > 5 &&
-    Array.isArray(obj.payload.arr) &&
-    obj.payload.arr.indexOf(6) === -1 &&
-    obj.payload.num > -4 &&
-    obj.payload.num < 100 &&
-    obj.payload.bar &&
-    obj.payload.bar.baz &&
-    /^.+foo$/.test(obj.payload.bar.baz) &&
-    obj.payload.bar.foo
-  );
-}
-```
-
-With `pdsl` this is much clearer:
-
-```js
-import p from "pdsl";
-import { Email, btw, gt, has } from "pdsl/helpers";
-
-// `pdsl` expressively defines the objects' constraints
-const isComplexObject = p`
-  {
-    type: ${/^.+foo$/},
-    payload: {
-      email: ${Email} && { length: ${gt(5)} },
-      arr: !${has(6)},
-      foo: !${true},
-      num: ${btw(-4, 100)},
-      bar: {
-        baz: ${/^foo/},
-        foo
-      }
-    }
-  }
-`;
-```
-
-With `pdsl` we can easily visualize the expected object structure and intent.
 
 ### Primitive matching
 
