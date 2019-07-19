@@ -166,10 +166,12 @@ p`${/^foo/}`('food'); // true
 Any function passed as an expression to the template literal will be used as a predicate.
 
 ```js
-p`${a => /^foo/.test(a)}`('food'); // true
+p`${a => a.indexOf('foo') === 0}`('food'); // true
 ```
 
 ## Helpers
+
+Helpers can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
 
 ### `Email`
 
@@ -212,19 +214,43 @@ has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9]); //false
 
 ### `lt`
 
-Less than 
+Less than.
+
+```js
+lt(10)(10); // false
+lt(10)(50); // false
+lt(10)(-50); // true
+```
 
 ### `lte`
 
-Less than equals
+Less than or equal.
+
+```js
+lte(10)(10); // true
+lte(10)(50); // false
+lte(10)(-50); // true
+```
 
 ### `gt`
 
-Greater than 
+Greater than.
+
+```js
+gt(10)(10); // false
+gt(10)(50); // true
+gt(10)(-50); // false
+```
 
 ### `gte`
 
-Greater than equals
+Greater than or equal.
+
+```js
+gte(10)(10); // true
+gte(10)(50); // true
+gte(10)(-50); // false
+```
 
 ## FAQ
 
