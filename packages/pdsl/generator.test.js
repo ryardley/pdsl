@@ -4,19 +4,21 @@ const {
   generateObjectPredicate
 } = require("./generator");
 
-it("array predicate", () => {
-  const p = generateArrayPredicate(a => a === 7, a => a === "fred");
-  expect(p([7, "fred"])).toBe(true);
-  expect(p([7, "fred", "foo"])).toBe(true);
-  expect(p([7])).toBe(false);
-});
+describe("generateComplexPredicates", () => {
+  it("array predicate", () => {
+    const p = generateArrayPredicate(a => a === 7, a => a === "fred");
+    expect(p([7, "fred"])).toBe(true);
+    expect(p([7, "fred", "foo"])).toBe(true);
+    expect(p([7])).toBe(false);
+  });
 
-it("object predicate", () => {
-  const p = generateObjectPredicate(
-    ["name", a => a === "foo"],
-    ["age", a => a === 41]
-  );
-  expect(p({ name: "foo", age: 41 })).toBe(true);
+  it("object predicate", () => {
+    const p = generateObjectPredicate(
+      ["name", a => a === "foo"],
+      ["age", a => a === 41]
+    );
+    expect(p({ name: "foo", age: 41 })).toBe(true);
+  });
 });
 
 describe("generator", () => {

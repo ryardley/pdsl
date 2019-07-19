@@ -68,6 +68,10 @@ describe("parser", () => {
     {
       input: "{ name : {foo:[1,2], bar}, age : b }",
       output: "name foo 1 2 [2 : bar {2 : age b : {2"
+    },
+    {
+      input: "{ name : ! { bar } }",
+      output: "name bar {1 ! : {1"
     }
   ].forEach(({ input, output, skip, only }) => {
     const itFunc = skip ? it.skip : only ? it.only : it;
@@ -77,5 +81,3 @@ describe("parser", () => {
     });
   });
 });
-
-describe("assembler", () => {});
