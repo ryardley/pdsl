@@ -170,7 +170,7 @@ validate({ name: "Rudi" }); // true
 validate({ name: "Fred" }); // false
 ```
 
-THe property can also contain nested objects.
+The property can also contain nested objects.
 
 ```js
 const validate = p`{ 
