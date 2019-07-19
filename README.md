@@ -73,10 +73,10 @@ const isFunction = p`${Function}`; // typeof value === 'function'
 If you pass a value `pdsl` will match that specific value:
 
 ```js
-const isTrue = p`${true}`;
-const isFalse = p`${false}`;
-const isNine = p`${9}`;
-const isRupert = p`${"Rupert"}`;
+const isTrue = p`${true}`; // a => a === true;
+const isFalse = p`${false}`; // a => a === false;
+const isNine = p`${9}`; // a => a === 9;
+const isRupert = p`${"Rupert"}`; // a => a === "Rupert";
 ```
 
 ### Empty comparisons
@@ -108,7 +108,7 @@ const is6CharString = p`${String} && { length: ${6} }`;
 You can test for an object's properties using the object syntax:
 
 ```js
-const validate = p`{ name: ${String} }`;
+const validate = p`{ name: ${String} }`; // a => a && typeof a.name === 'string';
 
 validate({ name: "Hello" }); // true
 validate({ name: 20 }); // false
@@ -117,7 +117,7 @@ validate({ name: 20 }); // false
 This applies to checking properties of all javascript objects. For example to check a string's length:
 
 ```js
-const validate = p`${String} && { length: ${7} }`;
+const validate = p`${String} && { length: ${7} }`;  // a => a && typeof a.name === 'string' && a.name.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
