@@ -183,7 +183,7 @@ Email regex
 Email.test("foo@bar.com"); // true
 Email.test("hello"); //false
 ```
-### `btw`
+### `btw(number, number)`
 
 Between helper. Tests if an input is between two numbers. This does not test if the input is a number.
 
@@ -196,7 +196,7 @@ btw10To100(100); // false
 btw10To100(10); // false
 ```
 
-### `btwi` 
+### `btwi(number, number)` 
 
 Between inclusive. Same as `btw` but inclusive of the range edges.
 
@@ -209,7 +209,7 @@ btwi10To100(100); // true
 btwi10To100(10); // true
 ```
 
-### `has`
+### `has(item)`
 
 Tests to see if an iterable contains an element.
 
@@ -220,7 +220,7 @@ has10([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]); //true
 has10([1, 2, 3, 4, 5, 6, 7, 8, 9, 9]); //false
 ```
 
-### `lt`
+### `lt(number)`
 
 Less than.
 
@@ -232,7 +232,7 @@ lt10(50); // false
 lt10(-50); // true
 ```
 
-### `lte`
+### `lte(number)`
 
 Less than or equal.
 
@@ -244,7 +244,7 @@ lte10(50); // false
 lte10(-50); // true
 ```
 
-### `gt`
+### `gt(number)`
 
 Greater than.
 
@@ -256,7 +256,7 @@ gt10(50); // true
 gt10(-50); // false
 ```
 
-### `gte`
+### `gte(number)`
 
 Greater than or equal.
 
