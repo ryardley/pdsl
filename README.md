@@ -186,10 +186,12 @@ Email.test("hello"); //false
 Between helper. Tests if an input is between two numbers. This does not test if the input is a number.
 
 ```js
-btw(10, 100)(50)); // true
-btw(10, 100)(-50)); // false
-btw(10, 100)(100); // false
-btw(10, 100)(10); // false
+const btw10To100 = btw(10, 100);
+
+btw10To100(50)); // true
+btw10To100(-50)); // false
+btw10To100(100); // false
+btw10To100(10); // false
 ```
 
 ### `btwi` 
@@ -197,10 +199,12 @@ btw(10, 100)(10); // false
 Between inclusive. Same as `btw` but inclusive of the range edges.
 
 ```js
-btwi(10, 100)(50); // true
-btwi(10, 100)(-50); // false
-btwi(10, 100)(100); // true
-btwi(10, 100)(10); // true
+const btwi10To100 = btwi(10, 100)
+
+btwi10To100(50); // true
+btwi10To100(-50); // false
+btwi10To100(100); // true
+btwi10To100(10); // true
 ```
 
 ### `has`
@@ -208,8 +212,10 @@ btwi(10, 100)(10); // true
 Tests to see if an iterable contains an element.
 
 ```js
-has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]); //true
-has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9]); //false
+const has10 = has(10);
+
+has10([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]); //true
+has10([1, 2, 3, 4, 5, 6, 7, 8, 9, 9]); //false
 ```
 
 ### `lt`
@@ -217,9 +223,11 @@ has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9]); //false
 Less than.
 
 ```js
-lt(10)(10); // false
-lt(10)(50); // false
-lt(10)(-50); // true
+const lt10 = lt(10);
+
+lt10(10); // false
+lt10(50); // false
+lt10(-50); // true
 ```
 
 ### `lte`
@@ -227,9 +235,11 @@ lt(10)(-50); // true
 Less than or equal.
 
 ```js
-lte(10)(10); // true
-lte(10)(50); // false
-lte(10)(-50); // true
+const lte10 = lte(10);
+
+lte10(10); // true
+lte10(50); // false
+lte10(-50); // true
 ```
 
 ### `gt`
