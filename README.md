@@ -79,6 +79,8 @@ const isNine = p`${9}`;
 const isRupert = p`${"Rupert"}`;
 ```
 
+### Empty comparisons
+
 Checking for empty things
 
 ```js
