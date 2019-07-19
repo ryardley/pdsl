@@ -198,6 +198,23 @@ const validate = p`{
 validate({ name: "Hello", payload: { listening: true, num: 5 } }); // true
 ```
 
+### Regular expression predicates
+
+You can use a regular expression as a predicate function.
+
+```js
+p`${/^foo/}`('food'); // true
+```
+
+### Function predicates
+
+Any function passed as an expression to the template literal will be used as a predicate.
+
+```js
+p`${a => /^foo/.test(a)}`('food'); // true
+```
+
+
 ## Goals
 
 - No dependencies
