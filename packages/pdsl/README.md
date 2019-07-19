@@ -190,8 +190,8 @@ Between helper. Tests if an input is between two numbers. This does not test if 
 ```js
 const btw10To100 = btw(10, 100);
 
-btw10To100(50)); // true
-btw10To100(-50)); // false
+btw10To100(50); // true
+btw10To100(-50); // false
 btw10To100(100); // false
 btw10To100(10); // false
 ```
@@ -249,9 +249,11 @@ lte10(-50); // true
 Greater than.
 
 ```js
-gt(10)(10); // false
-gt(10)(50); // true
-gt(10)(-50); // false
+const gt10 = gt(10);
+
+gt10(10); // false
+gt10(50); // true
+gt10(-50); // false
 ```
 
 ### `gte`
@@ -259,9 +261,11 @@ gt(10)(-50); // false
 Greater than or equal.
 
 ```js
-gte(10)(10); // true
-gte(10)(50); // true
-gte(10)(-50); // false
+const gte10 = gte(10);
+
+gte10(10); // true
+gte10(50); // true
+gte10(-50); // false
 ```
 
 ## FAQ
