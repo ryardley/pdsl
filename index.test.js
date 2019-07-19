@@ -58,7 +58,19 @@ describe("Deep value predicates", () => {
 // TODO add more tests
 it("should work!", () => {
   expect(p`{name:${"Rudi"}}`({ name: "Rudi" })).toBe(true);
-  expect(p`{name:(${"Rudi"} ||${"Gregor"})}`({ name: "Rudi" })).toBe(true);
-  expect(p`{name:(${"Rudi"} ||${"Gregor"})}`({ name: "Gregor" })).toBe(true);
-  expect(p`{name:(${"Rudi"} ||${"Gregor"})}`({ name: "Other" })).toBe(false);
+  expect(p`{name:(${"Rudi"} || ${"Gregor"})}`({ name: "Rudi" })).toBe(true);
+  expect(p`{name:(${"Rudi"} || ${"Gregor"})}`({ name: "Gregor" })).toBe(true);
+  expect(p`{name:(${"Rudi"} || ${"Gregor"})}`({ name: "Other" })).toBe(false);
+  expect(
+    p`{ meta: { remote }}`({ type: "shared.foo", meta: { remote: true } })
+  ).toBe(true);
+  expect(
+    p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { thing: "foo" } })
+  ).toBe(true);
+  expect(
+    p`{ meta: { remote:${a => !a} }}`({
+      type: "shared.foo",
+      meta: { remote: false }
+    })
+  ).toBe(true);
 });

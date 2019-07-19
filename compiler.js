@@ -21,8 +21,8 @@ function tokenizer(input) {
 }
 
 const operators = {
-  ":": 4,
-  "!": 3,
+  "!": 4,
+  ":": 3,
   "&&": 2,
   "||": 1
 };
