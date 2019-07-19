@@ -1,4 +1,4 @@
-# Predicate DSL
+# PDSL
 
 ### An expressive shorthand domain language for creating validation or filter functions
 
