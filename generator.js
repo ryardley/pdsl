@@ -20,7 +20,7 @@ function generateArrayPredicate(...predicates) {
 function generateObjectPredicate(...entries) {
   return a =>
     entries.reduce((acc, [key, predicate]) => {
-      return acc && predicate(a[key]);
+      return acc && Boolean(a) && predicate(a[key]);
     }, true);
 }
 
@@ -69,11 +69,10 @@ function generator(rpn, funcs) {
       const count = parseInt(token.match(/^\{(\d+)/)[1]);
       const args = stack.splice(-1 * count);
 
-      stack.push(
-        generateObjectPredicate(
-          ...args.map(a => (Array.isArray(a) ? a : [a, b => !!b]))
-        )
-      );
+      const objArgs = args.map(a => {
+        return Array.isArray(a) ? a : [a, Boolean];
+      });
+      stack.push(generateObjectPredicate(...objArgs));
     }
 
     return stack;

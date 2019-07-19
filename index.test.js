@@ -56,11 +56,17 @@ describe("Deep value predicates", () => {
 });
 
 // TODO add more tests
-it("should work!", () => {
+it("should be able to use object template properties", () => {
   expect(p`{name:${"Rudi"}}`({ name: "Rudi" })).toBe(true);
+});
+
+it("should be able to use brackets and or in template properties", () => {
   expect(p`{name:(${"Rudi"} || ${"Gregor"})}`({ name: "Rudi" })).toBe(true);
   expect(p`{name:(${"Rudi"} || ${"Gregor"})}`({ name: "Gregor" })).toBe(true);
   expect(p`{name:(${"Rudi"} || ${"Gregor"})}`({ name: "Other" })).toBe(false);
+});
+
+it("should be able to use nested object property templates", () => {
   expect(
     p`{ meta: { remote }}`({ type: "shared.foo", meta: { remote: true } })
   ).toBe(true);
@@ -68,7 +74,13 @@ it("should work!", () => {
     p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { thing: "foo" } })
   ).toBe(true);
   expect(
-    p`{ meta: { remote:${a => !a} }}`({
+    p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { remote: "thing" } })
+  ).toBe(false);
+  expect(
+    p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { remote: false } })
+  ).toBe(true);
+  expect(
+    p`{ meta: { remote:${false} }}`({
       type: "shared.foo",
       meta: { remote: false }
     })
