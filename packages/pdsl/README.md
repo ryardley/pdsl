@@ -19,7 +19,7 @@ function isUsernameOrUser(value) {
 }
 ```
 
-With PDSL:
+With `pdsl`:
 
 ```js
 const isUsernameOrUser = p`${String} || {
@@ -46,7 +46,7 @@ npm install pdsl
 
 ### Complex object example
 
-Let's compare writing a complex predicate object by hand with using PDSL.
+Let's compare writing a complex predicate object by hand with using `pdsl`.
 
 What if we want to test to see if an input object satisfies a large number of predicate tests:
 
@@ -73,13 +73,13 @@ function isComplexObject(obj) {
 }
 ```
 
-With PDSL this is much clearer:
+With `pdsl` this is much clearer:
 
 ```js
 import p from "pdsl";
 import { Email, btw, gt, has } from "pdsl/helpers";
 
-// PDSL expressively defines the objects' constraints
+// `pdsl` expressively defines the objects' constraints
 const isComplexObject = p`
   {
     type: ${/^.+foo$/},
@@ -97,7 +97,7 @@ const isComplexObject = p`
 `;
 ```
 
-With PDSL we can easily visualize the expected object structure and intent.
+With `pdsl` we can easily visualize the expected object structure and intent.
 
 ### Primitive matching
 
@@ -115,7 +115,7 @@ const isFunction = p`${Function}`; // typeof value === 'function'
 
 ### Reference equality
 
-If you pass a value PDSL will match that specific value:
+If you pass a value `pdsl` will match that specific value:
 
 ```js
 const isTrue = p`${true}`;
