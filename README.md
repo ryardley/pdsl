@@ -5,11 +5,12 @@
 ```js
 const isUsernameOrUser = p`${String} || {username, password}`;
 
-isUsernameOrUser({ username: "Foo", password: "123" }); // true
-
-isUsernameOrUser("Foo"); // true
-
-isUsernameOrUser(45); // false
+const isUsernameOrUser = value => {
+  return (
+    typeof value === "string" ||
+    (Boolean(value.username) && Boolean(value.password))
+  );
+};
 ```
 
 ## Coding predicates without boilerplate
