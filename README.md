@@ -1,4 +1,4 @@
-# PDSL
+# pdsl
 
 ### An expressive shorthand domain language for creating validation or filter functions
 
@@ -278,6 +278,12 @@ Greater than
 ### `gte`
 
 Greater than equals
+
+## FAQ
+
+#### What does pdsl stand for?
+
+Predicate Domain Specific Language.
 
 ## Goals
 
