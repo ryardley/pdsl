@@ -214,6 +214,62 @@ Any function passed as an expression to the template literal will be used as a p
 p`${a => /^foo/.test(a)}`('food'); // true
 ```
 
+## Helpers
+
+### `Email`
+
+Email regex
+
+```js
+Email.test("foo@bar.com"); // true
+Email.test("hello"); //false
+```
+### `btw`
+
+Between helper. Tests if an input is between two numbers. This does not test if the input is a number.
+
+```js
+btw(10, 100)(50)); // true
+btw(10, 100)(-50)); // false
+btw(10, 100)(100); // false
+btw(10, 100)(10); // false
+```
+
+### `btwi` 
+
+Between inclusive. Same as `btw` but inclusive of the range edges.
+
+```js
+btwi(10, 100)(50); // true
+btwi(10, 100)(-50); // false
+btwi(10, 100)(100); // true
+btwi(10, 100)(10); // true
+```
+
+### `has`
+
+Tests to see if an iterable contains an element.
+
+```js
+has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]); //true
+has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9]); //false
+```
+
+### `lt`
+
+Less than 
+
+### `lte`
+
+Less than equals
+
+### `gt`
+
+Greater than 
+
+### `gte`
+
+Greater than equals
 
 ## Goals
 
