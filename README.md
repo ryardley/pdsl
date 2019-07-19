@@ -1,4 +1,4 @@
-# PDSL
+# Predicate DSL
 
 **An expressive shorthand domain language for creating predicate functions**
 
