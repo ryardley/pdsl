@@ -1,7 +1,10 @@
 const { tokenizer, parser } = require("./compiler");
 const { generator } = require("./generator");
+
 function valToPredicate(val) {
-  return a => a === val;
+  return function isVal(a) {
+    return a === val;
+  };
 }
 
 function funToPredicate(fun) {
