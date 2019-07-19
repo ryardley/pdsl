@@ -2,7 +2,7 @@
 
 ### An expressive shorthand domain language for creating validation or filter functions
 
-Often when programming we need to create predicate functions to assert facts about a given input value. Creating predicate functions in JavaScript is usually verbose, especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand for defining predicate functions that makes it easy to understand intent.
+Often when programming we need to create predicate functions to assert facts about a given input value. This is often the case when filtering an array or validating input. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand for defining predicate functions that makes it easy to understand intent.
 
 Instead of:
 
