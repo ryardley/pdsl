@@ -1,10 +1,14 @@
 # PDSL
 
-**A short hand domain language for creating predicate functions**
+**A shorthand domain language for creating predicate functions**
 
 ```js
 const isUsernameOrUser = p`${String} || {username, password}`;
+```
 
+Becomes:
+
+```js
 const isUsernameOrUser = value => {
   return (
     typeof value === "string" ||
