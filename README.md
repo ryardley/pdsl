@@ -1,6 +1,6 @@
 # Predicate DSL
 
-**An expressive shorthand domain language for creating predicate functions**
+> An expressive shorthand domain language for creating predicate functions
 
 Often when programming we need to create predicate functions to assert facts about a given input value. Creating predicate functions in JavaScript is usually verbose, especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand for defining predicate functions that makes it easy to understand intent.
 
@@ -29,6 +29,20 @@ const isUsernameOrUser = p`${String} || {
   }
 }`;
 ```
+
+## Installation
+
+Install with npm or yarn
+
+```bash
+yarn add pdsl
+```
+
+```bash
+npm install pdsl
+```
+
+## Usage
 
 ### Complex object example
 
