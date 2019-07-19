@@ -4,8 +4,6 @@ const TOKENS = [
   `\\!`,
   `\\&\\&`,
   `\\|\\|`,
-  `\\[`,
-  `\\]`,
   `\\{`,
   `\\}`,
   `\\(`,
@@ -22,9 +20,9 @@ function tokenizer(input) {
 
 const operators = {
   "!": 4,
-  ":": 3,
-  "&&": 2,
-  "||": 1
+  "&&": 3,
+  "||": 2,
+  ":": 1
 };
 
 function parser(input) {
@@ -55,7 +53,7 @@ function parser(input) {
           return output;
         }
 
-        if (token === "[" || token === "{") {
+        if (token === "{") {
           if (isMultiArg(peek(stack))) {
             incrementMultiArgCount(peek(stack));
           }
@@ -68,7 +66,7 @@ function parser(input) {
           return output;
         }
 
-        if (token === "]" || token === "}") {
+        if (token === "}") {
           while (!isMultiArg(peek(stack))) output.push(stack.pop());
           output.push(stack.pop().join(""));
           return output;

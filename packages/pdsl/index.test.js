@@ -1,4 +1,5 @@
 const p = require("./index");
+const { Email, btw, gt, has } = require("./helpers");
 
 describe("value predicates", () => {
   it("should return strict equality with any value", () => {
@@ -85,4 +86,70 @@ it("should be able to use nested object property templates", () => {
       meta: { remote: false }
     })
   ).toBe(true);
+});
+
+it("should match the examples", () => {
+  expect(p`{length: ${5}}`("12345")).toBe(true);
+  expect(p`{length: ${gt(5)}}`("123456")).toBe(true);
+  expect(p`{foo:{length:${5}}}`({ foo: "12345" })).toBe(true);
+  expect(p`{foo:{length:${gt(5)}}}`({ foo: "123456" })).toBe(true);
+  expect(
+    p`
+  {
+    type: ${/^.+foo$/},
+    payload: {
+      email: ${Email} && { length: ${gt(5)} },
+      arr: !${has(6)},
+      foo: !${true},
+      num: ${btw(-4, 100)},
+      bar: {
+        baz: ${/^foo/},
+        foo
+      }
+    }
+  }`({
+      type: "asdsadfoo",
+      payload: {
+        email: "a@b.com",
+        arr: [3, 3, 3, 3, 3],
+        foo: false,
+        num: 10,
+        bar: {
+          baz: "food",
+          foo: true
+        }
+      }
+    })
+  ).toBe(true);
+
+  expect(
+    p`${String} || {
+    username: ${String}, 
+    password: ${String} && { 
+      length: ${gt(3)}
+    }
+  }`({})
+  ).toBe(false);
+
+  expect(
+    p`${String} || {
+    username: ${String}, 
+    password: ${String} && { 
+      length: ${gt(3)}
+    }
+  }`({ username: "hello", password: "mi" })
+  ).toBe(false);
+
+  expect(
+    p`${String} || {
+    username: ${String}, 
+    password: ${String} && { 
+      length: ${gt(3)}
+    }
+  }`({ username: "hello", password: "mike" })
+  ).toBe(true);
+
+  const is6CharString = p`${String} && { length: ${6} }`;
+
+  expect(is6CharString("123456")).toBe(true);
 });

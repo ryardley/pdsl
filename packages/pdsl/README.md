@@ -1,62 +1,81 @@
 # PDSL
 
-**A shorthand domain language for creating predicate functions**
+**An expressive shorthand domain language for creating predicate functions**
 
-Instread of writing 
+Often when programming we need to create predicate functions to assert facts about a given input value. Creating predicate functions in JavaScript is usually verbose, especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand for defining predicate functions that makes it easy to understand intent.
+
+Instead of:
 
 ```js
-const isUsernameOrUser = value => {
+// Complex predicate logic
+function isUsernameOrUser(value) {
   return (
     typeof value === "string" ||
-    (Boolean(value.username) && Boolean(value.password))
+    (value &&
+      typeof value.username === "string" &&
+      typeof value.password === "string" &&
+      value.password.length > 3)
   );
-};
+}
 ```
 
-You can write
+With PDSL:
 
 ```js
-const isUsernameOrUser = p`${String} || {username, password}`;
+const isUsernameOrUser = p`${String} || {
+  username: ${String}, 
+  password: ${String} && { 
+    length: ${gt(3)}
+  }
+}`;
 ```
-
-## Coding predicates without boilerplate
-
-Often when programming we need to create predicate functions to assert facts about a given input value. Creating predicate functions in JavaScript is usually verbose especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand syntax for defining predicate functions that is easy to understand.
-
-PDSL helps developers by providing an intuitive API for assembling predicates without the boilerplater required to
 
 ### Complex object example
 
 Let's compare writing a complex predicate object by hand with using PDSL.
 
-#### Without a DSL
+What if we want to test to see if an input object satisfies a large number of predicate tests:
 
 ```js
-const isComplexObject = obj =>
-  /^.+foo$/.test(obj.type) &&
-  obj.payload &&
-  Array.isArray(obj.payload.arr) &&
-  obj.payload.arr.filter(a => a === 6).length > 0 &&
-  (obj.payload.num > 4 || obj.payload.num < -100) &&
-  obj.payload.bar &&
-  /^.+foo$/.test(obj.payload.bar.baz) &&
-  obj.payload.bar.foo;
+// It is difficult to understand this code's intent clearly.
+function isComplexObject(obj) {
+  return (
+    /^.+foo$/.test(obj.type) &&
+    obj.payload &&
+    obj.payload.email &&
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/.test(
+      obj.payload.email
+    ) &&
+    obj.payload.email.length > 5 &&
+    Array.isArray(obj.payload.arr) &&
+    obj.payload.arr.indexOf(6) === -1 &&
+    obj.payload.num > -4 &&
+    obj.payload.num < 100 &&
+    obj.payload.bar &&
+    obj.payload.bar.baz &&
+    /^.+foo$/.test(obj.payload.bar.baz) &&
+    obj.payload.bar.foo
+  );
+}
 ```
 
-#### With PDSL
+With PDSL this is much clearer:
 
 ```js
 import p from "pdsl";
+import { Email, btw, gt, has } from "pdsl/helpers";
 
+// PDSL expressively defines the objects' constraints
 const isComplexObject = p`
   {
-    type:${/^.+foo$/},
-    payload:{
-      arr:[!${6}],
-      foo:!${true},
-      num:${n => n > 4 || n < -100},
-      bar:{
-        baz:${/^foo/},
+    type: ${/^.+foo$/},
+    payload: {
+      email: ${Email} && { length: ${gt(5)} },
+      arr: !${has(6)},
+      foo: !${true},
+      num: ${btw(-4, 100)},
+      bar: {
+        baz: ${/^foo/},
         foo
       }
     }
@@ -64,80 +83,105 @@ const isComplexObject = p`
 `;
 ```
 
-### Checking for undefined or nill
+With PDSL we can easily visualize the expected object structure and intent.
+
+### Primitive matching
+
+If you pass a JavaScript primative object you will get the appropriate typeof check.
 
 ```js
-const isNotNil = a => !(a === null || a === undefined);
+const isNumeric = p`${Number}`; // typeof value === 'number'
+const isBoolean = p`${Boolean}`; // typeof value === 'boolean'
+const isString = p`${String}`; // typeof value === 'string'
+const isObject = p`${Object}`; // typeof value === 'object'
+const isBigInt = p`${BigInt}`; // typeof value === 'bigint'
+const isSymbol = p`${Symbol}`; // typeof value === 'symbol'
+const isFunction = p`${Function}`; // typeof value === 'function'
 ```
 
-```js
-const isNotNil = p`!(${null}||${undefined})`;
-```
+### Reference equality
 
-## More examples
+If you pass a value PDSL will match that specific value:
 
 ```js
-// will only match true
 const isTrue = p`${true}`;
-
-// will only match false
 const isFalse = p`${false}`;
-
-// will only match 9
 const isNine = p`${9}`;
-
-// will match 7 or 8
-const isBetween6And9 = p`${n => n > 6 && n < 9}`;
-
-// will match an empty array
-const isEmptyArray = p`${[]}`;
-
-// will match an empty object
-const isEmptyObject = p`${{}}`;
-
-// will match an empty string
-const isEmptyString = p`${""}`;
-
-// will match an specific string
 const isRupert = p`${"Rupert"}`;
+```
 
-// will match anything numeric
-const isNumeric = p`${Number}`;
+Checking for empty things
 
-const isBoolean = p`${Boolean}`;
-
-const isString = p`${String}`;
-
-const isObject = p`${Object}`;
-
-const isSymbol = p`${Symbol}`;
-
-const isFunction = p`${Function}`;
-
+```js
+const isEmptyArray = p`${[]}`;
+const isEmptyObject = p`${{}}`;
+const isEmptyString = p`${""}`;
 const isUndefined = p`${undefined}`;
-
 const isNull = p`${null}`;
+```
 
-const isFalsy = p`${a => !a}`;
+### Operators
 
-const isTruthy = p`${a => !!a}`;
+You can use familiar JS boolean operators and brackets such as `!`, `&&`, `||`, `(`, or `)`:
 
-const isArrayWithLength4 = p`${Array} && {length:${4}}`;
-
-const isArrayContaining7 = p`[${7}]`;
-
-const isArrayContaining7AndStringFoo = p`[${7},${"foo"}]`; // [1,7,'foo']
-
-const isNotArrayContaining7 = p`![${7}]`; // Will match anything such as {} apart from [1,2,3,4,7] or [7]
-const isArrayNotContaining7 = p`[!${7}]`; // Will match [1,2,3,4] but not {}
-const isEmptyArrayOrEmptyObject = p`${[]}||${{}}`;
-const hasName = p`{name}`; // {name: 'foo'}
-const hasNameOrhasNum = p`{name}||{num}`;
-const hasNameAndNum = p`{name,num}`;
-const isNotUndefined = p`!${undefined}`;
-const isNil = p`${null}||${undefined}`;
-const isNotNil = p`!${p`${null}||${undefined}`}`;
+```js
 const isNotNil = p`!(${null}||${undefined})`;
+```
+
+```js
+const is6CharString = p`${String} && { length: ${6} }`;
+```
+
+### Object properties
+
+You can test for an object's properties using the object syntax:
+
+```js
+const validate = p`{ name: ${String} }`;
+
+validate({ name: "Hello" }); // true
+validate({ name: 20 }); // false
+```
+
+This applies to checking properties of all javascript objects. For example to check a string's length:
+
+```js
+const validate = p`${String} && { length: ${7} }`;
+
+validate("Rudi"); // false
+validate("Yardley"); // true
+```
+
+### Object predicates
+
+You can test for object property truthiness by simply providing an object with a name property.
+
+```js
+const validate = p`{ name }`;
+validate({ name: "Rudi" }); // true
+validate({}); // false
+```
+
+You can apply a predicate function to the property.
+
+```js
+const validate = p`{ name: ${"Rudi"} }`;
+validate({ name: "Rudi" }); // true
+validate({ name: "Fred" }); // false
+```
+
+THe property can also contain nested objects.
+
+```js
+const validate = p`{ 
+  name, 
+  payload: {
+    listening:${true},
+    num: ${gt(4)}
+  } 
+}`;
+
+validate({ name: "Hello", payload: { listening: true, num: 5 } }); // true
 ```
 
 ## Goals
@@ -146,3 +190,7 @@ const isNotNil = p`!(${null}||${undefined})`;
 - Avoid eval
 - Bundle size as small as possible
 - As fast as possible
+
+## Disclaimer
+
+This is a work in progress and there may be bugs that have not yet been tested for. Please help this open source project by creating issues.

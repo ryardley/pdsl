@@ -1,27 +1,27 @@
 function generateOr(left, right) {
-  return a => left(a) || right(a);
+  return function orFn(a) {
+    return left(a) || right(a);
+  };
 }
 
 function generateAnd(left, right) {
-  return a => left(a) && right(a);
+  return function andFn(a) {
+    return left(a) && right(a);
+  };
 }
 
 function generateNot(input) {
-  return a => !input(a);
-}
-
-function generateArrayPredicate(...predicates) {
-  return a =>
-    predicates.reduce((acc, p) => {
-      return acc && a.filter(p).length > 0;
-    }, true);
+  return function notFn(a) {
+    return !input(a);
+  };
 }
 
 function generateObjectPredicate(...entries) {
   return a =>
-    entries.reduce((acc, [key, predicate]) => {
-      return acc && Boolean(a) && predicate(a[key]);
-    }, true);
+    entries.reduce(
+      (acc, [key, predicate]) => acc && Boolean(a) && predicate(a[key]),
+      true
+    );
 }
 
 const identifierRegEx = /[a-zA-Z]/;
@@ -59,12 +59,6 @@ function generator(rpn, funcs) {
       stack.push(generateOr(stack.pop(), stack.pop()));
     }
 
-    if (/^\[/.test(token)) {
-      const count = parseInt(token.match(/^\[(\d+)/)[1]);
-      const args = stack.splice(-1 * count);
-      stack.push(generateArrayPredicate(...args));
-    }
-
     if (/^\{/.test(token)) {
       const count = parseInt(token.match(/^\{(\d+)/)[1]);
       const args = stack.splice(-1 * count);
@@ -81,4 +75,4 @@ function generator(rpn, funcs) {
   return runnable;
 }
 
-module.exports = { generator, generateArrayPredicate, generateObjectPredicate };
+module.exports = { generator, generateObjectPredicate };
