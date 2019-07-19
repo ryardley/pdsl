@@ -2,11 +2,7 @@
 
 **A shorthand domain language for creating predicate functions**
 
-```js
-const isUsernameOrUser = p`${String} || {username, password}`;
-```
-
-Becomes:
+Instread of writing 
 
 ```js
 const isUsernameOrUser = value => {
@@ -15,6 +11,12 @@ const isUsernameOrUser = value => {
     (Boolean(value.username) && Boolean(value.password))
   );
 };
+```
+
+You can write
+
+```js
+const isUsernameOrUser = p`${String} || {username, password}`;
 ```
 
 ## Coding predicates without boilerplate
