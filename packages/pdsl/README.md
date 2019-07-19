@@ -260,10 +260,10 @@ Predicate Domain Specific Language.
 
 ## Goals
 
-- No dependencies
-- Avoid eval
-- Bundle size as small as possible
-- As fast as possible
+- [x] No dependencies
+- [x] Avoid eval
+- [x] Bundle size as small as possible
+- [ ] As fast as possible
 
 ## Disclaimer
 
