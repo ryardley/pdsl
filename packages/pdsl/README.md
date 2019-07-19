@@ -2,7 +2,7 @@
 
 ### An expressive shorthand domain language for creating validation or filter functions
 
-Best to start with an example.
+Often when programming we need to create predicate functions to assert facts about a given input value. This is often the case when filtering an array or validating input. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand for defining predicate functions that makes it easy to understand intent.
 
 ```js
 // `pdsl` expressively defines an input value's constraints
@@ -37,9 +37,6 @@ isComplexObject({
 }); // true
 ```
 
-## Rationale 
-
-Often when programming we need to create predicate functions to assert facts about a given input value. This is often the case when filtering an array or validating input. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. This library provides the developer a simple but powerful shorthand for defining predicate functions that makes it easy to understand intent.
 
 ## Installation
 
