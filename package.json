@@ -3,6 +3,7 @@
   "version": "0.0.8",
   "description": "Predicate DSL",
   "main": "index.js",
+  "types": "index.d.ts",
   "author": "Rudi Yardley",
   "license": "MIT",
   "scripts": {
