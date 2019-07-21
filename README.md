@@ -7,6 +7,8 @@ Often when programming we need to create predicate or boolean returning function
 With `pdsl` we can easily visualize the expected input's structure and intent.
 
 ```js
+import p from 'pdsl';
+
 // `pdsl` expressively defines an input value's constraints
 const isComplexObject = p`
   {
@@ -180,6 +182,8 @@ Helpers can be exported from the `pdsl/helpers` package and may be used standalo
 Email regex
 
 ```js
+import { Email } from 'pdsl/helpers';
+
 Email.test("foo@bar.com"); // true
 Email.test("hello"); //false
 ```
