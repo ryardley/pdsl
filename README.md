@@ -177,100 +177,25 @@ p`${a => a.indexOf('foo') === 0}`('food'); // true
 
 Helpers can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
 
-### `Email`
+Available helpers:
 
-Email regex
+* [and](https://ryardley.github.io/pdsl/global.html#and);
+* [btw](https://ryardley.github.io/pdsl/global.html#btw);
+* [btwi](https://ryardley.github.io/pdsl/global.html#btwi);
+* [deep](https://ryardley.github.io/pdsl/global.html#deep);
+* [gt](https://ryardley.github.io/pdsl/global.html#gt);
+* [gte](https://ryardley.github.io/pdsl/global.html#gte);
+* [has](https://ryardley.github.io/pdsl/global.html#has);
+* [lt](https://ryardley.github.io/pdsl/global.html#lt);
+* [lte](https://ryardley.github.io/pdsl/global.html#lte);
+* [not](https://ryardley.github.io/pdsl/global.html#not);
+* [or](https://ryardley.github.io/pdsl/global.html#or);
+* [pred](https://ryardley.github.io/pdsl/global.html#pred);
+* [prim](https://ryardley.github.io/pdsl/global.html#prim);
+* [regx](https://ryardley.github.io/pdsl/global.html#regx);
+* [val](https://ryardley.github.io/pdsl/global.html#val);
 
-```js
-import { Email } from 'pdsl/helpers';
-
-Email.test("foo@bar.com"); // true
-Email.test("hello"); //false
-```
-### `btw(number, number)`
-
-Between helper. Tests if an input is between two numbers. This does not test if the input is a number.
-
-```js
-const btw10To100 = btw(10, 100);
-
-btw10To100(50); // true
-btw10To100(-50); // false
-btw10To100(100); // false
-btw10To100(10); // false
-```
-
-### `btwi(number, number)` 
-
-Between inclusive. Same as `btw` but inclusive of the range edges.
-
-```js
-const btwi10To100 = btwi(10, 100)
-
-btwi10To100(50); // true
-btwi10To100(-50); // false
-btwi10To100(100); // true
-btwi10To100(10); // true
-```
-
-### `has(item)`
-
-Tests to see if an iterable contains an element.
-
-```js
-const has10 = has(10);
-
-has10([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]); //true
-has10([1, 2, 3, 4, 5, 6, 7, 8, 9, 9]); //false
-```
-
-### `lt(number)`
-
-Less than.
-
-```js
-const lt10 = lt(10);
-
-lt10(10); // false
-lt10(50); // false
-lt10(-50); // true
-```
-
-### `lte(number)`
-
-Less than or equal.
-
-```js
-const lte10 = lte(10);
-
-lte10(10); // true
-lte10(50); // false
-lte10(-50); // true
-```
-
-### `gt(number)`
-
-Greater than.
-
-```js
-const gt10 = gt(10);
-
-gt10(10); // false
-gt10(50); // true
-gt10(-50); // false
-```
-
-### `gte(number)`
-
-Greater than or equal.
-
-```js
-const gte10 = gte(10);
-
-gte10(10); // true
-gte10(50); // true
-gte10(-50); // false
-```
+For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
 ## FAQ
 
