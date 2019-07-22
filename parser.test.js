@@ -1,22 +1,5 @@
-const { tokenizer, parser } = require("./compiler");
-
-describe("tokenizer", () => {
-  it("tokens", () => {
-    expect(tokenizer("   {   name   :   _E0 && _E2 ,age:_E1}")).toEqual([
-      "{",
-      "name",
-      ":",
-      "_E0",
-      "&&",
-      "_E2",
-      ",",
-      "age",
-      ":",
-      "_E1",
-      "}"
-    ]);
-  });
-});
+const { parser } = require("./parser");
+const { lexer } = require("./lexer");
 
 describe("parser", () => {
   [
@@ -46,7 +29,7 @@ describe("parser", () => {
       output: "fee fi fo fum i smell the blood of an englishman {3 {5 {5"
     },
     {
-      input: "{ name, age }",
+      input: "{ name , age }",
       output: "name age {2"
     },
     {
@@ -69,7 +52,7 @@ describe("parser", () => {
     const itFunc = skip ? it.skip : only ? it.only : it;
 
     itFunc(`"${input}" -> "${output}"`, () => {
-      expect(parser(tokenizer(input)).join(" ")).toEqual(output);
+      expect(parser(lexer(input)).join(" ")).toEqual(output);
     });
   });
 });

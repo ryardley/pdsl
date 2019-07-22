@@ -1,4 +1,13 @@
-const { Email, btw, btwi, lt, lte, gt, gte, has } = require("./helpers");
+const { Email, btw, btwi, lt, lte, gt, gte, has, obj } = require("./helpers");
+
+it("should obj", () => {
+  expect(
+    obj(["name", a => a === "foo"], ["age", a => a === 41])({
+      name: "foo",
+      age: 41
+    })
+  ).toBe(true);
+});
 
 it("should Email", () => {
   expect(Email.test("foo@bar.com")).toBe(true);
