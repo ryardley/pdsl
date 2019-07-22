@@ -182,10 +182,6 @@ Helpers can be exported from the `pdsl/helpers` package and may be used standalo
 ```js
 import { Email, pred, has, btw, gt, regx } from 'pdsl/helpers';
 
-// Regular expression helpers
-Email.test("hello@world.com"); // true
-
-// Predicate helpers
 btw(1,10)(20); // false
 regx(/^foo/)("food"); // true
 has(5)([1,2,3,4,5]); // true
@@ -193,6 +189,10 @@ has(6)([1,2,3,4,5]); // false
 gt(100)(100); // false
 gte(100)(100); // true
 pred(9)(9); // true
+pred(9)(10); // false
+pred(Email)("hello@world.com"); // true
+pred(Number)(1); // true
+pred(String)("Hello"); // true
 ```
 
 Available helpers:
