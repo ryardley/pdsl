@@ -1,14 +1,25 @@
-const operators = {
-  "{": 6,
-  "!": 5,
-  "&&": 4,
-  "||": 3,
-  ",": 0,
-  "}": 0,
-  ":": 0
-};
+const { OPERATORS, IDENTIFIERS } = require("./config");
 
-const dynamicArityOperators = { "{": true };
+const operators = OPERATORS.reduce((out, op, index) => {
+  out[op.token.replace(/\\/g, "")] = index;
+  return out;
+}, {});
+
+const dynamicArityOperators = OPERATORS.reduce((out, op, index) => {
+  if (op.arity === -1) {
+    out[op.token.replace(/\\/g, "")] = index;
+  }
+  return out;
+}, {});
+
+const closingOperators = OPERATORS.reduce((out, op, index) => {
+  if (op.closingToken) {
+    out[op.closingToken.replace(/\\/g, "")] = index;
+  }
+  return out;
+}, {});
+
+const identRegEx = new RegExp(`(${IDENTIFIERS.map(o => o.token).join("|")})`);
 
 const peek = a => a[a.length - 1];
 const isDynArityToken = token => dynamicArityOperators[token];
@@ -24,8 +35,7 @@ function parser(input) {
     input
       .reduce((output, token) => {
         // identifier and literals
-        if (/(_E\d+|[a-zA-Z0-9_-]+)/g.test(token)) {
-          // If we are in an argument list count this arg
+        if (identRegEx.test(token)) {
           incArgCount(stack);
           output.push(token);
           return output;
@@ -49,13 +59,13 @@ function parser(input) {
           }
 
           // isClosingDynArityToken
-          if (token === "}") {
+          if (closingOperators[token]) {
             while (!inDynArityOperator(stack)) output.push(stack.pop());
             output.push(stack.pop().join(""));
             return output;
           }
 
-          // Argument separator
+          // Argument separator is special
           if (token === ",") {
             while (!inDynArityOperator(stack)) output.push(stack.pop());
             return output;
