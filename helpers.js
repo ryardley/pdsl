@@ -160,10 +160,10 @@ const not = input =>
 
 const obj = (...entries) =>
   function objFn(a) {
-    return entries.reduce(
-      (acc, [key, predicate]) => acc && Boolean(a) && predicate(a[key]),
-      true
-    );
+    return entries.reduce((acc, entry) => {
+      const [key, predicate] = Array.isArray(entry) ? entry : [entry, Boolean];
+      return acc && Boolean(a) && predicate(a[key]);
+    }, true);
   };
 
 /**

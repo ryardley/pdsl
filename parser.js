@@ -1,4 +1,4 @@
-const { OPERATORS, IDENTIFIERS } = require("./config");
+const { OPERATORS, IDENTIFIERS, LINKAGES } = require("./grammar");
 
 const operators = OPERATORS.reduce((out, op, index) => {
   out[op.token.replace(/\\/g, "")] = index;
@@ -19,7 +19,11 @@ const closingOperators = OPERATORS.reduce((out, op, index) => {
   return out;
 }, {});
 
-const identRegEx = new RegExp(`(${IDENTIFIERS.map(o => o.token).join("|")})`);
+const identRegEx = new RegExp(
+  `(${IDENTIFIERS.concat(LINKAGES)
+    .map(o => o.token)
+    .join("|")})`
+);
 
 const peek = a => a[a.length - 1];
 const isDynArityToken = token => dynamicArityOperators[token];
