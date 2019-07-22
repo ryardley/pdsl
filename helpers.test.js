@@ -55,4 +55,11 @@ it("should gte", () => {
 it("should has", () => {
   expect(has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(true);
   expect(has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9])).toBe(false);
+  expect(has(3, 10)([1, 2, 3, 10])).toBe(true);
+  expect(has(3, 10)([1, 2, 3])).toBe(false);
+  expect(has(3, 10)([1, 2])).toBe(false);
+  const gt3 = a => a > 3;
+  expect(has(gt3)([4])).toBe(true);
+  expect(has(gt3, 1)([1, 4])).toBe(true);
+  expect(has(gt3, 1)([4])).toBe(false);
 });
