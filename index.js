@@ -1,85 +1,14 @@
 const { parser } = require("./parser");
 const { lexer } = require("./lexer");
 const { generator } = require("./generator");
+const { pred } = require("./helpers");
+const { pretokenizer } = require("./pretokenizer");
 
-function valToPredicate(val) {
-  return function isVal(a) {
-    return a === val;
-  };
-}
-
-function funToPredicate(fun) {
-  return fun;
-}
-
-function deepValToPredicate(val) {
-  const stVal = JSON.stringify(val);
-  return a => stVal === JSON.stringify(a);
-}
-
-function regExToPredicate(regEx) {
-  return regEx.test.bind(regEx);
-}
-
-function primativeToPredicate(primative) {
-  if (primative.name === "Array") return a => Array.isArray(a);
-
-  return a => typeof a === primative.name.toLowerCase();
-}
-
-function isRegEx(regEx) {
-  return regEx instanceof RegExp;
-}
-
-function isPrimative(primative) {
-  return (
-    [
-      "Array",
-      "Boolean",
-      "Number",
-      "Symbol",
-      "BigInt",
-      "String",
-      "Function",
-      "Object"
-    ].indexOf(primative.name) > -1
-  );
-}
-
-function isDeepVal(val) {
-  return ["{}", "[]", '""'].indexOf(JSON.stringify(val)) > -1;
-}
-
-function isFunction(fun) {
-  return typeof fun === "function";
-}
-
-function createExpressionParser(input) {
-  if (isFunction(input) && isPrimative(input)) return primativeToPredicate;
-  if (isFunction(input) && !isPrimative(input)) return funToPredicate;
-  if (isRegEx(input)) return regExToPredicate;
-  if (isDeepVal(input)) return deepValToPredicate;
-  return valToPredicate;
-}
-
-function preTokenizer(stringArray) {
-  return stringArray.reduce(
-    (acc, item, index) =>
-      index > 0 ? acc + `_E${index - 1}` + item : acc + item,
-    ""
-  );
-}
-
-function toPredicate(input) {
-  return createExpressionParser(input)(input);
-}
-
-function p(strArray, ...expressions) {
-  const fns = expressions.map(toPredicate);
-  const pretokenized = preTokenizer(strArray);
+function p(strings, ...expressions) {
+  const pretokenized = pretokenizer(strings);
   const tokenized = lexer(pretokenized);
   const ast = parser(tokenized);
-  return generator(ast, fns);
+  return generator(ast, expressions.map(pred));
 }
 
 module.exports = p;

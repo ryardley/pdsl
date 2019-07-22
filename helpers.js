@@ -1,3 +1,11 @@
+const {
+  identity,
+  isDeepVal,
+  isFunction,
+  isPrimative,
+  isRegEx
+} = require("./utils");
+
 const btw = (a, b) =>
   function btwFn(n) {
     return n > a && n < b;
@@ -79,6 +87,57 @@ const obj = (...entries) =>
     );
   };
 
+const val = value =>
+  function isVal(a) {
+    return a === value;
+  };
+
+const deep = value => {
+  const st = JSON.stringify(value);
+  return a => st === JSON.stringify(a);
+};
+
+const regx = rx => rx.test.bind(rx);
+
+const prim = primative => {
+  if (primative.name === "Array") return a => Array.isArray(a);
+
+  return a => typeof a === primative.name.toLowerCase();
+};
+
+function createExpressionParser(expression) {
+  if (isFunction(expression)) {
+    if (isPrimative(expression)) return prim;
+    return identity;
+  }
+  if (isRegEx(expression)) return regx;
+  if (isDeepVal(expression)) return deep;
+  return val;
+}
+
+function pred(input) {
+  const expParser = createExpressionParser(input);
+  return expParser(input);
+}
+
 const Email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
 
-module.exports = { Email, btw, btwi, lt, lte, gt, gte, has, or, and, not, obj };
+module.exports = {
+  Email,
+  btw,
+  btwi,
+  lt,
+  lte,
+  gt,
+  gte,
+  has,
+  or,
+  and,
+  not,
+  obj,
+  val,
+  regx,
+  prim,
+  pred,
+  deep
+};
