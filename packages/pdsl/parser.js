@@ -1,23 +1,3 @@
-const TOKENS = [
-  `\\,`,
-  `\\:`,
-  `\\!`,
-  `\\&\\&`,
-  `\\|\\|`,
-  `\\{`,
-  `\\}`,
-  `\\(`,
-  `\\)`,
-  `_E\\d+`,
-  `[a-zA-Z0-9_-]+`
-];
-
-const rex = new RegExp(`(${TOKENS.join("|")})`, "g");
-
-function tokenizer(input) {
-  return input.match(rex);
-}
-
 const operators = {
   "!": 4,
   "&&": 3,
@@ -25,17 +5,17 @@ const operators = {
   ":": 1
 };
 
+const peek = a => a[a.length - 1];
+const incrementMultiArgCount = a => a[1]++;
+
 function parser(input) {
-  const peek = a => a[a.length - 1];
-  const isMultiArg = Array.isArray;
-  const incrementMultiArgCount = a => a[1]++;
   const stack = [];
 
   return (
     input
       .reduce((output, token) => {
         if (/(_E\d+|[a-zA-Z0-9_-]+)/g.test(token)) {
-          if (isMultiArg(peek(stack))) {
+          if (Array.isArray(peek(stack))) {
             incrementMultiArgCount(peek(stack));
           }
           output.push(token);
@@ -54,7 +34,7 @@ function parser(input) {
         }
 
         if (token === "{") {
-          if (isMultiArg(peek(stack))) {
+          if (Array.isArray(peek(stack))) {
             incrementMultiArgCount(peek(stack));
           }
           stack.push([token, 0]);
@@ -62,12 +42,12 @@ function parser(input) {
         }
 
         if (token === ",") {
-          while (!isMultiArg(peek(stack))) output.push(stack.pop());
+          while (!Array.isArray(peek(stack))) output.push(stack.pop());
           return output;
         }
 
         if (token === "}") {
-          while (!isMultiArg(peek(stack))) output.push(stack.pop());
+          while (!Array.isArray(peek(stack))) output.push(stack.pop());
           output.push(stack.pop().join(""));
           return output;
         }
@@ -91,4 +71,4 @@ function parser(input) {
   );
 }
 
-module.exports = { parser, tokenizer, TOKENS };
+module.exports = { parser };

@@ -1,34 +1,10 @@
-function generateOr(left, right) {
-  return function orFn(a) {
-    return left(a) || right(a);
-  };
-}
-
-function generateAnd(left, right) {
-  return function andFn(a) {
-    return left(a) && right(a);
-  };
-}
-
-function generateNot(input) {
-  return function notFn(a) {
-    return !input(a);
-  };
-}
-
-function generateObjectPredicate(...entries) {
-  return a =>
-    entries.reduce(
-      (acc, [key, predicate]) => acc && Boolean(a) && predicate(a[key]),
-      true
-    );
-}
+const { not, and, or, obj } = require("./helpers");
 
 const identifierRegEx = /[a-zA-Z]/;
+const isOperand = token => /^_E/.test(token);
+const isIdentifier = token => identifierRegEx.test(token);
 
 function generator(rpn, funcs) {
-  const isOperand = token => /^_E/.test(token);
-  const isIdentifier = token => identifierRegEx.test(token);
   const toFunc = token => {
     const index = token.match(/^_E(\d+)/)[1];
     return funcs[index];
@@ -42,7 +18,7 @@ function generator(rpn, funcs) {
     }
 
     if (token === "!") {
-      stack.push(generateNot(stack.pop()));
+      stack.push(not(stack.pop()));
     }
 
     if (token === ":") {
@@ -52,11 +28,11 @@ function generator(rpn, funcs) {
     }
 
     if (token === "&&") {
-      stack.push(generateAnd(stack.pop(), stack.pop()));
+      stack.push(and(stack.pop(), stack.pop()));
     }
 
     if (token === "||") {
-      stack.push(generateOr(stack.pop(), stack.pop()));
+      stack.push(or(stack.pop(), stack.pop()));
     }
 
     if (/^\{/.test(token)) {
@@ -66,7 +42,7 @@ function generator(rpn, funcs) {
       const objArgs = args.map(a => {
         return Array.isArray(a) ? a : [a, Boolean];
       });
-      stack.push(generateObjectPredicate(...objArgs));
+      stack.push(obj(...objArgs));
     }
 
     return stack;
@@ -75,4 +51,4 @@ function generator(rpn, funcs) {
   return runnable;
 }
 
-module.exports = { generator, generateObjectPredicate };
+module.exports = { generator };

@@ -1,14 +1,4 @@
-const { generator, generateObjectPredicate } = require("./generator");
-
-describe("generateComplexPredicates", () => {
-  it("object predicate", () => {
-    const p = generateObjectPredicate(
-      ["name", a => a === "foo"],
-      ["age", a => a === 41]
-    );
-    expect(p({ name: "foo", age: 41 })).toBe(true);
-  });
-});
+const { generator } = require("./generator");
 
 describe("generator", () => {
   [

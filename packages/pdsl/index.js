@@ -1,4 +1,5 @@
-const { tokenizer, parser } = require("./compiler");
+const { parser } = require("./parser");
+const { lexer } = require("./lexer");
 const { generator } = require("./generator");
 
 function valToPredicate(val) {
@@ -76,7 +77,7 @@ function toPredicate(input) {
 function p(strArray, ...expressions) {
   const fns = expressions.map(toPredicate);
   const pretokenized = preTokenizer(strArray);
-  const tokenized = tokenizer(pretokenized);
+  const tokenized = lexer(pretokenized);
   const ast = parser(tokenized);
   return generator(ast, fns);
 }
