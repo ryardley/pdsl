@@ -1,4 +1,18 @@
-const { Email, btw, btwi, lt, lte, gt, gte, has, obj } = require("./helpers");
+const {
+  btw,
+  btwi,
+  deep,
+  Email,
+  gt,
+  gte,
+  has,
+  lt,
+  lte,
+  obj,
+  regx,
+  prim,
+  val
+} = require("./helpers");
 
 it("should obj", () => {
   expect(
@@ -58,8 +72,32 @@ it("should has", () => {
   expect(has(3, 10)([1, 2, 3, 10])).toBe(true);
   expect(has(3, 10)([1, 2, 3])).toBe(false);
   expect(has(3, 10)([1, 2])).toBe(false);
-  const gt3 = a => a > 3;
-  expect(has(gt3)([4])).toBe(true);
-  expect(has(gt3, 1)([1, 4])).toBe(true);
-  expect(has(gt3, 1)([4])).toBe(false);
+  expect(has(gt(3))([4])).toBe(true);
+  expect(has(gt(3), 1)([1, 4])).toBe(true);
+  expect(has(gt(3), 1)([4])).toBe(false);
+});
+
+it("should val", () => {
+  expect(val(10)(10)).toBe(true);
+  expect(val(10)(50)).toBe(false);
+});
+
+it("should deep", () => {
+  expect(deep(10)(10)).toBe(true);
+  expect(deep({ a: "foo", b: "bar" })({ a: "foo", b: "bar", c: 12 })).toBe(
+    false
+  );
+  expect(deep({ a: "foo", b: "bar" })({ a: "foo", b: "bar" })).toBe(true);
+});
+
+it("should regex", () => {
+  expect(regx(/^foo/)("food")).toBe(true);
+  expect(regx(/^foo/)("thing")).toBe(false);
+});
+
+it("should prim", () => {
+  expect(prim(Number)(10)).toBe(true);
+  expect(prim(Number)("10")).toBe(false);
+  expect(prim(Array)([10])).toBe(true);
+  expect(prim(Array)(10)).toBe(false);
 });
