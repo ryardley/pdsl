@@ -2,17 +2,19 @@ const { lexer } = require("./lexer");
 
 describe("lexer", () => {
   it("tokens", () => {
-    expect(lexer("   {   name   :   _E0 && _E2 ,age:_E1}")).toEqual([
+    expect(
+      lexer("   {   name   :   @{LINK:0} && @{LINK:2} ,age:@{LINK:1}}")
+    ).toEqual([
       "{",
       "name",
       ":",
-      "_E0",
+      "@{LINK:0}",
       "&&",
-      "_E2",
+      "@{LINK:2}",
       ",",
       "age",
       ":",
-      "_E1",
+      "@{LINK:1}",
       "}"
     ]);
   });
