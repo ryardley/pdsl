@@ -46,6 +46,13 @@ isComplexObject({
 }); // true
 ```
 
+## Goals
+
+- No dependencies
+- Avoid eval
+- Bundle size as small as possible
+- Fast
+
 ## Installation
 
 Install with npm or yarn
@@ -225,12 +232,6 @@ For the helper docs please chec the [helper docs](https://ryardley.github.io/pds
 
 Predicate Domain Specific Language.
 
-## Goals
-
-- No dependencies
-- Avoid eval
-- Bundle size as small as possible
-- Fast
 
 ## Disclaimer
 
