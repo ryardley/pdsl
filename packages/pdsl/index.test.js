@@ -1,5 +1,5 @@
 const p = require("./index");
-const { Email, btw, gt, has } = require("./helpers");
+const { Email, btw, gt, holds } = require("./helpers");
 
 describe("value predicates", () => {
   it("should return strict equality with any value", () => {
@@ -99,7 +99,7 @@ it("should match the examples", () => {
     type: ${/^.+foo$/},
     payload: {
       email: ${Email} && { length: ${gt(5)} },
-      arr: !${has(6)},
+      arr: !${holds(6)},
       foo: !${true},
       num: ${btw(-4, 100)},
       bar: {

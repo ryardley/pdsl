@@ -25,8 +25,8 @@ const btw = (a, b) =>
  * @param {number} b The higher number
  * @return {function} A function of the form number => boolean
  */
-const btwi = (a, b) =>
-  function btwiFn(n) {
+const btwe = (a, b) =>
+  function btweFn(n) {
     return n >= a && n <= b;
   };
 
@@ -78,15 +78,15 @@ const gte = a =>
  * Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
  * Eg,
  * <pre><code>
- * has(a => a > 3, 2)([1,2,3]); // true
- * has(1, 2)([1,3]); // false
+ * holds(a => a > 3, 2)([1,2,3]); // true
+ * holds(1, 2)([1,3]); // false
  * </code></pre>
  *
  * @param {...function|*} args Either values or predicate functions used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const has = (...args) =>
-  function hasFn(n) {
+const holds = (...args) =>
+  function holdsFn(n) {
     let i, j;
     let fns = [];
     let success = [];
@@ -229,12 +229,12 @@ const Email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
 module.exports = {
   Email,
   btw,
-  btwi,
+  btwe,
   lt,
   lte,
   gt,
   gte,
-  has,
+  holds,
   or,
   and,
   not,

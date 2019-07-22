@@ -7,9 +7,8 @@ Often when programming we need to create predicate or boolean returning function
 With `pdsl` we can easily visualize the expected input's structure and intent.
 
 ```js
-
-import p from 'pdsl';
-import { Email, has, btw, gt } from 'pdsl/helpers';
+import p from "pdsl";
+import { Email, holds, btw, gt } from "pdsl/helpers";
 
 // `pdsl` expressively defines an input value's constraints
 const isComplexObject = p`
@@ -17,7 +16,7 @@ const isComplexObject = p`
     type: ${/^.+foo$/},
     payload: {
       email: ${Email} && { length: ${gt(5)} },
-      arr: !${has(6)},
+      arr: !${holds(6)},
       foo: !${true},
       num: ${btw(-4, 100)},
       bar: {
@@ -32,17 +31,16 @@ isComplexObject({
   type: "yafoo",
   payload: {
     email: "a@b.com",
-    arr: [1,2,3,'foo'],
+    arr: [1, 2, 3, "foo"],
     foo: false,
     num: 2,
     bar: {
       baz: "food",
-      foo: "yup",
+      foo: "yup"
     }
   }
 }); // true
 ```
-
 
 ## Installation
 
@@ -121,7 +119,7 @@ validate({ name: 20 }); // false
 This applies to checking properties of all javascript objects. For example to check a string's length:
 
 ```js
-const validate = p`${String} && { length: ${7} }`;  // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`${String} && { length: ${7} }`; // value && typeof value.name === 'string' && value.name.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
@@ -164,7 +162,7 @@ validate({ name: "Hello", payload: { listening: true, num: 5 } }); // true
 You can use a regular expression as a predicate function.
 
 ```js
-p`${/^foo/}`('food'); // true
+p`${/^foo/}`("food"); // true
 ```
 
 ### Function predicates
@@ -172,7 +170,7 @@ p`${/^foo/}`('food'); // true
 Any function passed as an expression to the template literal will be used as a predicate.
 
 ```js
-p`${a => a.indexOf('foo') === 0}`('food'); // true
+p`${a => a.indexOf("foo") === 0}`("food"); // true
 ```
 
 ## Helpers
@@ -180,12 +178,12 @@ p`${a => a.indexOf('foo') === 0}`('food'); // true
 PDSL provides a number of helpers that can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
 
 ```js
-import { Email, pred, has, btw, gt, regx } from 'pdsl/helpers';
+import { Email, pred, holds, btw, gt, regx } from "pdsl/helpers";
 
-btw(1,10)(20); // false
+btw(1, 10)(20); // false
 regx(/^foo/)("food"); // true
-has(5)([1,2,3,4,5]); // true
-has(6)([1,2,3,4,5]); // false
+holds(5)([1, 2, 3, 4, 5]); // true
+holds(6)([1, 2, 3, 4, 5]); // false
 gt(100)(100); // false
 gte(100)(100); // true
 pred(9)(9); // true
@@ -197,21 +195,23 @@ pred(String)("Hello"); // true
 
 Available helpers:
 
-* [and](https://ryardley.github.io/pdsl/global.html#and) Logical AND
-* [btw](https://ryardley.github.io/pdsl/global.html#btw) - Between 
-* [btwi](https://ryardley.github.io/pdsl/global.html#btwi) - Between or equals
-* [deep](https://ryardley.github.io/pdsl/global.html#deep) - Deep equality
-* [gt](https://ryardley.github.io/pdsl/global.html#gt) - Greater than
-* [gte](https://ryardley.github.io/pdsl/global.html#gte) - Greater than or equals
-* [has](https://ryardley.github.io/pdsl/global.html#has) - Array has input
-* [lt](https://ryardley.github.io/pdsl/global.html#lt) - Less than
-* [lte](https://ryardley.github.io/pdsl/global.html#lte) - Less than equals
-* [not](https://ryardley.github.io/pdsl/global.html#not) - Logical NOT
-* [or](https://ryardley.github.io/pdsl/global.html#or) - Logical OR
-* [pred](https://ryardley.github.io/pdsl/global.html#pred) - Select the correct predicate based on input
-* [prim](https://ryardley.github.io/pdsl/global.html#prim) - Primative typeof checking
-* [regx](https://ryardley.github.io/pdsl/global.html#regx) - Regular expression predicate
-* [val](https://ryardley.github.io/pdsl/global.html#val) - Strict equality 
+| Helper                                                     | Description                                 |
+| ---------------------------------------------------------- | ------------------------------------------- |
+| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 |
+| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     |
+| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           |
+| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |
+| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                |
+| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      |
+| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           |
+| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   |
+| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            |
+| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 |
+| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  |
+| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input |
+| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   |
+| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                |
+| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
