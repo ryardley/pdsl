@@ -28,9 +28,32 @@ const gte = a =>
     return n >= a;
   };
 
-const has = a =>
+const has = (...args) =>
   function hasFn(n) {
-    return n.indexOf(a) !== -1;
+    let i, j;
+    let fns = [];
+    let success = [];
+
+    // prepare args as an array of predicate fns and an array to keep track of success
+    for (i = 0; i < args.length; i++) {
+      const arg = args[i];
+      const fn = typeof arg === "function" ? arg : a => a === arg;
+      fns.push(fn);
+      success.push(false);
+    }
+
+    // loop through array only once
+    for (i = 0; i < n.length; i++) {
+      const item = n[i];
+      for (j = 0; j < fns.length; j++) {
+        if (!success[j]) {
+          const fn = fns[j];
+          success[j] = success[j] || fn(item);
+        }
+      }
+    }
+
+    return success.reduce((a, b) => a && b);
   };
 
 const or = (left, right) =>
