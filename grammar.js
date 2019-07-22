@@ -1,9 +1,9 @@
-const { and, or, not, entry, obj } = require("./helpers");
+const { and, or, not, entry, holds, obj } = require("./helpers");
 
 module.exports = {
   OPERATORS: [
     { token: "\\:", arity: 2, helper: entry },
-    { token: "\\}", arity: 0 },
+    { token: "\\}", arity: 0 }, //TODO: make it so we dont have to specify this here
     { token: "\\,", arity: 0 },
     { token: "\\|\\|", arity: 2, helper: or },
     { token: "\\&\\&", arity: 2, helper: and },

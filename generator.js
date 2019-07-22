@@ -1,7 +1,18 @@
 const { not, and, or, obj, entry } = require("./helpers");
-const { LINKAGES } = require("./grammar");
+const { LINKAGES, OPERATORS } = require("./grammar");
 
 const identifierRegEx = /[a-zA-Z]/;
+const operatorLookup = OPERATORS.reduce((acc, op) => {
+  if (op.arity > -1) {
+    acc[op.token.replace(/\\/g, "")] = op;
+  }
+  return acc;
+}, {});
+
+const dynOps = OPERATORS.filter(op => op.arity === -1).map(op => {
+  op.test = t => new RegExp(`^${op.token}`).test(t);
+  return op;
+});
 
 const [links] = LINKAGES;
 
@@ -30,33 +41,25 @@ function generator(rpn, funcs) {
       return stack;
     }
 
-    if (token === "!") {
-      stack.push(not(stack.pop()));
-      return stack;
+    // Little tough because I am trying to efficient
+    let arity;
+    let op = operatorLookup[token];
+    if (!op) {
+      // TODO: maybe there is a better way here regarding regex test
+      for (let i = 0; i < dynOps.length; i++) {
+        const opd = dynOps[i];
+        if (opd.test(token)) {
+          op = opd;
+          arity = opd.extract(token);
+        }
+      }
+    } else {
+      arity = op.arity;
     }
+    let helper = op.helper;
 
-    if (token === ":") {
-      stack.push(entry(stack.pop(), stack.pop()));
-      return stack;
-    }
-
-    if (token === "&&") {
-      stack.push(and(stack.pop(), stack.pop()));
-      return stack;
-    }
-
-    if (token === "||") {
-      stack.push(or(stack.pop(), stack.pop()));
-      return stack;
-    }
-
-    if (/^\{/.test(token)) {
-      const count = parseInt(token.match(/^\{(\d+)/)[1]);
-      const args = stack.splice(-1 * count);
-      stack.push(obj(...args));
-      return stack;
-    }
-
+    const args = stack.splice(-1 * arity).reverse();
+    stack.push(helper(...args));
     return stack;
   }, []);
 
