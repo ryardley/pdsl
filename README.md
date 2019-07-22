@@ -195,21 +195,23 @@ pred(String)("Hello"); // true
 
 Available helpers:
 
-- [and](https://ryardley.github.io/pdsl/global.html#and) Logical AND
-- [btw](https://ryardley.github.io/pdsl/global.html#btw) - Between
-- [btwe](https://ryardley.github.io/pdsl/global.html#btwe) - Between or equals
-- [deep](https://ryardley.github.io/pdsl/global.html#deep) - Deep equality
-- [gt](https://ryardley.github.io/pdsl/global.html#gt) - Greater than
-- [gte](https://ryardley.github.io/pdsl/global.html#gte) - Greater than or equals
-- [holds](https://ryardley.github.io/pdsl/global.html#holds) - Array holds input
-- [lt](https://ryardley.github.io/pdsl/global.html#lt) - Less than
-- [lte](https://ryardley.github.io/pdsl/global.html#lte) - Less than equals
-- [not](https://ryardley.github.io/pdsl/global.html#not) - Logical NOT
-- [or](https://ryardley.github.io/pdsl/global.html#or) - Logical OR
-- [pred](https://ryardley.github.io/pdsl/global.html#pred) - Select the correct predicate based on input
-- [prim](https://ryardley.github.io/pdsl/global.html#prim) - Primative typeof checking
-- [regx](https://ryardley.github.io/pdsl/global.html#regx) - Regular expression predicate
-- [val](https://ryardley.github.io/pdsl/global.html#val) - Strict equality
+| Helper                                                     | Description                                 |
+| ---------------------------------------------------------- | ------------------------------------------- |
+| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 |
+| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     |
+| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           |
+| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |
+| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                |
+| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      |
+| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           |
+| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   |
+| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            |
+| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 |
+| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  |
+| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input |
+| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   |
+| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                |
+| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
