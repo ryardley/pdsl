@@ -1,11 +1,11 @@
 const {
   btw,
-  btwi,
+  btwe,
   deep,
   Email,
   gt,
   gte,
-  has,
+  holds,
   lt,
   lte,
   obj,
@@ -35,11 +35,11 @@ it("should btw", () => {
   expect(btw(10, 100)(10)).toBe(false);
 });
 
-it("should btwi", () => {
-  expect(btwi(10, 100)(50)).toBe(true);
-  expect(btwi(10, 100)(-50)).toBe(false);
-  expect(btwi(10, 100)(100)).toBe(true);
-  expect(btwi(10, 100)(10)).toBe(true);
+it("should btwe", () => {
+  expect(btwe(10, 100)(50)).toBe(true);
+  expect(btwe(10, 100)(-50)).toBe(false);
+  expect(btwe(10, 100)(100)).toBe(true);
+  expect(btwe(10, 100)(10)).toBe(true);
 });
 
 it("should lt", () => {
@@ -66,15 +66,15 @@ it("should gte", () => {
   expect(gte(10)(-50)).toBe(false);
 });
 
-it("should has", () => {
-  expect(has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(true);
-  expect(has(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9])).toBe(false);
-  expect(has(3, 10)([1, 2, 3, 10])).toBe(true);
-  expect(has(3, 10)([1, 2, 3])).toBe(false);
-  expect(has(3, 10)([1, 2])).toBe(false);
-  expect(has(gt(3))([4])).toBe(true);
-  expect(has(gt(3), 1)([1, 4])).toBe(true);
-  expect(has(gt(3), 1)([4])).toBe(false);
+it("should holds", () => {
+  expect(holds(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(true);
+  expect(holds(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9])).toBe(false);
+  expect(holds(3, 10)([1, 2, 3, 10])).toBe(true);
+  expect(holds(3, 10)([1, 2, 3])).toBe(false);
+  expect(holds(3, 10)([1, 2])).toBe(false);
+  expect(holds(gt(3))([4])).toBe(true);
+  expect(holds(gt(3), 1)([1, 4])).toBe(true);
+  expect(holds(gt(3), 1)([4])).toBe(false);
 });
 
 it("should val", () => {
