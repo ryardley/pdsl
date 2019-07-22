@@ -7,6 +7,7 @@ const {
 } = require("./utils");
 
 /**
+ * <h3>Between bounds</h3>
  * Return a function that checks to see if it's input is between two numbers not including the numbers.
  *
  * @param {number} a The lower number
@@ -19,6 +20,7 @@ const btw = (a, b) =>
   };
 
 /**
+ * <h3>Between bounds or equal to</h3>
  * Return a function that checks to see if it's input is between two numbers including the numbers.
  *
  * @param {number} a The lower number
@@ -31,6 +33,7 @@ const btwe = (a, b) =>
   };
 
 /**
+ * <h3>Less than</h3>
  * Return a function that checks to see if it's input is less than the given number.
  *
  * @param {number} a The number to check against.
@@ -42,6 +45,7 @@ const lt = a =>
   };
 
 /**
+ * <h3>Less than or equal to</h3>
  * Return a function that checks to see if it's input is less than or equal to the given number.
  *
  * @param {number} a The number to check against.
@@ -53,6 +57,7 @@ const lte = a =>
   };
 
 /**
+ * <h3>Greater than</h3>
  * Return a function that checks to see if it's input is greater than the given number.
  *
  * @param {number} a The number to check against.
@@ -64,6 +69,7 @@ const gt = a =>
   };
 
 /**
+ * <h3>Greater than or equal to</h3>
  * Return a function that checks to see if it's input is greater than or equal to the given number.
  *
  * @param {number} a The number to check against.
@@ -75,6 +81,7 @@ const gte = a =>
   };
 
 /**
+ * <h3>Array holds</h3>
  * Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
  * Eg,
  * <pre><code>
@@ -114,6 +121,7 @@ const holds = (...args) =>
   };
 
 /**
+ * <h3>Logical OR</h3>
  * Combine predicates to form a new predicate that ORs the result of the input predicates.
  *
  * @param {function} left The first predicate
@@ -126,6 +134,7 @@ const or = (left, right) =>
   };
 
 /**
+ * <h3>Logical AND</h3>
  * Combine predicates to form a new predicate that ANDs the result of the input predicates.
  *
  * @param {function} left The first predicate
@@ -138,6 +147,7 @@ const and = (left, right) =>
   };
 
 /**
+ * <h3>Logical NOT</h3>
  * Takes an input predicate to form a new predicate that NOTs the result of the input predicate.
  *
  * @param {function} input The input predicate
@@ -157,6 +167,7 @@ const obj = (...entries) =>
   };
 
 /**
+ * <h3>Is strict equal to value</h3>
  * Takes an input value to form a predicate that checks if the input strictly equals by reference the value.
  *
  * @param {function} value The input value
@@ -168,6 +179,7 @@ const val = value =>
   };
 
 /**
+ * <h3>Is deep equal to value</h3>
  * Takes an input value to form a predicate that checks if the input deeply equals the value.
  *
  * @param {function} value The input value
@@ -179,6 +191,7 @@ const deep = value => {
 };
 
 /**
+ * <h3>Regular Expression predicate</h3>
  * Forms a predicate from a given regular expression
  *
  * @param {RegExp} rx The input value
@@ -187,6 +200,7 @@ const deep = value => {
 const regx = rx => rx.test.bind(rx);
 
 /**
+ * <h3>Primative predicate</h3>
  * Forms a predicate from a given JavaSCript primative object to act as a typeof check for the input value.
  *
  * Eg. <pre><code>
@@ -214,6 +228,7 @@ function createExpressionParser(expression) {
 }
 
 /**
+ * <h3>Predicate</h3>
  * Creates an appropriate predicate based on an input value. This will choose a predicate transformer dynamically based on the type of input.
  *
  * @param {*} input Anything parsable
