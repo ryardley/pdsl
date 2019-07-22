@@ -1,12 +1,19 @@
 const operators = {
-  "!": 4,
-  "&&": 3,
-  "||": 2,
-  ":": 1
+  "{": 6,
+  "!": 5,
+  "&&": 4,
+  "||": 3,
+  ":": 2
 };
 
+const dynamicArityOperators = { "{": true };
+
 const peek = a => a[a.length - 1];
-const incrementMultiArgCount = a => a[1]++;
+const isDynArityToken = token => dynamicArityOperators[token];
+const inDynArityOperator = stack => Array.isArray(peek(stack));
+const countAsArgument = stack => {
+  if (inDynArityOperator(stack)) peek(stack)[1]++;
+};
 
 function parser(input) {
   const stack = [];
@@ -15,39 +22,40 @@ function parser(input) {
     input
       .reduce((output, token) => {
         if (/(_E\d+|[a-zA-Z0-9_-]+)/g.test(token)) {
-          if (Array.isArray(peek(stack))) {
-            incrementMultiArgCount(peek(stack));
-          }
+          // If we are in an argument list count this arg
+          countAsArgument(stack);
           output.push(token);
           return output;
         }
 
         if (token in operators) {
+          // organise operator precedence
           while (
-            peek(stack) in operators &&
+            operators[peek(stack)] &&
             operators[peek(stack)] > operators[token]
           ) {
             output.push(stack.pop());
           }
+
+          if (isDynArityToken(token)) {
+            // If we are in an argument list count this expression as an argument
+            countAsArgument(stack);
+            stack.push([token, 0]);
+            return output;
+          }
+
           stack.push(token);
           return output;
         }
 
-        if (token === "{") {
-          if (Array.isArray(peek(stack))) {
-            incrementMultiArgCount(peek(stack));
-          }
-          stack.push([token, 0]);
-          return output;
-        }
-
+        // these are not considered operators
         if (token === ",") {
-          while (!Array.isArray(peek(stack))) output.push(stack.pop());
+          while (!inDynArityOperator(stack)) output.push(stack.pop());
           return output;
         }
 
         if (token === "}") {
-          while (!Array.isArray(peek(stack))) output.push(stack.pop());
+          while (!inDynArityOperator(stack)) output.push(stack.pop());
           output.push(stack.pop().join(""));
           return output;
         }
