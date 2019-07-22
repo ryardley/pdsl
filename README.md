@@ -177,7 +177,7 @@ p`${a => a.indexOf('foo') === 0}`('food'); // true
 
 ## Helpers
 
-Helpers can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
+PDSL provides a number of helpers that can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
 
 ```js
 import { Email, pred, has, btw, gt, regx } from 'pdsl/helpers';
