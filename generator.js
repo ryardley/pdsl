@@ -1,19 +1,17 @@
 const { not, and, or, obj, entry } = require("./helpers");
 
 const identifierRegEx = /[a-zA-Z]/;
-const isOperand = token => /^_E/.test(token);
-const isIdentifier = token => identifierRegEx.test(token);
-
+const isIdentifier = token => /^_E/.test(token);
+const isLiteral = token => identifierRegEx.test(token);
+const lookupIdentifier = (token, funcs) => {
+  const index = token.match(/^_E(\d+)/)[1];
+  return funcs[index];
+};
 function generator(rpn, funcs) {
-  const toFunc = token => {
-    const index = token.match(/^_E(\d+)/)[1];
-    return funcs[index];
-  };
-
   const [runnable] = rpn.reduce((stack, token) => {
-    if (isOperand(token)) {
-      stack.push(toFunc(token));
-    } else if (isIdentifier(token)) {
+    if (isIdentifier(token)) {
+      stack.push(lookupIdentifier(token, funcs));
+    } else if (isLiteral(token)) {
       stack.push(token);
     }
 
