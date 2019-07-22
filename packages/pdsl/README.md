@@ -79,6 +79,7 @@ const isObject = p`${Object}`; // typeof value === 'object'
 const isBigInt = p`${BigInt}`; // typeof value === 'bigint'
 const isSymbol = p`${Symbol}`; // typeof value === 'symbol'
 const isFunction = p`${Function}`; // typeof value === 'function'
+const isArray = p`${Array}`; // Array.isArray(value)
 ```
 
 ### Reference equality
@@ -231,7 +232,6 @@ For the helper docs please chec the [helper docs](https://ryardley.github.io/pds
 #### What does pdsl stand for?
 
 Predicate Domain Specific Language.
-
 
 ## Disclaimer
 
