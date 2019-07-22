@@ -7,7 +7,9 @@ Often when programming we need to create predicate or boolean returning function
 With `pdsl` we can easily visualize the expected input's structure and intent.
 
 ```js
+
 import p from 'pdsl';
+import { Email, has, btw, gt } from 'pdsl/helpers';
 
 // `pdsl` expressively defines an input value's constraints
 const isComplexObject = p`
@@ -177,23 +179,39 @@ p`${a => a.indexOf('foo') === 0}`('food'); // true
 
 Helpers can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
 
+```js
+import { Email, pred, has, btw, gt, regx } from 'pdsl/helpers';
+
+// Regular expression helpers
+Email.test("hello@world.com"); // true
+
+// Predicate helpers
+btw(1,10)(20); // false
+regx(/^foo/)("food"); // true
+has(5)([1,2,3,4,5]); // true
+has(6)([1,2,3,4,5]); // false
+gt(100)(100); // false
+gte(100)(100); // true
+pred(9)(9); // true
+```
+
 Available helpers:
 
-* [and](https://ryardley.github.io/pdsl/global.html#and);
-* [btw](https://ryardley.github.io/pdsl/global.html#btw);
-* [btwi](https://ryardley.github.io/pdsl/global.html#btwi);
-* [deep](https://ryardley.github.io/pdsl/global.html#deep);
-* [gt](https://ryardley.github.io/pdsl/global.html#gt);
-* [gte](https://ryardley.github.io/pdsl/global.html#gte);
-* [has](https://ryardley.github.io/pdsl/global.html#has);
-* [lt](https://ryardley.github.io/pdsl/global.html#lt);
-* [lte](https://ryardley.github.io/pdsl/global.html#lte);
-* [not](https://ryardley.github.io/pdsl/global.html#not);
-* [or](https://ryardley.github.io/pdsl/global.html#or);
-* [pred](https://ryardley.github.io/pdsl/global.html#pred);
-* [prim](https://ryardley.github.io/pdsl/global.html#prim);
-* [regx](https://ryardley.github.io/pdsl/global.html#regx);
-* [val](https://ryardley.github.io/pdsl/global.html#val);
+* [and](https://ryardley.github.io/pdsl/global.html#and)
+* [btw](https://ryardley.github.io/pdsl/global.html#btw)
+* [btwi](https://ryardley.github.io/pdsl/global.html#btwi)
+* [deep](https://ryardley.github.io/pdsl/global.html#deep)
+* [gt](https://ryardley.github.io/pdsl/global.html#gt)
+* [gte](https://ryardley.github.io/pdsl/global.html#gte)
+* [has](https://ryardley.github.io/pdsl/global.html#has)
+* [lt](https://ryardley.github.io/pdsl/global.html#lt)
+* [lte](https://ryardley.github.io/pdsl/global.html#lte)
+* [not](https://ryardley.github.io/pdsl/global.html#not)
+* [or](https://ryardley.github.io/pdsl/global.html#or)
+* [pred](https://ryardley.github.io/pdsl/global.html#pred)
+* [prim](https://ryardley.github.io/pdsl/global.html#prim)
+* [regx](https://ryardley.github.io/pdsl/global.html#regx)
+* [val](https://ryardley.github.io/pdsl/global.html#val)
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
@@ -205,10 +223,10 @@ Predicate Domain Specific Language.
 
 ## Goals
 
-- [x] No dependencies
-- [x] Avoid eval
-- [x] Bundle size as small as possible
-- [ ] As fast as possible
+- No dependencies
+- Avoid eval
+- Bundle size as small as possible
+- Fast
 
 ## Disclaimer
 
