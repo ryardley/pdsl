@@ -1,4 +1,4 @@
-const { not, and, or, obj } = require("./helpers");
+const { not, and, or, obj, entry } = require("./helpers");
 
 const identifierRegEx = /[a-zA-Z]/;
 const isOperand = token => /^_E/.test(token);
@@ -22,9 +22,7 @@ function generator(rpn, funcs) {
     }
 
     if (token === ":") {
-      const value = stack.pop();
-      const key = stack.pop();
-      stack.push([key, value]);
+      stack.push(entry(stack.pop(), stack.pop()));
     }
 
     if (token === "&&") {

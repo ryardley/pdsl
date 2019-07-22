@@ -239,6 +239,10 @@ function pred(input) {
   return expParser(input);
 }
 
+function entry(value, key) {
+  return [key, value];
+}
+
 const Email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
 
 module.exports = {
@@ -256,6 +260,7 @@ module.exports = {
   obj,
   val,
   regx,
+  entry,
   prim,
   pred,
   deep
