@@ -8,7 +8,8 @@ function p(strings, ...expressions) {
   const pretokenized = pretokenizer(strings);
   const tokenized = lexer(pretokenized);
   const ast = parser(tokenized);
-  return generator(ast, expressions.map(pred));
+
+  return generator(ast.filter(Boolean), expressions.map(pred));
 }
 
 module.exports = p;

@@ -4,8 +4,6 @@ const peek = a => a[a.length - 1];
 
 const grammers = Object.entries(grammer);
 
-const mylog = (level, ...args) => level && console.log(...args);
-
 function toNode(token) {
   for (let i = 0; i < grammers.length; i++) {
     const [test, createNode] = grammers[i];
@@ -21,14 +19,7 @@ function toNode(token) {
 
 function isOperator(node) {
   if (!node) return false;
-  return (
-    {
-      VariableArityOperator: 1,
-      VariableArityOperatorClose: 1,
-      Operator: 1,
-      ArgumentSeparator: 1
-    }[node.type] || false
-  );
+  return node.type === "Operator";
 }
 
 function isLiteral(node) {
@@ -42,12 +33,12 @@ function isPredicateLookup(node) {
   if (!node) return false;
   return { PredicateLookup: 1 }[node.type] || false;
 }
-function isVariableArityOperatorClose(node) {
+function isVaradicFunctionClose(node) {
   if (!node) return false;
   return node.type === "VariableArityOperatorClose";
 }
 
-function isVariableArityOperator(node) {
+function isVaradicFunction(node) {
   if (!node) return false;
   return node.type === "VariableArityOperator";
 }
@@ -68,85 +59,100 @@ function isPrecidenceOperatorClose(node) {
 
 function parser(input) {
   const stack = [];
+  const arity = [];
+  const finalOut = input
+    .map(toNode)
+    .reduce((output, node) => {
+      // console.log({ output });
+      let type = "";
+      let msg = [];
+      // Operands
+      if (isLiteral(node) || isPredicateLookup(node)) {
+        type = "operand";
+        // send to output
+        output.push(node);
 
-  return (
-    input
-      .map(toNode)
-      .reduce((output, node) => {
-        // Literals
-        if (isLiteral(node) || isPredicateLookup(node)) {
-          // increase arg count in VariableArityOperator
-          const stackTop = peek(stack);
-          if (isVariableArityOperator(stackTop)) stackTop.arity++;
+        // return output;
+      }
 
-          // send to output
-          output.push(node);
+      if (isVaradicFunction(node)) {
+        type = "varadic";
+        stack.push(node);
+        arity.push(1);
+        // return output;
+      }
 
-          return output;
+      if (isArgumentSeparator(node)) {
+        type = "comma";
+        while (!isVaradicFunction(peek(stack))) {
+          output.push(stack.pop());
+        }
+        arity.push(arity.pop() + 1);
+        // return output;
+      }
+
+      if (isVaradicFunctionClose(node)) {
+        type = "varadic-close";
+        while (!isVaradicFunction(peek(stack))) {
+          output.push(stack.pop());
+        }
+        const fn = stack.pop();
+        fn.arity = arity.pop();
+        output.push(fn);
+        // return output;
+      }
+
+      if (isOperator(node)) {
+        type = "operator";
+        while (
+          stack.length > 0 &&
+          !isPrecidenceOperator(peek(stack)) &&
+          !(peek(stack).prec > node.prec)
+        ) {
+          msg.push(
+            `flushing-stack: L:${stack.length}, not(:${!isPrecidenceOperator(
+              peek(stack)
+            )}`
+          );
+          output.push(stack.pop());
+        }
+        stack.push(node);
+        // return output;
+      }
+
+      if (isPrecidenceOperator(node)) {
+        type = "precedence";
+        stack.push(node);
+
+        // return output;
+      }
+
+      if (isPrecidenceOperatorClose(node)) {
+        type = "precedence-close";
+        while (!isPrecidenceOperator(peek(stack))) {
+          output.push(stack.pop());
         }
 
-        if (isOperator(node)) {
-          while (isOperator(peek(stack)) && peek(stack).prec > node.prec) {
-            output.push(stack.pop());
-          }
+        stack.pop();
 
-          if (isVariableArityOperator(node)) {
-            // increase arg count in VariableArityOperator
+        // return output;
+      }
 
-            const stackTop = peek(stack);
-            if (isVariableArityOperator(stackTop)) {
-              stackTop.arity++;
-            }
+      // console.log(
+      //   `\ninput  : ${node.toString()} (${type})\n   | \n ${msg.join(
+      //     " "
+      //   )}\n   | \n   V \nstack  : ${stack
+      //     .map(a => a.toString())
+      //     .join(" ")}\noutput : ${output.map(a => a.toString()).join(" ")}`
+      // );
+      return output;
+    }, [])
+    // add everything left on the stack in reverse order to the end of the output.
+    .concat(stack.reverse());
 
-            // send to stack
-            stack.push(node);
+  // console.log(finalOut.map(a => a.toString()).join(" "));
 
-            return output;
-          }
-
-          if (isVariableArityOperatorClose(node)) {
-            // drain stack until variable arity operator
-
-            while (!isVariableArityOperator(peek(stack))) {
-              output.push(stack.pop());
-            }
-            // send operator to the output
-            output.push(stack.pop());
-
-            return output;
-          }
-
-          if (isArgumentSeparator(node)) {
-            while (!isVariableArityOperator(peek(stack))) {
-              output.push(stack.pop());
-            }
-
-            return output;
-          }
-          stack.push(node);
-
-          return output;
-        }
-
-        if (isPrecidenceOperator(node)) {
-          stack.push(node);
-
-          return output;
-        }
-
-        if (isPrecidenceOperatorClose(node)) {
-          while (!isPrecidenceOperator(peek(stack))) {
-            output.push(stack.pop());
-          }
-          stack.pop();
-
-          return output;
-        }
-        return output;
-      }, [])
-      // add everything left on the stack in reverse order to the end of the output.
-      .concat(stack.reverse())
-  );
+  return finalOut;
 }
 
 module.exports = { parser };

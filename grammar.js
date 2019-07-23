@@ -7,7 +7,7 @@ module.exports = {
     token,
     arity: 2,
     runtime: entry,
-    prec: 19,
+    prec: 18,
     toString() {
       return token;
     }
@@ -20,7 +20,7 @@ module.exports = {
     toString() {
       return token;
     },
-    prec: 19
+    prec: 16
   }),
   ["\\}"]: token => ({
     type: "VariableArityOperatorClose",
@@ -45,7 +45,7 @@ module.exports = {
     token,
     arity: 2,
     runtime: and,
-    prec: 19,
+    prec: 17,
     toString() {
       return token;
     }
@@ -55,7 +55,7 @@ module.exports = {
     token,
     arity: 2,
     runtime: or,
-    prec: 5,
+    prec: 18,
     toString() {
       return token;
     }
