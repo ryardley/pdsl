@@ -1,3 +1,6 @@
+// This article really helped work this out:
+// http://wcipeg.com/wiki/Shunting_yard_algorithm#Variadic_functions
+
 const grammer = require("./grammar");
 
 const peek = a => a[a.length - 1];
@@ -7,11 +10,8 @@ const grammers = Object.entries(grammer);
 function toNode(token) {
   for (let i = 0; i < grammers.length; i++) {
     const [test, createNode] = grammers[i];
-
     const testPassed = new RegExp(`^${test}$`).test(token);
-    // mylog(false, { test, testPassed });
     if (testPassed) {
-      // mylog(false, { test, token });
       return createNode(token);
     }
   }
@@ -63,8 +63,7 @@ function parser(input) {
   const finalOut = input
     .map(toNode)
     .reduce((output, node) => {
-      // console.log({ output });
-      let type = "";
+      let type;
       let msg = [];
       // Operands
       if (isLiteral(node) || isPredicateLookup(node)) {
@@ -72,14 +71,14 @@ function parser(input) {
         // send to output
         output.push(node);
 
-        // return output;
+        return output;
       }
 
       if (isVaradicFunction(node)) {
         type = "varadic";
         stack.push(node);
         arity.push(1);
-        // return output;
+        return output;
       }
 
       if (isArgumentSeparator(node)) {
@@ -88,7 +87,7 @@ function parser(input) {
           output.push(stack.pop());
         }
         arity.push(arity.pop() + 1);
-        // return output;
+        return output;
       }
 
       if (isVaradicFunctionClose(node)) {
@@ -99,7 +98,7 @@ function parser(input) {
         const fn = stack.pop();
         fn.arity = arity.pop();
         output.push(fn);
-        // return output;
+        return output;
       }
 
       if (isOperator(node)) {
@@ -117,14 +116,14 @@ function parser(input) {
           output.push(stack.pop());
         }
         stack.push(node);
-        // return output;
+        return output;
       }
 
       if (isPrecidenceOperator(node)) {
         type = "precedence";
         stack.push(node);
 
-        // return output;
+        return output;
       }
 
       if (isPrecidenceOperatorClose(node)) {
@@ -135,22 +134,12 @@ function parser(input) {
 
         stack.pop();
 
-        // return output;
+        return output;
       }
 
-      // console.log(
-      //   `\ninput  : ${node.toString()} (${type})\n   | \n ${msg.join(
-      //     " "
-      //   )}\n   | \n   V \nstack  : ${stack
-      //     .map(a => a.toString())
-      //     .join(" ")}\noutput : ${output.map(a => a.toString()).join(" ")}`
-      // );
       return output;
     }, [])
-    // add everything left on the stack in reverse order to the end of the output.
     .concat(stack.reverse());
-
-  // console.log(finalOut.map(a => a.toString()).join(" "));
 
   return finalOut;
 }
