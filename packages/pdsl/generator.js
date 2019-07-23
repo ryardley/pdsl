@@ -1,3 +1,4 @@
+const { val } = require("./helpers");
 const { isPredicateLookup, isLiteral } = require("./grammar");
 
 const lookupPredicateFunction = (node, funcs) => {
@@ -17,6 +18,7 @@ function isOperator(node) {
 }
 
 function generator(input, funcs) {
+  // console.log(input);
   const [runnable] = input.reduce((stack, node) => {
     if (isPredicateLookup(node)) {
       stack.push(lookupPredicateFunction(node, funcs));
@@ -27,9 +29,10 @@ function generator(input, funcs) {
       stack.push(node.token);
       return stack;
     }
+
     if (isOperator(node)) {
       const { arity, runtime } = node;
-      const args = stack.splice(-1 * arity).reverse();
+      const args = stack.splice(-1 * arity);
       stack.push(runtime(...args));
       return stack;
     }
@@ -37,7 +40,7 @@ function generator(input, funcs) {
     return stack;
   }, []);
 
-  return runnable;
+  return val(runnable);
 }
 
 module.exports = { generator };

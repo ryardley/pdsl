@@ -130,7 +130,7 @@ const holds = (...args) =>
  */
 const or = (left, right) =>
   function orFn(a) {
-    return left(a) || right(a);
+    return val(left)(a) || val(right)(a);
   };
 
 /**
@@ -143,7 +143,7 @@ const or = (left, right) =>
  */
 const and = (left, right) =>
   function andFn(a) {
-    return left(a) && right(a);
+    return val(left)(a) && val(right)(a);
   };
 
 /**
@@ -155,7 +155,7 @@ const and = (left, right) =>
  */
 const not = input =>
   function notFn(a) {
-    return !input(a);
+    return !val(input)(a);
   };
 
 const obj = (...entries) =>
@@ -170,13 +170,15 @@ const obj = (...entries) =>
  * <h3>Is strict equal to value</h3>
  * Takes an input value to form a predicate that checks if the input strictly equals by reference the value.
  *
- * @param {function} value The input value
+ * @param {function|*} value The input value if already a fuction it will be returned
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
 const val = value =>
-  function isVal(a) {
-    return a === value;
-  };
+  typeof value === "function"
+    ? value
+    : function isVal(a) {
+        return a === value;
+      };
 
 /**
  * <h3>Is deep equal to value</h3>
@@ -239,8 +241,8 @@ function pred(input) {
   return expParser(input);
 }
 
-function entry(value, key) {
-  return [key, value];
+function entry(name, predicate) {
+  return [name, val(predicate)];
 }
 
 const Email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;

@@ -19,10 +19,10 @@ const isComplexObject = p`
   {
     type: ${/^.+foo$/},
     payload: {
-      email: ${Email} && { length: ${gt(5)} },
+      email: ${Email} && { length: > 5 },
       arr: !${holds(6)},
-      foo: !${true},
-      num: ${btw(-4, 100)},
+      foo: !true,
+      num: -4 < < 100,
       bar: {
         baz: ${/^foo/},
         foo
@@ -87,10 +87,10 @@ const isArray = p`${Array}`; // Array.isArray(value)
 If you pass a value `pdsl` will match that specific value:
 
 ```js
-const isTrue = p`${true}`; // value === true;
-const isFalse = p`${false}`; // value === false;
-const isNine = p`${9}`; // value === 9;
-const isRupert = p`${"Rupert"}`; // value === "Rupert";
+const isTrue = p`true`; // value === true;
+const isFalse = p`false`; // value === false;
+const isNine = p`9`; // value === 9;
+const isRupert = p`"Rupert"`; // value === "Rupert";
 ```
 
 ### Empty comparisons
@@ -114,7 +114,7 @@ const isNotNil = p`!(${null}||${undefined})`;
 ```
 
 ```js
-const is6CharString = p`${String} && { length: ${6} }`;
+const is6CharString = p`${String} && { length: 6 }`;
 ```
 
 ### Object properties

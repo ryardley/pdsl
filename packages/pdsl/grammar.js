@@ -1,9 +1,95 @@
-const { obj, entry, not, and, or } = require("./helpers");
-
+const {
+  obj,
+  entry,
+  not,
+  and,
+  or,
+  gt,
+  gte,
+  lt,
+  lte,
+  btw
+} = require("./helpers");
+const tokens = {
+  NOT: "\\!",
+  AND: "\\&\\&",
+  OR: "\\|\\|",
+  BTW: "\\<\\s\\<",
+  GT: "\\>",
+  GTE: "\\>\\=",
+  LT: "\\<",
+  LTE: "\\<\\=",
+  ENTRY: "\\:",
+  OBJ: "\\{",
+  OBJ_CLOSE: "\\}",
+  ARG: "\\,",
+  SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
+  NUMBER: "-?\\d+\\.?\\d*",
+  TRUE: "true",
+  FALSE: "false",
+  STRING_DOUBLE: `\\"[^\\"]*\\"`,
+  STRING_SINGLE: `\\'[^\\']*\\'`,
+  PREDICATE_LOOKUP: "@{LINK:(\\d+)}",
+  PRECEDENCE: "\\(",
+  PRECEDENCE_CLOSE: "\\)"
+};
 const grammar = {
+  // LITERALS
+  [tokens.TRUE]: token => ({
+    type: "BooleanLiteral",
+    token: token === "true",
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.FALSE]: token => ({
+    type: "BooleanLiteral",
+    token: token === "false",
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.SYMBOL]: token => ({
+    type: "SymbolLiteral",
+    token,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.NUMBER]: token => ({
+    type: "NumericLiteral",
+    token: Number(token),
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.STRING_DOUBLE]: token => ({
+    type: "StringLiteral",
+    token: token.match(/\"(.*)\"/)[1],
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.STRING_SINGLE]: token => ({
+    type: "StringLiteral",
+    token: token.match(/\'(.*)\'/)[1],
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.PREDICATE_LOOKUP]: token => {
+    return {
+      type: "PredicateLookup",
+      token: token.match(/@{LINK:(\d+)}/)[1],
+      toString() {
+        return token;
+      }
+    };
+  },
+
   // OPERATORS
 
-  ["\\!"]: token => ({
+  [tokens.NOT]: token => ({
     type: "Operator",
     token,
     arity: 1,
@@ -13,7 +99,7 @@ const grammar = {
     },
     prec: 10
   }),
-  ["\\&\\&"]: token => ({
+  [tokens.AND]: token => ({
     type: "Operator",
     token,
     arity: 2,
@@ -24,7 +110,7 @@ const grammar = {
     }
   }),
 
-  ["\\|\\|"]: token => ({
+  [tokens.OR]: token => ({
     type: "Operator",
     token,
     arity: 2,
@@ -34,30 +120,81 @@ const grammar = {
       return token;
     }
   }),
-
-  ["\\:"]: token => ({
+  [tokens.BTW]: token => ({
     type: "Operator",
     token,
     arity: 2,
-    runtime: entry,
-    prec: 40,
+    runtime: btw,
+    prec: 50,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.GTE]: token => ({
+    type: "Operator",
+    token,
+    arity: 1,
+    runtime: gte,
+    prec: 50,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.LTE]: token => ({
+    type: "Operator",
+    token,
+    arity: 1,
+    runtime: lte,
+    prec: 50,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.GT]: token => ({
+    type: "Operator",
+    token,
+    arity: 1,
+    runtime: gt,
+    prec: 50,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.LT]: token => ({
+    type: "Operator",
+    token,
+    arity: 1,
+    runtime: lt,
+    prec: 50,
     toString() {
       return token;
     }
   }),
 
-  ["\\{"]: token => ({
+  // functions have highest precidence
+  [tokens.ENTRY]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: entry,
+    prec: 100,
+    toString() {
+      return token;
+    }
+  }),
+
+  [tokens.OBJ]: token => ({
     type: "VariableArityOperator",
     token,
     arity: 0,
     runtime: obj,
-    prec: 50,
+    prec: 100,
     toString() {
       return token + this.arity;
     }
   }),
 
-  ["\\}"]: token => ({
+  [tokens.OBJ_CLOSE]: token => ({
     type: "VariableArityOperatorClose",
     token,
     matchingToken: "{",
@@ -66,7 +203,7 @@ const grammar = {
     }
   }),
 
-  ["\\,"]: token => ({
+  [tokens.ARG]: token => ({
     type: "ArgumentSeparator",
     token,
     toString() {
@@ -74,52 +211,14 @@ const grammar = {
     }
   }),
 
-  // LITERALS
-  ["[a-zA-Z0-9_-]+"]: token => ({
-    type: "SymbolLiteral",
-    token,
-    toString() {
-      return token;
-    }
-  }),
-  ["\\d+\\.?\\d*"]: token => ({
-    type: "NumericLiteral",
-    token: Number(token),
-    toString() {
-      return token;
-    }
-  }),
-  [`\\"[^\\"]*\\"`]: token => ({
-    type: "StringLiteral",
-    token: token.match(/\"(.*)\"/)[1],
-    toString() {
-      return token;
-    }
-  }),
-  ["\\'[^\\']*\\'"]: token => ({
-    type: "StringLiteral",
-    token: token.match(/\'(.*)\'/)[1],
-    toString() {
-      return token;
-    }
-  }),
-  ["@{LINK:(\\d+)}"]: token => {
-    return {
-      type: "PredicateLookup",
-      token: token.match(/@{LINK:(\d+)}/)[1],
-      toString() {
-        return token;
-      }
-    };
-  },
-  ["\\("]: token => ({
+  [tokens.PRECEDENCE]: token => ({
     type: "PrecidenceOperator",
     token,
     toString() {
       return token;
     }
   }),
-  ["\\)"]: token => ({
+  [tokens.PRECEDENCE_CLOSE]: token => ({
     type: "PrecidenceOperatorClose",
     token,
     toString() {
@@ -136,8 +235,12 @@ function isOperator(node) {
 function isLiteral(node) {
   if (!node) return false;
   return (
-    { NumericLiteral: 1, StringLiteral: 1, SymbolLiteral: 1 }[node.type] ||
-    false
+    {
+      NumericLiteral: 1,
+      StringLiteral: 1,
+      SymbolLiteral: 1,
+      BooleanLiteral: 1
+    }[node.type] || false
   );
 }
 
@@ -171,6 +274,7 @@ function isPrecidenceOperatorClose(node) {
 
 module.exports = {
   grammar,
+  tokens,
   isPrecidenceOperatorClose,
   isPrecidenceOperator,
   isArgumentSeparator,
