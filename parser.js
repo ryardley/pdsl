@@ -1,97 +1,148 @@
-const { OPERATORS, IDENTIFIERS, LINKAGES } = require("./grammar");
-
-const operators = OPERATORS.reduce((out, op, index) => {
-  out[op.token.replace(/\\/g, "")] = index;
-  return out;
-}, {});
-
-const dynamicArityOperators = OPERATORS.reduce((out, op, index) => {
-  if (op.arity === -1) {
-    out[op.token.replace(/\\/g, "")] = index;
-  }
-  return out;
-}, {});
-
-const closingOperators = OPERATORS.reduce((out, op, index) => {
-  if (op.closingToken) {
-    out[op.closingToken.replace(/\\/g, "")] = index;
-  }
-  return out;
-}, {});
-
-const identRegEx = new RegExp(
-  `(${IDENTIFIERS.concat(LINKAGES)
-    .map(o => o.token)
-    .join("|")})`
-);
+const grammer = require("./grammar");
 
 const peek = a => a[a.length - 1];
-const isDynArityToken = token => dynamicArityOperators[token];
-const inDynArityOperator = stack => Array.isArray(peek(stack));
-const incArgCount = stack => {
-  if (inDynArityOperator(stack)) peek(stack)[1]++;
-};
+
+const grammers = Object.entries(grammer);
+
+const mylog = (level, ...args) => level && console.log(...args);
+
+function toNode(token) {
+  for (let i = 0; i < grammers.length; i++) {
+    const [test, createNode] = grammers[i];
+
+    const testPassed = new RegExp(`^${test}$`).test(token);
+    // mylog(false, { test, testPassed });
+    if (testPassed) {
+      // mylog(false, { test, token });
+      return createNode(token);
+    }
+  }
+}
+
+function isOperator(node) {
+  if (!node) return false;
+  return (
+    {
+      VariableArityOperator: 1,
+      VariableArityOperatorClose: 1,
+      Operator: 1,
+      ArgumentSeparator: 1
+    }[node.type] || false
+  );
+}
+
+function isLiteral(node) {
+  if (!node) return false;
+  return (
+    { NumericLiteral: 1, StringLiteral: 1, SymbolLiteral: 1 }[node.type] ||
+    false
+  );
+}
+function isPredicateLookup(node) {
+  if (!node) return false;
+  return { PredicateLookup: 1 }[node.type] || false;
+}
+function isVariableArityOperatorClose(node) {
+  if (!node) return false;
+  return node.type === "VariableArityOperatorClose";
+}
+
+function isVariableArityOperator(node) {
+  if (!node) return false;
+  return node.type === "VariableArityOperator";
+}
+
+function isArgumentSeparator(node) {
+  if (!node) return false;
+  return node.type === "ArgumentSeparator";
+}
+function isPrecidenceOperator(node) {
+  if (!node) return false;
+  return node.type === "PrecidenceOperator";
+}
+
+function isPrecidenceOperatorClose(node) {
+  if (!node) return false;
+  return node.type === "PrecidenceOperatorClose";
+}
 
 function parser(input) {
   const stack = [];
 
   return (
     input
-      .reduce((output, token) => {
-        // identifier and literals
-        if (identRegEx.test(token)) {
-          incArgCount(stack);
-          output.push(token);
+      .map(toNode)
+      .reduce((output, node) => {
+        // Literals
+        if (isLiteral(node) || isPredicateLookup(node)) {
+          // increase arg count in VariableArityOperator
+          const stackTop = peek(stack);
+          if (isVariableArityOperator(stackTop)) stackTop.arity++;
+
+          // send to output
+          output.push(node);
+
           return output;
         }
 
-        // Operators
-        if (token in operators) {
-          // organise operator precedence
-          while (
-            operators[peek(stack)] &&
-            operators[peek(stack)] > operators[token]
-          ) {
+        if (isOperator(node)) {
+          while (isOperator(peek(stack)) && peek(stack).prec > node.prec) {
             output.push(stack.pop());
           }
 
-          // If we are in an argument list count this expression as an argument
-          if (isDynArityToken(token)) {
-            incArgCount(stack);
-            stack.push([token, 0]);
+          if (isVariableArityOperator(node)) {
+            // increase arg count in VariableArityOperator
+
+            const stackTop = peek(stack);
+            if (isVariableArityOperator(stackTop)) {
+              stackTop.arity++;
+            }
+
+            // send to stack
+            stack.push(node);
+
             return output;
           }
 
-          // isClosingDynArityToken
-          if (closingOperators[token]) {
-            while (!inDynArityOperator(stack)) output.push(stack.pop());
-            output.push(stack.pop().join(""));
+          if (isVariableArityOperatorClose(node)) {
+            // drain stack until variable arity operator
+
+            while (!isVariableArityOperator(peek(stack))) {
+              output.push(stack.pop());
+            }
+            // send operator to the output
+            output.push(stack.pop());
+
             return output;
           }
 
-          // Argument separator is special
-          if (token === ",") {
-            while (!inDynArityOperator(stack)) output.push(stack.pop());
+          if (isArgumentSeparator(node)) {
+            while (!isVariableArityOperator(peek(stack))) {
+              output.push(stack.pop());
+            }
+
             return output;
           }
+          stack.push(node);
 
-          stack.push(token);
           return output;
         }
 
-        // Brackets are special as they deal specifically with precedence
-        // if its a '(' push the bracket to the stack
-        if (token === "(") {
-          stack.push(token);
+        if (isPrecidenceOperator(node)) {
+          stack.push(node);
+
           return output;
         }
 
-        // if its a ')' while the stack is not an open bracket pop the stack and push it to the output then pop the stack
-        if (token === ")") {
-          while (peek(stack) !== "(") output.push(stack.pop());
+        if (isPrecidenceOperatorClose(node)) {
+          while (!isPrecidenceOperator(peek(stack))) {
+            output.push(stack.pop());
+          }
           stack.pop();
+
           return output;
         }
+        return output;
       }, [])
       // add everything left on the stack in reverse order to the end of the output.
       .concat(stack.reverse())

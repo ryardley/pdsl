@@ -1,7 +1,6 @@
-const { LINKAGES } = require("./grammar");
-
-// Are we gonna have ore pretokenizers?
-const encode = LINKAGES[0].encode;
+function encode(num) {
+  return `@{LINK:${num}}`;
+}
 
 function pretokenizer(stringArray) {
   return stringArray.reduce(

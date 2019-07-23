@@ -1,13 +1,9 @@
-const { OPERATORS, IDENTIFIERS, PRECEDENCE, LINKAGES } = require("./grammar");
+const grammar = require("./grammar");
 
-const TOKENS = OPERATORS.concat(IDENTIFIERS)
-  .concat(PRECEDENCE)
-  .concat(LINKAGES)
-  .map(o => o.token);
-
-const rex = new RegExp(`(${TOKENS.join("|")})`, "g");
+const rex = new RegExp(`(${Object.keys(grammar).join("|")})`, "g");
 
 function lexer(input) {
+  rex.lastIndex = 0;
   return input.match(rex);
 }
 

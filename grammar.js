@@ -1,28 +1,149 @@
-const { and, or, not, entry, holds, obj } = require("./helpers");
+const { obj, entry, not, and, or } = require("./helpers");
 
 module.exports = {
-  OPERATORS: [
-    { token: "\\:", arity: 2, helper: entry },
-    { token: "\\}", arity: 0 }, //TODO: make it so we dont have to specify this here
-    { token: "\\,", arity: 0 },
-    { token: "\\|\\|", arity: 2, helper: or },
-    { token: "\\&\\&", arity: 2, helper: and },
-    { token: "\\!", arity: 1, helper: not },
-    {
-      token: "\\{",
-      arity: -1,
-      closingToken: "\\}",
-      helper: obj,
-      extract: t => parseInt(t.match(/^\{(\d+)/)[1])
+  // OPERATORS
+  ["\\:"]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: entry,
+    prec: 19,
+    toString() {
+      return token;
     }
-  ],
-  IDENTIFIERS: [{ token: "[a-zA-Z0-9_-]+" }],
-  LINKAGES: [
-    {
-      token: `@{LINK:\\d+}`,
-      encode: n => `@{LINK:${n}}`,
-      extract: t => t.match(/@{LINK:(\d+)/)[1]
+  }),
+  ["\\!"]: token => ({
+    type: "Operator",
+    token,
+    arity: 1,
+    runtime: not,
+    toString() {
+      return token;
+    },
+    prec: 19
+  }),
+  ["\\}"]: token => ({
+    type: "VariableArityOperatorClose",
+    token,
+    matchingToken: "{",
+    toString() {
+      return token;
+    },
+    prec: 19
+  }),
+  ["\\,"]: token => ({
+    type: "ArgumentSeparator",
+    token,
+    toString() {
+      return token;
+    },
+    prec: 19
+  }),
+
+  ["\\&\\&"]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: and,
+    prec: 19,
+    toString() {
+      return token;
     }
-  ],
-  PRECEDENCE: [{ token: `\\(` }, { token: `\\)` }]
+  }),
+  ["\\|\\|"]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: or,
+    prec: 5,
+    toString() {
+      return token;
+    }
+  }),
+  ["\\{"]: token => ({
+    type: "VariableArityOperator",
+    token,
+    arity: 0,
+    runtime: obj,
+    prec: 19,
+    toString() {
+      return token + this.arity;
+    }
+  }),
+
+  // LITERALS
+  ["[a-zA-Z0-9_-]+"]: token => ({
+    type: "SymbolLiteral",
+    token,
+    toString() {
+      return token;
+    }
+  }),
+  ["\\d+\\.?\\d*"]: token => ({
+    type: "NumericLiteral",
+    token: Number(token),
+    toString() {
+      return token;
+    }
+  }),
+  [`\\"[^\\"]*\\"`]: token => ({
+    type: "StringLiteral",
+    token: token.match(/\"(.*)\"/)[1],
+    toString() {
+      return token;
+    }
+  }),
+  ["\\'[^\\']*\\'"]: token => ({
+    type: "StringLiteral",
+    token: token.match(/\'(.*)\'/)[1],
+    toString() {
+      return token;
+    }
+  }),
+  ["@{LINK:(\\d+)}"]: token => {
+    return {
+      type: "PredicateLookup",
+      token: token.match(/@{LINK:(\d+)}/)[1],
+      toString() {
+        return token;
+      }
+    };
+  },
+  ["\\("]: token => ({
+    type: "PrecidenceOperator",
+    token,
+    prec: 20,
+    toString() {
+      return token;
+    }
+  }),
+  ["\\)"]: token => ({
+    type: "PrecidenceOperatorClose",
+    token,
+    prec: 20,
+    toString() {
+      return token;
+    }
+  })
+
+  // ["\\["]: token => ({
+  //   type: "VariableArityOperator",
+  //   token,
+  //   arity: 0,
+  //   runtime: holds,
+  //   prec: 80,
+  //   toString() {
+  //     return token;
+  //   }
+  // }),
+
+  // ["\\]"]: token => ({
+  //   type: "VariableArityOperatorClose",
+  //   token,
+  //   matchingToken: "[",
+  //   toString() {
+  //     return token;
+  //   },
+  //   prec: 10
+  // }),
 };

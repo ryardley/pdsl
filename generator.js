@@ -1,65 +1,50 @@
-const { not, and, or, obj, entry } = require("./helpers");
-const { LINKAGES, OPERATORS } = require("./grammar");
-
-const identifierRegEx = /[a-zA-Z]/;
-const operatorLookup = OPERATORS.reduce((acc, op) => {
-  if (op.arity > -1) {
-    acc[op.token.replace(/\\/g, "")] = op;
-  }
-  return acc;
-}, {});
-
-const dynOps = OPERATORS.filter(op => op.arity === -1).map(op => {
-  op.test = t => new RegExp(`^${op.token}`).test(t);
-  return op;
-});
-
-const [links] = LINKAGES;
-
-const linkRegExp = new RegExp(links.token);
-
-const isLinkSymbol = token => {
-  return linkRegExp.test(token);
+const isPredicateLookup = node => {
+  return node.type === "PredicateLookup";
 };
 
-const lookupLinkSymbol = (token, funcs) => {
-  const index = links.extract(token);
-  return funcs[index];
+const lookupPredicateFunction = (node, funcs) => {
+  return funcs[node.token];
 };
 
-const isLiteral = token => identifierRegEx.test(token);
+// XXX: dupl
+function isLiteral(node) {
+  if (!node) return false;
+  return (
+    { NumericLiteral: 1, StringLiteral: 1, SymbolLiteral: 1 }[node.type] ||
+    false
+  );
+}
 
-function generator(rpn, funcs) {
-  const [runnable] = rpn.reduce((stack, token) => {
-    if (isLinkSymbol(token)) {
-      stack.push(lookupLinkSymbol(token, funcs));
+function isOperator(node) {
+  if (!node) return false;
+  return (
+    {
+      VariableArityOperator: 1,
+      VariableArityOperatorClose: 1,
+      Operator: 1,
+      ArgumentSeparator: 1
+    }[node.type] || false
+  );
+}
+
+function generator(input, funcs) {
+  const [runnable] = input.reduce((stack, node) => {
+    if (isPredicateLookup(node)) {
+      stack.push(lookupPredicateFunction(node, funcs));
       return stack;
     }
 
-    if (isLiteral(token)) {
-      stack.push(token);
+    if (isLiteral(node)) {
+      stack.push(node.token);
+      return stack;
+    }
+    if (isOperator(node)) {
+      const { arity, runtime } = node;
+      const args = stack.splice(-1 * arity).reverse();
+      stack.push(runtime(...args));
       return stack;
     }
 
-    // Little tough because I am trying to efficient
-    let arity;
-    let op = operatorLookup[token];
-    if (!op) {
-      // TODO: maybe there is a better way here regarding regex test
-      for (let i = 0; i < dynOps.length; i++) {
-        const opd = dynOps[i];
-        if (opd.test(token)) {
-          op = opd;
-          arity = opd.extract(token);
-        }
-      }
-    } else {
-      arity = op.arity;
-    }
-    let helper = op.helper;
-
-    const args = stack.splice(-1 * arity).reverse();
-    stack.push(helper(...args));
     return stack;
   }, []);
 

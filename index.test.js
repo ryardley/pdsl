@@ -124,8 +124,8 @@ it("should match the examples", () => {
 
   expect(
     p`${String} || {
-    username: ${String}, 
-    password: ${String} && { 
+    username: ${String},
+    password: ${String} && {
       length: ${gt(3)}
     }
   }`({})
@@ -133,23 +133,24 @@ it("should match the examples", () => {
 
   expect(
     p`${String} || {
-    username: ${String}, 
-    password: ${String} && { 
+    username: ${String},
+    password: ${String} && {
       length: ${gt(3)}
     }
   }`({ username: "hello", password: "mi" })
   ).toBe(false);
 
+  expect(p`${String} && { length: ${6} }`("123456")).toBe(true);
+  expect(p`${String} && { length: ${7} }`("123456")).toBe(false);
+});
+
+it("should handle complex objects", () => {
   expect(
     p`${String} || {
-    username: ${String}, 
-    password: ${String} && { 
+    username: ${String},
+    password: ${String} && {
       length: ${gt(3)}
     }
   }`({ username: "hello", password: "mike" })
   ).toBe(true);
-
-  const is6CharString = p`${String} && { length: ${6} }`;
-
-  expect(is6CharString("123456")).toBe(true);
 });
