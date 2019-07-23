@@ -185,6 +185,7 @@ it("should know when to turn a value into a predicate", () => {
   expect(p`!10`(9)).toBe(true);
   expect(p`true`(true)).toBe(true);
   expect(p`!true && 6`(6)).toBe(true);
+  expect(p`"Rudi"`("Rudi")).toBe(true);
   expect(p`{foo:>=10}`({ foo: 10 })).toBe(true);
   expect(p`{foo:!10}`({ foo: "hello" })).toBe(true);
   expect(p`{foo}`({ foo: "hello" })).toBe(true);
