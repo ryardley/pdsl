@@ -130,7 +130,7 @@ const holds = (...args) =>
  */
 const or = (left, right) =>
   function orFn(a) {
-    return left(a) || right(a);
+    return val(left)(a) || val(right)(a);
   };
 
 /**
@@ -143,7 +143,7 @@ const or = (left, right) =>
  */
 const and = (left, right) =>
   function andFn(a) {
-    return left(a) && right(a);
+    return val(left)(a) && val(right)(a);
   };
 
 /**

@@ -25,6 +25,8 @@ const tokens = {
   ARG: "\\,",
   SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
   NUMBER: "-?\\d+\\.?\\d*",
+  TRUE: "true",
+  FALSE: "false",
   STRING_DOUBLE: `\\"[^\\"]*\\"`,
   STRING_SINGLE: `\\'[^\\']*\\'`,
   PREDICATE_LOOKUP: "@{LINK:(\\d+)}",
@@ -33,6 +35,20 @@ const tokens = {
 };
 const grammar = {
   // LITERALS
+  [tokens.TRUE]: token => ({
+    type: "BooleanLiteral",
+    token: token === "true",
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.FALSE]: token => ({
+    type: "BooleanLiteral",
+    token: token === "false",
+    toString() {
+      return token;
+    }
+  }),
   [tokens.SYMBOL]: token => ({
     type: "SymbolLiteral",
     token,
@@ -219,8 +235,12 @@ function isOperator(node) {
 function isLiteral(node) {
   if (!node) return false;
   return (
-    { NumericLiteral: 1, StringLiteral: 1, SymbolLiteral: 1 }[node.type] ||
-    false
+    {
+      NumericLiteral: 1,
+      StringLiteral: 1,
+      SymbolLiteral: 1,
+      BooleanLiteral: 1
+    }[node.type] || false
   );
 }
 
