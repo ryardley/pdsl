@@ -1,19 +1,8 @@
-const isPredicateLookup = node => {
-  return node.type === "PredicateLookup";
-};
+const { isPredicateLookup, isLiteral } = require("./grammar");
 
 const lookupPredicateFunction = (node, funcs) => {
   return funcs[node.token];
 };
-
-// XXX: dupl
-function isLiteral(node) {
-  if (!node) return false;
-  return (
-    { NumericLiteral: 1, StringLiteral: 1, SymbolLiteral: 1 }[node.type] ||
-    false
-  );
-}
 
 function isOperator(node) {
   if (!node) return false;

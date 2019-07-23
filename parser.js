@@ -1,7 +1,17 @@
 // This article really helped work this out:
 // http://wcipeg.com/wiki/Shunting_yard_algorithm#Variadic_functions
 
-const { grammar } = require("./grammar");
+const {
+  grammar,
+  isPrecidenceOperatorClose,
+  isPrecidenceOperator,
+  isArgumentSeparator,
+  isVaradicFunction,
+  isVaradicFunctionClose,
+  isPredicateLookup,
+  isLiteral,
+  isOperator
+} = require("./grammar");
 
 const peek = a => a[a.length - 1];
 
@@ -15,46 +25,6 @@ function toNode(token) {
       return createNode(token);
     }
   }
-}
-
-function isOperator(node) {
-  if (!node) return false;
-  return node.type === "Operator";
-}
-
-function isLiteral(node) {
-  if (!node) return false;
-  return (
-    { NumericLiteral: 1, StringLiteral: 1, SymbolLiteral: 1 }[node.type] ||
-    false
-  );
-}
-function isPredicateLookup(node) {
-  if (!node) return false;
-  return { PredicateLookup: 1 }[node.type] || false;
-}
-function isVaradicFunctionClose(node) {
-  if (!node) return false;
-  return node.type === "VariableArityOperatorClose";
-}
-
-function isVaradicFunction(node) {
-  if (!node) return false;
-  return node.type === "VariableArityOperator";
-}
-
-function isArgumentSeparator(node) {
-  if (!node) return false;
-  return node.type === "ArgumentSeparator";
-}
-function isPrecidenceOperator(node) {
-  if (!node) return false;
-  return node.type === "PrecidenceOperator";
-}
-
-function isPrecidenceOperatorClose(node) {
-  if (!node) return false;
-  return node.type === "PrecidenceOperatorClose";
 }
 
 function parser(input) {

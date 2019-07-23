@@ -126,4 +126,55 @@ const grammar = {
     }
   })
 };
-module.exports = { grammar };
+
+function isOperator(node) {
+  if (!node) return false;
+  return node.type === "Operator";
+}
+
+function isLiteral(node) {
+  if (!node) return false;
+  return (
+    { NumericLiteral: 1, StringLiteral: 1, SymbolLiteral: 1 }[node.type] ||
+    false
+  );
+}
+
+function isPredicateLookup(node) {
+  if (!node) return false;
+  return node.type === "PredicateLookup";
+}
+function isVaradicFunctionClose(node) {
+  if (!node) return false;
+  return node.type === "VariableArityOperatorClose";
+}
+
+function isVaradicFunction(node) {
+  if (!node) return false;
+  return node.type === "VariableArityOperator";
+}
+
+function isArgumentSeparator(node) {
+  if (!node) return false;
+  return node.type === "ArgumentSeparator";
+}
+function isPrecidenceOperator(node) {
+  if (!node) return false;
+  return node.type === "PrecidenceOperator";
+}
+
+function isPrecidenceOperatorClose(node) {
+  if (!node) return false;
+  return node.type === "PrecidenceOperatorClose";
+}
+module.exports = {
+  grammar,
+  isPrecidenceOperatorClose,
+  isPrecidenceOperator,
+  isArgumentSeparator,
+  isVaradicFunction,
+  isVaradicFunctionClose,
+  isPredicateLookup,
+  isLiteral,
+  isOperator
+};
