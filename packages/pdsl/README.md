@@ -45,7 +45,7 @@ isSpecialObject({
 }); // true
 ```
 
-## Disclaimer: This is new and may have bugs
+#### Disclaimer
 
 This should work but there is a chance you may find bugs that are not covered by our test suite. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues.
 
