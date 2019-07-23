@@ -2,16 +2,7 @@ const { obj, entry, not, and, or } = require("./helpers");
 
 const grammar = {
   // OPERATORS
-  ["\\:"]: token => ({
-    type: "Operator",
-    token,
-    arity: 2,
-    runtime: entry,
-    prec: 18,
-    toString() {
-      return token;
-    }
-  }),
+
   ["\\!"]: token => ({
     type: "Operator",
     token,
@@ -20,54 +11,66 @@ const grammar = {
     toString() {
       return token;
     },
-    prec: 16
+    prec: 10
   }),
+  ["\\&\\&"]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: and,
+    prec: 20,
+    toString() {
+      return token;
+    }
+  }),
+
+  ["\\|\\|"]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: or,
+    prec: 30,
+    toString() {
+      return token;
+    }
+  }),
+
+  ["\\:"]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: entry,
+    prec: 40,
+    toString() {
+      return token;
+    }
+  }),
+
+  ["\\{"]: token => ({
+    type: "VariableArityOperator",
+    token,
+    arity: 0,
+    runtime: obj,
+    prec: 50,
+    toString() {
+      return token + this.arity;
+    }
+  }),
+
   ["\\}"]: token => ({
     type: "VariableArityOperatorClose",
     token,
     matchingToken: "{",
     toString() {
       return token;
-    },
-    prec: 19
+    }
   }),
+
   ["\\,"]: token => ({
     type: "ArgumentSeparator",
     token,
     toString() {
       return token;
-    },
-    prec: 19
-  }),
-
-  ["\\&\\&"]: token => ({
-    type: "Operator",
-    token,
-    arity: 2,
-    runtime: and,
-    prec: 17,
-    toString() {
-      return token;
-    }
-  }),
-  ["\\|\\|"]: token => ({
-    type: "Operator",
-    token,
-    arity: 2,
-    runtime: or,
-    prec: 18,
-    toString() {
-      return token;
-    }
-  }),
-  ["\\{"]: token => ({
-    type: "VariableArityOperator",
-    token,
-    arity: 0,
-    runtime: obj,
-    prec: 19,
-    toString() {
-      return token + this.arity;
     }
   }),
 
@@ -112,7 +115,6 @@ const grammar = {
   ["\\("]: token => ({
     type: "PrecidenceOperator",
     token,
-    prec: 20,
     toString() {
       return token;
     }
@@ -120,7 +122,6 @@ const grammar = {
   ["\\)"]: token => ({
     type: "PrecidenceOperatorClose",
     token,
-    prec: 20,
     toString() {
       return token;
     }
@@ -167,6 +168,7 @@ function isPrecidenceOperatorClose(node) {
   if (!node) return false;
   return node.type === "PrecidenceOperatorClose";
 }
+
 module.exports = {
   grammar,
   isPrecidenceOperatorClose,
