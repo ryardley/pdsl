@@ -1,101 +1,117 @@
-const { OPERATORS, IDENTIFIERS, LINKAGES } = require("./grammar");
+// This article really helped work this out:
+// http://wcipeg.com/wiki/Shunting_yard_algorithm#Variadic_functions
 
-const operators = OPERATORS.reduce((out, op, index) => {
-  out[op.token.replace(/\\/g, "")] = index;
-  return out;
-}, {});
-
-const dynamicArityOperators = OPERATORS.reduce((out, op, index) => {
-  if (op.arity === -1) {
-    out[op.token.replace(/\\/g, "")] = index;
-  }
-  return out;
-}, {});
-
-const closingOperators = OPERATORS.reduce((out, op, index) => {
-  if (op.closingToken) {
-    out[op.closingToken.replace(/\\/g, "")] = index;
-  }
-  return out;
-}, {});
-
-const identRegEx = new RegExp(
-  `(${IDENTIFIERS.concat(LINKAGES)
-    .map(o => o.token)
-    .join("|")})`
-);
+const {
+  grammar,
+  isPrecidenceOperatorClose,
+  isPrecidenceOperator,
+  isArgumentSeparator,
+  isVaradicFunction,
+  isVaradicFunctionClose,
+  isPredicateLookup,
+  isLiteral,
+  isOperator
+} = require("./grammar");
 
 const peek = a => a[a.length - 1];
-const isDynArityToken = token => dynamicArityOperators[token];
-const inDynArityOperator = stack => Array.isArray(peek(stack));
-const incArgCount = stack => {
-  if (inDynArityOperator(stack)) peek(stack)[1]++;
-};
+
+const grammers = Object.entries(grammar);
+
+function toNode(token) {
+  for (let i = 0; i < grammers.length; i++) {
+    const [test, createNode] = grammers[i];
+    const testPassed = new RegExp(`^${test}$`).test(token);
+    if (testPassed) {
+      return createNode(token);
+    }
+  }
+}
 
 function parser(input) {
   const stack = [];
+  const arity = [];
+  const finalOut = input
+    .map(toNode)
+    .reduce((output, node) => {
+      let type;
+      let msg = [];
+      // Operands
+      if (isLiteral(node) || isPredicateLookup(node)) {
+        type = "operand";
+        // send to output
+        output.push(node);
 
-  return (
-    input
-      .reduce((output, token) => {
-        // identifier and literals
-        if (identRegEx.test(token)) {
-          incArgCount(stack);
-          output.push(token);
-          return output;
+        return output;
+      }
+
+      if (isVaradicFunction(node)) {
+        type = "varadic";
+        stack.push(node);
+        arity.push(1);
+        return output;
+      }
+
+      if (isArgumentSeparator(node)) {
+        type = "comma";
+        while (!isVaradicFunction(peek(stack))) {
+          output.push(stack.pop());
+        }
+        arity.push(arity.pop() + 1);
+        return output;
+      }
+
+      if (isVaradicFunctionClose(node)) {
+        type = "varadic-close";
+        while (!isVaradicFunction(peek(stack))) {
+          output.push(stack.pop());
+        }
+        const fn = stack.pop();
+        fn.arity = arity.pop();
+        output.push(fn);
+        return output;
+      }
+
+      if (isOperator(node)) {
+        type = "operator";
+        while (
+          stack.length > 0 &&
+          !isPrecidenceOperator(peek(stack)) &&
+          !(peek(stack).prec > node.prec)
+        ) {
+          msg.push(
+            `flushing-stack: L:${stack.length}, not(:${!isPrecidenceOperator(
+              peek(stack)
+            )}`
+          );
+          output.push(stack.pop());
+        }
+        stack.push(node);
+        return output;
+      }
+
+      if (isPrecidenceOperator(node)) {
+        type = "precedence";
+        stack.push(node);
+
+        return output;
+      }
+
+      if (isPrecidenceOperatorClose(node)) {
+        type = "precedence-close";
+        while (!isPrecidenceOperator(peek(stack))) {
+          output.push(stack.pop());
         }
 
-        // Operators
-        if (token in operators) {
-          // organise operator precedence
-          while (
-            operators[peek(stack)] &&
-            operators[peek(stack)] > operators[token]
-          ) {
-            output.push(stack.pop());
-          }
+        stack.pop();
 
-          // If we are in an argument list count this expression as an argument
-          if (isDynArityToken(token)) {
-            incArgCount(stack);
-            stack.push([token, 0]);
-            return output;
-          }
+        return output;
+      }
 
-          // isClosingDynArityToken
-          if (closingOperators[token]) {
-            while (!inDynArityOperator(stack)) output.push(stack.pop());
-            output.push(stack.pop().join(""));
-            return output;
-          }
+      return output;
+    }, [])
+    .concat(stack.reverse());
 
-          // Argument separator is special
-          if (token === ",") {
-            while (!inDynArityOperator(stack)) output.push(stack.pop());
-            return output;
-          }
-
-          stack.push(token);
-          return output;
-        }
-
-        // Brackets are special as they deal specifically with precedence
-        // if its a '(' push the bracket to the stack
-        if (token === "(") {
-          stack.push(token);
-          return output;
-        }
-
-        // if its a ')' while the stack is not an open bracket pop the stack and push it to the output then pop the stack
-        if (token === ")") {
-          while (peek(stack) !== "(") output.push(stack.pop());
-          stack.pop();
-          return output;
-        }
-      }, [])
-      // add everything left on the stack in reverse order to the end of the output.
-      .concat(stack.reverse())
-  );
+  return finalOut;
 }
 
 module.exports = { parser };
