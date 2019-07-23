@@ -1,5 +1,5 @@
 const { generator } = require("./generator");
-const grammar = require("./grammar");
+const { grammar } = require("./grammar");
 
 const link = grammar["@{LINK:(\\d+)}"];
 const not = grammar["\\!"];

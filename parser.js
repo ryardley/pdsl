@@ -1,11 +1,11 @@
 // This article really helped work this out:
 // http://wcipeg.com/wiki/Shunting_yard_algorithm#Variadic_functions
 
-const grammer = require("./grammar");
+const { grammar } = require("./grammar");
 
 const peek = a => a[a.length - 1];
 
-const grammers = Object.entries(grammer);
+const grammers = Object.entries(grammar);
 
 function toNode(token) {
   for (let i = 0; i < grammers.length; i++) {

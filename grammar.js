@@ -1,6 +1,6 @@
 const { obj, entry, not, and, or } = require("./helpers");
 
-module.exports = {
+const grammar = {
   // OPERATORS
   ["\\:"]: token => ({
     type: "Operator",
@@ -125,25 +125,5 @@ module.exports = {
       return token;
     }
   })
-
-  // ["\\["]: token => ({
-  //   type: "VariableArityOperator",
-  //   token,
-  //   arity: 0,
-  //   runtime: holds,
-  //   prec: 80,
-  //   toString() {
-  //     return token;
-  //   }
-  // }),
-
-  // ["\\]"]: token => ({
-  //   type: "VariableArityOperatorClose",
-  //   token,
-  //   matchingToken: "[",
-  //   toString() {
-  //     return token;
-  //   },
-  //   prec: 10
-  // }),
 };
+module.exports = { grammar };

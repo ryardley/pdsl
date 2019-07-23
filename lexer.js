@@ -1,4 +1,4 @@
-const grammar = require("./grammar");
+const { grammar } = require("./grammar");
 
 const rex = new RegExp(`(${Object.keys(grammar).join("|")})`, "g");
 
