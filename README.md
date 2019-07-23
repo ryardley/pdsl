@@ -20,7 +20,7 @@ const isComplexObject = p`
     type: ${/^.+foo$/},
     payload: {
       email: ${Email} && { length: > 5 },
-      arr: !${holds(6)},
+      arr: ![6],
       foo: !true,
       num: -4 < < 100,
       bar: {

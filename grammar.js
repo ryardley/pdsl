@@ -6,6 +6,7 @@ const {
   or,
   gt,
   gte,
+  holds,
   lt,
   lte,
   btw
@@ -22,6 +23,8 @@ const tokens = {
   ENTRY: "\\:",
   OBJ: "\\{",
   OBJ_CLOSE: "\\}",
+  HOLDS: "\\[",
+  HOLDS_CLOSE: "\\]",
   ARG: "\\,",
   SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
   NUMBER: "-?\\d+\\.?\\d*",
@@ -198,6 +201,26 @@ const grammar = {
     type: "VariableArityOperatorClose",
     token,
     matchingToken: "{",
+    toString() {
+      return token;
+    }
+  }),
+
+  [tokens.HOLDS]: token => ({
+    type: "VariableArityOperator",
+    token,
+    arity: 0,
+    runtime: holds,
+    prec: 100,
+    toString() {
+      return token + this.arity;
+    }
+  }),
+
+  [tokens.HOLDS_CLOSE]: token => ({
+    type: "VariableArityOperatorClose",
+    token,
+    matchingToken: "[",
     toString() {
       return token;
     }
