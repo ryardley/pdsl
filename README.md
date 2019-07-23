@@ -45,16 +45,16 @@ isSpecialObject({
 }); // true
 ```
 
-#### Disclaimer
-
-This should work but there is a chance you may find bugs that are not covered by our test suite. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues.
-
 ## Goals
 
 - No dependencies
 - Avoid eval
 - Bundle size as small as possible
 - Fast
+
+## Disclaimer
+
+This should work but there is a chance you may find bugs that are not covered by our test suite. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues.
 
 ## Installation
 
