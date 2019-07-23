@@ -1,6 +1,8 @@
 // This article really helped work this out:
 // http://wcipeg.com/wiki/Shunting_yard_algorithm#Variadic_functions
 
+const DEBUG = false;
+
 const {
   grammar,
   isPrecidenceOperatorClose,
@@ -16,6 +18,24 @@ const {
 const peek = a => a[a.length - 1];
 
 const grammers = Object.entries(grammar);
+
+function astToString(ast) {
+  return ast.map(a => a.toString()).join("·");
+}
+
+function debug(output, stack, node, type, msg) {
+  if (DEBUG)
+    console.log(
+      [
+        `token: ${node.token}`,
+        `type: ${type}`,
+        ...msg.map(m => ` msg:${m}`),
+        `stack: ${astToString(stack)}`,
+        `output: ${astToString(output)}`
+      ].join("\n")
+    );
+  return output;
+}
 
 function toNode(token) {
   for (let i = 0; i < grammers.length; i++) {
@@ -41,34 +61,36 @@ function parser(input) {
         // send to output
         output.push(node);
 
-        return output;
+        return debug(output, stack, node, type, msg);
       }
 
       if (isVaradicFunction(node)) {
         type = "varadic";
         stack.push(node);
         arity.push(1);
-        return output;
+        return debug(output, stack, node, type, msg);
       }
 
       if (isArgumentSeparator(node)) {
         type = "comma";
-        while (!isVaradicFunction(peek(stack))) {
+        while (stack.length > 0 && !isVaradicFunction(peek(stack))) {
           output.push(stack.pop());
         }
         arity.push(arity.pop() + 1);
-        return output;
+        return debug(output, stack, node, type, msg);
       }
 
       if (isVaradicFunctionClose(node)) {
         type = "varadic-close";
-        while (!isVaradicFunction(peek(stack))) {
+        while (stack.length > 0 && !isVaradicFunction(peek(stack))) {
           output.push(stack.pop());
         }
+
         const fn = stack.pop();
+        // msg.push(fn);
         fn.arity = arity.pop();
         output.push(fn);
-        return output;
+        return debug(output, stack, node, type, msg);
       }
 
       if (isOperator(node)) {
@@ -76,24 +98,25 @@ function parser(input) {
         while (
           stack.length > 0 &&
           !isPrecidenceOperator(peek(stack)) &&
-          !(peek(stack).prec > node.prec)
+          !(peek(stack).prec >= node.prec)
         ) {
-          msg.push(
-            `flushing-stack: L:${stack.length}, not(:${!isPrecidenceOperator(
-              peek(stack)
-            )}`
-          );
+          if (peek(stack).prec > node.prec) {
+            msg.push("Stack precedence is higher than node!");
+          } else {
+            msg.push("Stack precedence is equal or lower than node!");
+          }
+          msg.push("flushing stack");
           output.push(stack.pop());
         }
         stack.push(node);
-        return output;
+        return debug(output, stack, node, type, msg);
       }
 
       if (isPrecidenceOperator(node)) {
         type = "precedence";
         stack.push(node);
 
-        return output;
+        return debug(output, stack, node, type, msg);
       }
 
       if (isPrecidenceOperatorClose(node)) {
@@ -104,10 +127,10 @@ function parser(input) {
 
         stack.pop();
 
-        return output;
+        return debug(output, stack, node, type, msg);
       }
 
-      return output;
+      return debug(output, stack, node, type, msg);
     }, [])
     .concat(stack.reverse());
 

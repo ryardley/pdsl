@@ -50,7 +50,12 @@ describe("parser", () => {
     {
       input: "a || { username : b , password : c && { length : d } }",
       output: "a username b : password c length d : {1 && : {2 ||"
-    }
+    },
+    { input: "{ age : > 5 }", output: "age 5 > : {1" },
+    { input: "{ age : < 5 }", output: "age 5 < : {1" },
+    { input: "10 < < 100", output: "10 100 < <" },
+    { input: ">=100", output: "100 >=" },
+    { input: "<=100", output: "100 <=" }
   ].forEach(({ input, output, skip, only }) => {
     const itFunc = skip ? it.skip : only ? it.only : it;
 
