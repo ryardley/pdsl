@@ -12,14 +12,13 @@ With `pdsl` we can easily visualize the expected input's structure and intent.
 
 ```js
 import p from "pdsl";
-import { Email, holds, btw, gt } from "pdsl/helpers";
 
 // `pdsl` expressively defines an input value's constraints
 const isComplexObject = p`
   {
     type: ${/^.+foo$/},
     payload: {
-      email: ${Email} && { length: > 5 },
+      email: Email && { length: > 5 },
       arr: ![6],
       foo: !true,
       num: -4 < < 100,
@@ -72,14 +71,14 @@ npm install pdsl
 If you pass a JavaScript primative object you will get the appropriate typeof check.
 
 ```js
-const isNumeric = p`${Number}`; // typeof value === 'number'
-const isBoolean = p`${Boolean}`; // typeof value === 'boolean'
-const isString = p`${String}`; // typeof value === 'string'
-const isObject = p`${Object}`; // typeof value === 'object'
-const isBigInt = p`${BigInt}`; // typeof value === 'bigint'
-const isSymbol = p`${Symbol}`; // typeof value === 'symbol'
-const isFunction = p`${Function}`; // typeof value === 'function'
-const isArray = p`${Array}`; // Array.isArray(value)
+const isNumeric = p`Number`; // typeof value === 'number'
+const isBoolean = p`Boolean`; // typeof value === 'boolean'
+const isString = p`String`; // typeof value === 'string'
+const isObject = p`Object`; // typeof value === 'object'
+const isBigInt = p`BigInt`; // typeof value === 'bigint'
+const isSymbol = p`Symbol`; // typeof value === 'symbol'
+const isFunction = p`Function`; // typeof value === 'function'
+const isArray = p`Array`; // Array.isArray(value)
 ```
 
 ### Reference equality
@@ -98,11 +97,11 @@ const isRupert = p`"Rupert"`; // value === "Rupert";
 Checking for empty things
 
 ```js
-const isEmptyArray = p`${[]}`;
-const isEmptyObject = p`${{}}`;
-const isEmptyString = p`${""}`;
-const isUndefined = p`${undefined}`;
-const isNull = p`${null}`;
+const isEmptyArray = p`[]`;
+const isEmptyObject = p`{}`;
+const isEmptyString = p`""`;
+const isUndefined = p`undefined`;
+const isNull = p`null`;
 ```
 
 ### Operators
@@ -110,11 +109,11 @@ const isNull = p`${null}`;
 You can use familiar JS boolean operators and brackets such as `!`, `&&`, `||`, `(`, or `)`:
 
 ```js
-const isNotNil = p`!(${null}||${undefined})`;
+const isNotNil = p`!(null||undefined)`;
 ```
 
 ```js
-const is6CharString = p`${String} && { length: 6 }`;
+const is6CharString = p`String && { length: 6 }`;
 ```
 
 ### Object properties
@@ -122,7 +121,7 @@ const is6CharString = p`${String} && { length: 6 }`;
 You can test for an object's properties using the object syntax:
 
 ```js
-const validate = p`{ name: ${String} }`; // value && typeof value.name === 'string';
+const validate = p`{ name: String }`; // value && typeof value.name === 'string';
 
 validate({ name: "Hello" }); // true
 validate({ name: 20 }); // false
@@ -131,7 +130,7 @@ validate({ name: 20 }); // false
 This applies to checking properties of all javascript objects. For example to check a string's length:
 
 ```js
-const validate = p`${String} && { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`String && { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
@@ -207,23 +206,23 @@ pred(String)("Hello"); // true
 
 Available helpers:
 
-| Helper                                                     | Description                                 |
-| ---------------------------------------------------------- | ------------------------------------------- |
-| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 |
-| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     |
-| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           |
-| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |
-| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                |
-| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      |
-| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           |
-| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   |
-| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            |
-| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 |
-| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  |
-| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input |
-| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   |
-| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                |
-| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |
+| Helper                                                     | Description                                 | pdsl operator  |
+| ---------------------------------------------------------- | ------------------------------------------- | -------------- |
+| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a && b`       |
+| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`   |
+| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10 <= <= 100` |
+| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |                |
+| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                | `> 5`          |
+| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      | `>= 5`         |
+| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           | `[4,3]`        |
+| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   | `< 5`          |
+| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            | `<= 5`         |
+| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 | `!6`           |
+| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  | `a || b`       |
+| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${}`          |
+| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   | `Array` etc.   |
+| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                | `${/^foo/}`    |
+| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |                |
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 

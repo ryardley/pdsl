@@ -1,5 +1,9 @@
 const { val } = require("./helpers");
-const { isPredicateLookup, isLiteral } = require("./grammar");
+const {
+  isPredicateLookup,
+  isPredicateLiteral,
+  isLiteral
+} = require("./grammar");
 
 const lookupPredicateFunction = (node, funcs) => {
   return funcs[node.token];

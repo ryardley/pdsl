@@ -1,8 +1,13 @@
 const {
+  Email,
   obj,
   entry,
   not,
   and,
+  regx,
+  deep,
+  prim,
+  val,
   or,
   gt,
   gte,
@@ -30,6 +35,21 @@ const tokens = {
   NUMBER: "-?\\d+\\.?\\d*",
   TRUE: "true",
   FALSE: "false",
+  NULL: "null",
+  UNDEFINED: "undefined",
+  EMAIL: "Email",
+  EMPTY_OBJ: "\\{\\}",
+  EMPTY_ARRAY: "\\[\\]",
+  EMPTY_STRING_DOUBLE: `\\"\\"`,
+  EMPTY_STRING_SINGLE: "\\'\\'",
+  PRIM_NUMBER: "Number",
+  PRIM_OBJECT: "Object",
+  PRIM_ARRAY: "Array",
+  PRIM_BOOLEAN: "Boolean",
+  PRIM_STRING: "String",
+  PRIM_BIG_INT: "BigInt",
+  PRIM_SYMBOL: "Symbol",
+  PRIM_FUNCTION: "Function",
   STRING_DOUBLE: `\\"[^\\"]*\\"`,
   STRING_SINGLE: `\\'[^\\']*\\'`,
   PREDICATE_LOOKUP: "@{LINK:(\\d+)}",
@@ -50,6 +70,118 @@ const grammar = {
     token: token === "false",
     toString() {
       return token;
+    }
+  }),
+  [tokens.FALSE]: token => ({
+    type: "BooleanLiteral",
+    token: token === "false",
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.EMAIL]: () => ({
+    type: "PredicateLiteral",
+    token: regx(Email),
+    toString() {
+      return "Email";
+    }
+  }),
+  [tokens.EMPTY_OBJ]: () => ({
+    type: "PredicateLiteral",
+    token: deep({}),
+    toString() {
+      return "{}";
+    }
+  }),
+  [tokens.EMPTY_ARRAY]: () => ({
+    type: "PredicateLiteral",
+    token: deep([]),
+    toString() {
+      return "[]";
+    }
+  }),
+  [tokens.EMPTY_STRING_DOUBLE]: () => ({
+    type: "PredicateLiteral",
+    token: deep(""),
+    toString() {
+      return `""`;
+    }
+  }),
+  [tokens.EMPTY_STRING_SINGLE]: () => ({
+    type: "PredicateLiteral",
+    token: deep(""),
+    toString() {
+      return `""`;
+    }
+  }),
+  [tokens.PRIM_NUMBER]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Number),
+    toString() {
+      return "Number";
+    }
+  }),
+  [tokens.PRIM_OBJECT]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Object),
+    toString() {
+      return "Object";
+    }
+  }),
+  [tokens.PRIM_ARRAY]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Array),
+    toString() {
+      return "Array";
+    }
+  }),
+  [tokens.NULL]: () => ({
+    type: "PredicateLiteral",
+    token: val(null),
+    toString() {
+      return "null";
+    }
+  }),
+  [tokens.UNDEFINED]: () => ({
+    type: "PredicateLiteral",
+    token: val(undefined),
+    toString() {
+      return "undefined";
+    }
+  }),
+  [tokens.PRIM_BOOLEAN]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Boolean),
+    toString() {
+      return "Boolean";
+    }
+  }),
+  [tokens.PRIM_STRING]: token => ({
+    type: "PredicateLiteral",
+    token: prim(String),
+    toString() {
+      return "String";
+    }
+  }),
+  [tokens.PRIM_BIG_INT]: token => ({
+    type: "PredicateLiteral",
+    token: prim(BigInt),
+    toString() {
+      return "BigInt";
+    }
+  }),
+  [tokens.PRIM_SYMBOL]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Symbol),
+    toString() {
+      return "Symbol";
+    }
+  }),
+  [tokens.PRIM_FUNCTION]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Function),
+    toString() {
+      return "Function";
     }
   }),
   [tokens.SYMBOL]: token => ({
@@ -262,7 +394,8 @@ function isLiteral(node) {
       NumericLiteral: 1,
       StringLiteral: 1,
       SymbolLiteral: 1,
-      BooleanLiteral: 1
+      BooleanLiteral: 1,
+      PredicateLiteral: 1
     }[node.type] || false
   );
 }
