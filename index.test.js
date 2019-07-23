@@ -198,3 +198,57 @@ it("should support the holds function", () => {
   expect(p`[4]`([1, 2, 3, 4])).toBe(true);
   expect(p`[4,{name}]`([{ name: "foo" }, 1, 2, 3, 4])).toBe(true);
 });
+
+it("should support Email", () => {
+  expect(p`Email`("as@as.com")).toBe(true);
+  expect(p`Email`("Rudi")).toBe(false);
+});
+
+it("should support Number", () => {
+  expect(p`Number`("as@as.com")).toBe(false);
+  expect(p`Number`(4)).toBe(true);
+  expect(p`Number`(0)).toBe(true);
+  expect(p`Number`("4")).toBe(false);
+  expect(p`Number`(NaN)).toBe(true);
+  expect(p`Number`(123.123)).toBe(true);
+});
+
+it("should support Array", () => {
+  expect(p`Array`("as@as.com")).toBe(false);
+  expect(p`Array`([4])).toBe(true);
+  expect(p`Array`("4")).toBe(false);
+});
+
+it("should support String", () => {
+  expect(p`String`("as@as.com")).toBe(true);
+  expect(p`String`({ foo: "asd" })).toBe(false);
+  expect(p`String`(4)).toBe(false);
+  expect(p`String && {length: > 3}`("Hi")).toBe(false);
+  expect(p`String && {length: > 3}`("Hello")).toBe(true);
+});
+
+it("should support Object", () => {
+  expect(p`Object`("as@as.com")).toBe(false);
+  expect(p`Object`({ foo: "asd" })).toBe(true);
+  expect(p`Object`(4)).toBe(false);
+});
+
+it("should support null and undefined", () => {
+  expect(p`undefined`(undefined)).toBe(true);
+  expect(p`undefined`(0)).toBe(false);
+  expect(p`null`(undefined)).toBe(false);
+  expect(p`null`(null)).toBe(true);
+  expect(p`null`(0)).toBe(false);
+  expect(p`null || undefined`(null)).toBe(true);
+  expect(p`null || undefined`(false)).toBe(false);
+  expect(p`!(null||undefined)`(undefined)).toBe(false);
+  expect(p`!(null||undefined)`("")).toBe(true);
+  expect(p`!(null||undefined)`("Hi")).toBe(true);
+});
+
+it("should handle emptys", () => {
+  expect(p`""`("")).toBe(true);
+  expect(p`{}`({})).toBe(true);
+  expect(p`[]`([])).toBe(true);
+  expect(p`[]`([1])).toBe(false);
+});
