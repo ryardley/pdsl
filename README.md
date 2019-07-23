@@ -11,10 +11,10 @@ Often when programming we need to create predicate or boolean returning function
 With `pdsl` we can easily visualize the expected input's structure and intent.
 
 ```js
+// `pdsl` expressively defines an input value's constraints
 import p from "pdsl";
 
-// `pdsl` expressively defines an input value's constraints
-const isComplexObject = p`
+const isSpecialObject = p`
   {
     type: ${/^.+foo$/},
     payload: {
@@ -30,7 +30,7 @@ const isComplexObject = p`
   }
 `;
 
-isComplexObject({
+isSpecialObject({
   type: "yafoo",
   payload: {
     email: "a@b.com",
@@ -44,6 +44,10 @@ isComplexObject({
   }
 }); // true
 ```
+
+## Disclaimer: This is new and may have bugs
+
+This should work but there is a chance you may find bugs that are not covered by our test suite. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues.
 
 ## Goals
 
@@ -231,7 +235,3 @@ For the helper docs please chec the [helper docs](https://ryardley.github.io/pds
 #### What does pdsl stand for?
 
 Predicate Domain Specific Language.
-
-## Disclaimer
-
-This is a work in progress and there may be bugs that have not yet been tested for. Please help this open source project by creating issues.
