@@ -230,6 +230,10 @@ Available helpers:
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
+## Usage with TypeScript
+
+Coming soon.
+
 ## FAQ
 
 #### What does pdsl stand for?
