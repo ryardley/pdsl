@@ -98,10 +98,10 @@ it("should match the examples", () => {
   {
     type: ${/^.+foo$/},
     payload: {
-      email: ${Email} && { length: ${gt(5)} },
-      arr: !${holds(6)},
-      foo: !${true},
-      num: ${btw(-4, 100)},
+      email: ${Email} && { length: > 5 },
+      arr: ![6],
+      foo: !true,
+      num: -4 < < 100,
       bar: {
         baz: ${/^foo/},
         foo
@@ -189,4 +189,12 @@ it("should know when to turn a value into a predicate", () => {
   expect(p`{foo:>=10}`({ foo: 10 })).toBe(true);
   expect(p`{foo:!10}`({ foo: "hello" })).toBe(true);
   expect(p`{foo}`({ foo: "hello" })).toBe(true);
+});
+
+it("should support the holds function", () => {
+  expect(p`[4]`([4])).toBe(true);
+  expect(p`[4]`([])).toBe(false);
+  expect(p`[4]`([1, 2, 3])).toBe(false);
+  expect(p`[4]`([1, 2, 3, 4])).toBe(true);
+  expect(p`[4,{name}]`([{ name: "foo" }, 1, 2, 3, 4])).toBe(true);
 });
