@@ -154,3 +154,39 @@ it("should handle complex objects", () => {
   }`({ username: "hello", password: "mike" })
   ).toBe(true);
 });
+
+it("should handle greater than ", () => {
+  expect(p`>5`(6)).toBe(true);
+  expect(p`>5`(5)).toBe(false);
+  expect(p`{age:>5}`({ age: 34 })).toBe(true);
+});
+
+it("should handle greater than equals ", () => {
+  expect(p`>=5`(6)).toBe(true);
+  expect(p`>=5`(5)).toBe(true);
+  expect(p`>=5`(4)).toBe(false);
+  expect(p`{age:>=5}`({ age: 34 })).toBe(true);
+});
+
+it("should handle less than ", () => {
+  expect(p`<5`(4)).toBe(true);
+  expect(p`<5`(5)).toBe(false);
+  expect(p`{age : < 5}`({ age: 4 })).toBe(true);
+});
+
+it("should handle between ", () => {
+  expect(p`10 < < 100`(15)).toBe(true);
+  expect(p`-10 < < 10`(0)).toBe(true);
+  expect(p`-10 < < 10`(-20)).toBe(false);
+  expect(p`{age :1 < < 5}`({ age: 4 })).toBe(true);
+});
+it("should know when to turn a value into a predicate", () => {
+  expect(p`10`(10)).toBe(true);
+  expect(p`!10`(9)).toBe(true);
+  expect(p`true`(true)).toBe(true);
+  expect(p`!true && 6`(6)).toBe(true);
+  expect(p`"Rudi"`("Rudi")).toBe(true);
+  expect(p`{foo:>=10}`({ foo: 10 })).toBe(true);
+  expect(p`{foo:!10}`({ foo: "hello" })).toBe(true);
+  expect(p`{foo}`({ foo: "hello" })).toBe(true);
+});

@@ -1,13 +1,13 @@
 const { generator } = require("./generator");
-const { grammar } = require("./grammar");
+const { grammar, tokens } = require("./grammar");
 
-const link = grammar["@{LINK:(\\d+)}"];
-const not = grammar["\\!"];
-const or = grammar["\\|\\|"];
-const and = grammar["\\&\\&"];
-const obj = grammar["\\{"];
-const symbol = grammar["[a-zA-Z0-9_-]+"];
-const entry = grammar["\\:"];
+const link = grammar[tokens.PREDICATE_LOOKUP];
+const not = grammar[tokens.NOT];
+const or = grammar[tokens.OR];
+const and = grammar[tokens.AND];
+const obj = grammar[tokens.OBJ];
+const symbol = grammar[tokens.SYMBOL];
+const entry = grammar[tokens.ENTRY];
 
 function stringifyAst(ast) {
   return ast.map(n => n.toString()).join(" ");
