@@ -131,7 +131,7 @@ validate({ name: 20 }); // false
 This applies to checking properties of all javascript objects. For example to check a string's length:
 
 ```js
-const validate = p`${String} && { length: ${7} }`; // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`${String} && { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
@@ -150,7 +150,7 @@ validate({}); // false
 You can apply a predicate function to the property.
 
 ```js
-const validate = p`{ name: ${"Rudi"} }`;
+const validate = p`{ name: "Rudi" }`;
 validate({ name: "Rudi" }); // true
 validate({ name: "Fred" }); // false
 ```
@@ -161,8 +161,8 @@ The property can also contain nested objects.
 const validate = p`{ 
   name, 
   payload: {
-    listening:${true},
-    num: ${gt(4)}
+    listening:true,
+    num: > 4
   } 
 }`;
 
