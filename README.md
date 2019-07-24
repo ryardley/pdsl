@@ -83,7 +83,7 @@ const is4ItemArray = input => Array.isArray(input) && input.length === 4;
 _PDSL:_
 
 ```js
-const is4ItemArray = p`Array&&{length:4}`;
+const is4ItemArray = p`Array && { length: 4 }`;
 ```
 
 ```js
