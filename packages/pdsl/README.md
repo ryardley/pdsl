@@ -361,7 +361,7 @@ Available helpers:
 | [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a & b` or `a && b` |
 | [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`        |
 | [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10..100`      |
-| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |                     |
+| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               | N/A                    |
 | [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                | `> 5`               |
 | [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      | `>= 5`              |
 | [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           | `[4,3]`             |
@@ -369,10 +369,10 @@ Available helpers:
 | [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            | `<= 5`              |
 | [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 | `!6`                |
 | [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  | `a \| b` or `a \|\| b` |
-| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${}`               |
+| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${myVal}`               |
 | [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   | `Array` etc.        |
 | [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                | `${/^foo/}`         |
-| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |                     |
+| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |  N/A                   |
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
