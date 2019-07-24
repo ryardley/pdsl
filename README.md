@@ -3,6 +3,7 @@
 #### An expressive declarative toolkit for creating functions that return true or false (predicate functions)
 
 [![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
 
 ## Predicate functions are just easier with PDSL
 
