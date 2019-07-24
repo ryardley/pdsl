@@ -8,7 +8,7 @@
 
 ## Predicate functions are just easier with PDSL
 
-Often when programming we need to create predicate or boolean returning functions to assert facts about a given input value. This is often the case when filtering an array, validating input or determining type. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. 
+Often when programming we need to create predicate or boolean returning functions to assert facts about a given input value. This is often the case when filtering an array, validating input or determining type. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types.
 
 PDSL provides the developer a simple but powerful shorthand based on a combination of template strings and helper functions for defining predicate functions that makes it easy to understand intent. With `pdsl` we can easily visualize the expected input's structure and intent using it's intuitive predicate composition language.
 
@@ -82,7 +82,7 @@ isBetween1And10(11); // false
 _Vanilla JS:_
 
 ```js
-const isNumeric = input => typeof input === 'number';
+const isNumeric = input => typeof input === "number";
 ```
 
 **PDSL:**
@@ -124,7 +124,7 @@ const isOnlyLowerCase = p`String & !Nc & !Uc`;
 const hasExtendedChars = p`String & Xc`;
 
 const isValidUser = p`{
-  username: ${isOnlyLowerCase} & {length: 5 < < 9 },
+  username: ${isOnlyLowerCase} & {length: 4..8 },
   password: ${hasExtendedChars} & {length: > 8},
   age: > 17
 }`;
@@ -132,8 +132,17 @@ const isValidUser = p`{
 isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 }); //true
 isValidUser({ username: "ryardley", password: "Hello1234!", age: 17 }); //false
 isValidUser({ username: "Ryardley", password: "Hello1234!", age: 21 }); //false
-isValidUser({ username: "123456", password: "Hello1234!", age: 21 }); //false
+isValidUser({ username: "12345", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
+```
+
+```js
+import p from "pdsl";
+
+const isTeenager = p`{ age: 13..19 }`;
+
+isTeenager({ age: 15 }); // true
+isTeenager({ age: 20 }); // false
 ```
 
 The more complex things get, the more PDSL shines see the above example in vanilla JS:
@@ -200,7 +209,7 @@ isKitchenSinc({
 
 ## Disclaimer
 
-This should work but there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues. This Syntax is DRAFT and we are open for RFCs on the syntax. All feedback welcome. If you want to be a maintainer file a PR.
+This should work but there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues. This Syntax is DRAFT and we are open for RFCs on the syntax. All feedback welcome. If you want to be a maintainer just ask.
 
 ## Installation
 
@@ -356,23 +365,23 @@ pred(String)("Hello"); // true
 
 Available helpers:
 
-| Helper                                                     | Description                                 | PDSL Operator       |
-| ---------------------------------------------------------- | ------------------------------------------- | ------------------- |
-| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a & b` or `a && b` |
-| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`        |
-| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10..100`      |
+| Helper                                                     | Description                                 | PDSL Operator          |
+| ---------------------------------------------------------- | ------------------------------------------- | ---------------------- |
+| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a & b` or `a && b`    |
+| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`           |
+| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10..100`              |
 | [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               | N/A                    |
-| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                | `> 5`               |
-| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      | `>= 5`              |
-| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           | `[4,3]`             |
-| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   | `< 5`               |
-| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            | `<= 5`              |
-| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 | `!6`                |
+| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                | `> 5`                  |
+| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      | `>= 5`                 |
+| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           | `[4,3]`                |
+| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   | `< 5`                  |
+| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            | `<= 5`                 |
+| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 | `!6`                   |
 | [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  | `a \| b` or `a \|\| b` |
-| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${myVal}`               |
-| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   | `Array` etc.        |
-| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                | `${/^foo/}`         |
-| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |  N/A                   |
+| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${myVal}`             |
+| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   | `Array` etc.           |
+| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                | `${/^foo/}`            |
+| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             | N/A                    |
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
@@ -381,15 +390,15 @@ For the helper docs please chec the [helper docs](https://ryardley.github.io/pds
 PDSL is really quite useful in TypeScript as guard functions are important to a good type management strategy. To use in TypeScript simply pass in the guard type you want your predicate to determine as a type prop.
 
 ```ts
-import p from 'pdsl';
+import p from "pdsl";
+
+// pass in string
+const isString = p<string>`String`;
 
 type User = {
-  name:string;
+  name: string;
   password: string;
-}
-
-// pass in string 
-const isString = p<string>`String`;
+};
 
 // pass in User
 const isUser = p<User>`{
@@ -397,15 +406,14 @@ const isUser = p<User>`{
   password: String & { length: > 5 }
 }`;
 
-
-function doStuff(input:string | User) {
+function doStuff(input: string | User) {
   // input is either string or User
-  if(isString(input)) {
+  if (isString(input)) {
     // input is now considered a string
     return input.toLowerCase();
   }
-  
-  if(isUser(input)) {
+
+  if (isUser(input)) {
     // input is now considered a User
     return input.name;
   }
