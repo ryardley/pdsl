@@ -56,14 +56,6 @@ hasName({ name: true }); // true
 hasName({}); // false
 ```
 
-### Array.prototype.filter example
-
-PDSL can make predicates for filters read a little better:
-
-```js
-const bob = users.find(p`{firstName:"Bob", lastName:"Dobalina"}`);
-```
-
 ### Number is between two values
 
 _Vanilla JS:_
