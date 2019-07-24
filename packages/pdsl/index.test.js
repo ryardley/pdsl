@@ -294,3 +294,24 @@ it("should notNil", () => {
   expect(notNil(null)).toBe(false);
   expect(notNil(undefined)).toBe(false);
 });
+
+it("should handle comments", () => {
+  const isValidUser = p`{
+    username: String, // foo
+    // thing
+    password: String 
+  }`;
+  expect(
+    isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })
+  ).toBe(true);
+});
+
+it("should handle trailing commas", () => {
+  const isValidUser = p`{
+    username: String,
+    password: String,
+  }`;
+  expect(
+    isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })
+  ).toBe(true);
+});
