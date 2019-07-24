@@ -10,12 +10,33 @@ Often when programming we need to create predicate or boolean returning function
 
 With `pdsl` we can easily visualize the expected input's structure and intent.
 
-## Some Examples
+## Example Usage
 
 ### Object has truthy property
 
 ```js
 const hasName = p`{ name }`;
+
+hasName({name: "A name"}); // true
+hasName({name: true}); // true
+```
+
+### Input is numeric
+
+```js
+const isNumeric = p`Number`;
+
+isNumeric(3.1415); // true
+isNumeric("123"); // false
+```
+
+### Input is an Array with more than 4 items
+
+```js
+const is4ItemArray = p`Array && {length: > 4}`;
+
+is4ItemArray([1,2,3,4]); // true
+is4ItemArray([1,2,3,4,5]); // false
 ```
 
 ### User validation
