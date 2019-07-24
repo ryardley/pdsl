@@ -4,8 +4,12 @@ notifications:
   email: true
 node_js:
   - "10"
+  - "9"
+  - "8"
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
 script:
   yarn test
+after_success:
+  - codecov
