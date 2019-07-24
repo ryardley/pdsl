@@ -14,6 +14,24 @@ With `pdsl` we can easily visualize the expected input's structure and intent us
 
 ## Examples
 
+### Quick nil check
+
+_Vanilla JS:_
+
+```js
+const notNil = input => input !== null && input !== undefined;
+```
+
+```js
+const notNil = p`!(null | undefined)`;
+
+notNil("something"); // true
+notNil(false); // true
+notNil(0); // true
+notNil(null); // false
+notNil(undefined); // false
+```
+
 ### Object has truthy property
 
 _Vanilla JS:_

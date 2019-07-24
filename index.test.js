@@ -284,3 +284,13 @@ it("should handle roughly PI", () => {
   expect(p`3.1415 < < 3.1416`(Math.PI)).toBe(true);
   expect(p`3.1415 < < 3.1416`(3.1417)).toBe(false);
 });
+
+it("should notNil", () => {
+  const notNil = p`!(null | undefined)`;
+
+  expect(notNil("something")).toBe(true);
+  expect(notNil(false)).toBe(true);
+  expect(notNil(0)).toBe(true);
+  expect(notNil(null)).toBe(false);
+  expect(notNil(undefined)).toBe(false);
+});
