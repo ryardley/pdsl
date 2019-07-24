@@ -254,8 +254,8 @@ it("should handle emptys", () => {
 });
 
 it("should handle a user credentials object", () => {
-  const isOnlyLowerCase = p`String && !Nc && !Uc`;
-  const hasExtendedChars = p`String && Xc`;
+  const isOnlyLowerCase = p`String & !Nc & !Uc`;
+  const hasExtendedChars = p`String & Xc`;
 
   const isValidUser = p`{
     username: ${isOnlyLowerCase} && {length: 5 < < 9 },
