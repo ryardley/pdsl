@@ -368,4 +368,4 @@ I had a need for it when filtering on events in an app working with my event bus
 
 It is comprised of a [lexer](https://en.wikipedia.org/wiki/Lexical_analysis) a [parser](https://en.wikipedia.org/wiki/Parsing#Parser) and a [code generator](https://en.wikipedia.org/wiki/Code_generation_(compiler)). I used a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) but using objects in an array. I then added parsing for Varadic Functions. A lot of it was by trial and error. 
 
-I am certain there are better ways to do it. If you know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - please file an issue!
+I am certain there are better ways to do it. If you know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - I want to learn  - please file an issue!
