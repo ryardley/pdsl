@@ -252,3 +252,35 @@ it("should handle emptys", () => {
   expect(p`[]`([])).toBe(true);
   expect(p`[]`([1])).toBe(false);
 });
+
+it("should handle a user credentials object", () => {
+  const isOnlyLowerCase = p`String && !Nc && !Uc`;
+  const hasExtendedChars = p`String && Xc`;
+
+  const isValidUser = p`{
+    username: ${isOnlyLowerCase} && {length: 5 < < 9 },
+    password: ${hasExtendedChars} && {length: > 8},
+    age: > 17
+  }`;
+
+  expect(
+    isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })
+  ).toBe(true);
+  expect(
+    isValidUser({ username: "ryardley", password: "Hello1234!", age: 17 })
+  ).toBe(false);
+  expect(
+    isValidUser({ username: "Ryardley", password: "Hello1234!", age: 21 })
+  ).toBe(false);
+  expect(
+    isValidUser({ username: "123456", password: "Hello1234!", age: 21 })
+  ).toBe(false);
+  expect(
+    isValidUser({ username: "ryardley", password: "12345678", age: 21 })
+  ).toBe(false);
+});
+
+it("should handle roughly PI", () => {
+  expect(p`3.1415 < < 3.1416`(Math.PI)).toBe(true);
+  expect(p`3.1415 < < 3.1416`(3.1417)).toBe(false);
+});

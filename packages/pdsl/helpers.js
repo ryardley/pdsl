@@ -246,9 +246,20 @@ function entry(name, predicate) {
 }
 
 const Email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
+const Xc = /[^a-zA-Z0-9]/;
+const Nc = /[0-9]/;
+const Lc = /[a-z]/;
+const Uc = /[A-Z]/;
+const LUc = /[a-zA-Z]/;
 
 module.exports = {
   Email,
+  Xc,
+  Nc,
+  Lc,
+  Uc,
+  Lc,
+  LUc,
   btw,
   btwe,
   lt,
