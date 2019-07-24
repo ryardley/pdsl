@@ -360,7 +360,7 @@ Available helpers:
 | ---------------------------------------------------------- | ------------------------------------------- | ------------------- |
 | [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a & b` or `a && b` |
 | [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`        |
-| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10 <= <= 100`      |
+| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10..100`      |
 | [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |                     |
 | [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                | `> 5`               |
 | [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      | `>= 5`              |
