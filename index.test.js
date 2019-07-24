@@ -305,3 +305,13 @@ it("should handle comments", () => {
     isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })
   ).toBe(true);
 });
+
+it("should handle trailing commas", () => {
+  const isValidUser = p`{
+    username: String,
+    password: String,
+  }`;
+  expect(
+    isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })
+  ).toBe(true);
+});
