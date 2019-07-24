@@ -10,7 +10,7 @@ Often when programming we need to create predicate or boolean returning function
 
 With `pdsl` we can easily visualize the expected input's structure and intent.
 
-## Example Usage
+## Examples
 
 ### Object has truthy property
 
