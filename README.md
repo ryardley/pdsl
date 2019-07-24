@@ -365,4 +365,4 @@ I had a need for it when filtering on events in an app working with my event bus
 
 #### How does this work? 
 
-It is comprised of a lexer a parser and a generator. I used a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in RPN but using objects in an array. I then added parsing for Varadic Functions. A lot of it was by trial and error. 
+It is comprised of a [lexer](https://en.wikipedia.org/wiki/Lexical_analysis) a [parser](https://en.wikipedia.org/wiki/Parsing#Parser) and a [code generator](https://en.wikipedia.org/wiki/Code_generation_(compiler)). I used a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) but using objects in an array. I then added parsing for Varadic Functions. A lot of it was by trial and error. 
