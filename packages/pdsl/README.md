@@ -378,7 +378,7 @@ For the helper docs please chec the [helper docs](https://ryardley.github.io/pds
 
 ## Usage with TypeScript
 
-To use in TypeScript
+PDSL is really quite useful in TypeScript as guard functions are important to a good type management strategy. To use in TypeScript simply pass in the guard type you want your predicate to determine as a type prop.
 
 ```ts
 import p from 'pdsl';
@@ -388,15 +388,18 @@ type User = {
   password: string;
 }
 
+// pass in string 
 const isString = p<string>`String`;
 
+// pass in User
 const isUser = p<User>`{
   name: String & { length: 3..8 },
   password: String & { length: > 5 }
 }`;
 
 
-function doStuff(input:any) {
+function doStuff(input:string | User) {
+  // myVal
   if(isString(myVal)) {
     // myval is now considered a string
     return myVal.toLowerCase();
