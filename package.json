@@ -12,7 +12,7 @@
     "docs": "jsdoc --destination ./docs helpers.js"
   },
   "devDependencies": {
-    "coverage": "^0.4.1",
+    "codecov": "^3.5.0",
     "jest": "^24.8.0",
     "jsdoc": "^3.6.3"
   }
