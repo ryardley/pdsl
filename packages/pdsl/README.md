@@ -22,6 +22,8 @@ _Vanilla JS:_
 const notNil = input => input !== null && input !== undefined;
 ```
 
+**PDSL:**
+
 ```js
 const notNil = p`!(null|undefined)`;
 
