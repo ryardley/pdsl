@@ -315,3 +315,9 @@ it("should handle trailing commas", () => {
     isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })
   ).toBe(true);
 });
+
+it("should deal with garbage input", () => {
+  expect(() => {
+    p`}{asdjklh askasd h*&%^6 `;
+  }).toThrow("Malformed Input");
+});
