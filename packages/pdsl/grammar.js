@@ -1,25 +1,26 @@
 const {
-  Email,
-  Xc,
-  Nc,
-  Lc,
-  Uc,
-  LUc,
-  obj,
-  entry,
-  not,
   and,
-  regx,
+  btw,
+  btwe,
   deep,
-  prim,
-  val,
-  or,
+  Email,
+  entry,
   gt,
   gte,
   holds,
+  Lc,
   lt,
   lte,
-  btw
+  LUc,
+  Nc,
+  not,
+  obj,
+  or,
+  prim,
+  regx,
+  Uc,
+  val,
+  Xc
 } = require("./helpers");
 const tokens = {
   NOT: "\\!",
@@ -28,6 +29,7 @@ const tokens = {
   AND_SHORT: "\\&",
   OR_SHORT: "\\|",
   BTW: "\\<\\s\\<",
+  BTWE: "\\.\\.",
   GT: "\\>",
   GTE: "\\>\\=",
   LT: "\\<",
@@ -39,7 +41,7 @@ const tokens = {
   HOLDS_CLOSE: "\\]",
   ARG: "\\,",
   SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
-  NUMBER: "-?\\d+\\.?\\d*",
+  NUMBER: "-?\\d+(\\.\\d+)?",
   TRUE: "true",
   FALSE: "false",
   NULL: "null",
@@ -320,6 +322,16 @@ const grammar = {
     token,
     arity: 2,
     runtime: btw,
+    prec: 50,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.BTWE]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: btwe,
     prec: 50,
     toString() {
       return token;
