@@ -16,7 +16,8 @@ const {
  */
 const btw = (a, b) =>
   function btwFn(n) {
-    return n > a && n < b;
+    const [min, max] = a < b ? [a, b] : [b, a];
+    return n > min && n < max;
   };
 
 /**
@@ -29,7 +30,8 @@ const btw = (a, b) =>
  */
 const btwe = (a, b) =>
   function btweFn(n) {
-    return n >= a && n <= b;
+    const [min, max] = a < b ? [a, b] : [b, a];
+    return n >= min && n <= max;
   };
 
 /**

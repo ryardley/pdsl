@@ -1,5 +1,5 @@
 const p = require("./index");
-const { Email, btw, gt, holds } = require("./helpers");
+const { Email, gt } = require("./helpers");
 
 describe("value predicates", () => {
   it("should return strict equality with any value", () => {
@@ -320,4 +320,11 @@ it("should deal with garbage input", () => {
   expect(() => {
     p`}{asdjklh askasd h*&%^6 `;
   }).toThrow("Malformed Input");
+});
+
+it("should handle .. operator", () => {
+  expect(p`1..10`(7)).toBe(true);
+  expect(p`1..10`(1)).toBe(true);
+  expect(p`1..10`(10)).toBe(true);
+  expect(p`1..10`(11)).toBe(false);
 });
