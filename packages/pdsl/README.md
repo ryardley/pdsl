@@ -61,18 +61,20 @@ hasName({}); // false
 _Vanilla JS:_
 
 ```js
-const isRoughlyPi = input => input > 3.1415 && input < 3.1416;
+const isBetween1And10 = input => input >= 1 && input <= 10;
 ```
 
 **PDSL:**
 
 ```js
-const isRoughlyPi = p`3.1415< <3.1416`;
+const isBetween1And10 = p`1..10`;
 ```
 
 ```js
-isRoughlyPi(Math.PI); // true
-isRoughlyPi(3.1417); // flse
+isBetween1And10(1); // true
+isBetween1And10(5); // true
+isBetween1And10(10); // true
+isBetween1And10(11); // false
 ```
 
 ### Input is numeric
