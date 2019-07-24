@@ -10,11 +10,42 @@ Often when programming we need to create predicate or boolean returning function
 
 With `pdsl` we can easily visualize the expected input's structure and intent.
 
+## Some Examples
+
+### Object has truthy property
+
+```js
+const hasName = p`{ name }`;
+```
+
+### User validation
+
+You can compose p expressions easily.
+
+```js
+const isOnlyLowerCase = p`String && !Nc && !Uc`;
+const hasExtendedChars = p`String && Xc`;
+
+const isValidUser = p`{
+  username: ${isOnlyLowerCase} && {length: 5 < < 9 },
+  password: ${hasExtendedChars} && {length: > 8},
+  age: > 17
+}`;
+
+isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 }); //true
+isValidUser({ username: "ryardley", password: "Hello1234!", age: 17 }); //false
+isValidUser({ username: "Ryardley", password: "Hello1234!", age: 21 }); //false
+isValidUser({ username: "123456", password: "Hello1234!", age: 21 }); //false
+isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
+```
+
+### Complex Example
+
 ```js
 // `pdsl` expressively defines an input value's constraints
 import p from "pdsl";
 
-const isSpecialObject = p`
+const isKitchenSinc = p`
   {
     type: ${/^.+foo$/},
     payload: {
@@ -30,7 +61,7 @@ const isSpecialObject = p`
   }
 `;
 
-isSpecialObject({
+isKitchenSinc({
   type: "yafoo",
   payload: {
     email: "a@b.com",

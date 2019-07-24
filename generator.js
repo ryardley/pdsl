@@ -22,7 +22,6 @@ function isOperator(node) {
 }
 
 function generator(input, funcs) {
-  // console.log(input);
   const [runnable] = input.reduce((stack, node) => {
     if (isPredicateLookup(node)) {
       stack.push(lookupPredicateFunction(node, funcs));

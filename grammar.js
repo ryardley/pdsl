@@ -1,5 +1,10 @@
 const {
   Email,
+  Xc,
+  Nc,
+  Lc,
+  Uc,
+  LUc,
   obj,
   entry,
   not,
@@ -37,7 +42,12 @@ const tokens = {
   FALSE: "false",
   NULL: "null",
   UNDEFINED: "undefined",
-  EMAIL: "Email",
+  EMAIL_REGX: "Email",
+  EXTENDED_CHARS_REGX: "Xc",
+  NUM_CHARS_REGX: "Nc",
+  LOW_CHARS_REGX: "Lc",
+  UP_CHARS_REGX: "Uc",
+  LOW_UP_CHARS_REGX: "LUc",
   EMPTY_OBJ: "\\{\\}",
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
@@ -79,11 +89,46 @@ const grammar = {
       return token;
     }
   }),
-  [tokens.EMAIL]: () => ({
+  [tokens.EMAIL_REGX]: () => ({
     type: "PredicateLiteral",
     token: regx(Email),
     toString() {
       return "Email";
+    }
+  }),
+  [tokens.EXTENDED_CHARS_REGX]: () => ({
+    type: "PredicateLiteral",
+    token: regx(Xc),
+    toString() {
+      return "Xc";
+    }
+  }),
+  [tokens.NUM_CHARS_REGX]: () => ({
+    type: "PredicateLiteral",
+    token: regx(Nc),
+    toString() {
+      return "Nc";
+    }
+  }),
+  [tokens.LOW_CHARS_REGX]: () => ({
+    type: "PredicateLiteral",
+    token: regx(Lc),
+    toString() {
+      return "Lc";
+    }
+  }),
+  [tokens.UP_CHARS_REGX]: () => ({
+    type: "PredicateLiteral",
+    token: regx(Uc),
+    toString() {
+      return "Uc";
+    }
+  }),
+  [tokens.LOW_UP_CHARS_REGX]: () => ({
+    type: "PredicateLiteral",
+    token: regx(LUc),
+    toString() {
+      return "LUc";
     }
   }),
   [tokens.EMPTY_OBJ]: () => ({
