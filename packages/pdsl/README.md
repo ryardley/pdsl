@@ -378,7 +378,36 @@ For the helper docs please chec the [helper docs](https://ryardley.github.io/pds
 
 ## Usage with TypeScript
 
-Coming soon.
+To use in TypeScript
+
+```ts
+import p from 'pdsl';
+
+type User = {
+  name:string;
+  password: string;
+}
+
+const isString = p<string>`String`;
+
+const isUser = p<User>`{
+  name: String & { length: 3..8 },
+  password: String & { length: > 5 }
+}`;
+
+
+function doStuff(input:any) {
+  if(isString(myVal)) {
+    // myval is now considered a string
+    return myVal.toLowerCase();
+  }
+  
+  if(isUser(myVal)) {
+    // myval is now considered a User
+    return myVal.name;
+  }
+}
+```
 
 ## FAQ
 
