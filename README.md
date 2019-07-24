@@ -96,8 +96,6 @@ is4ItemArray([1, 2, 3, 4, 5]); // false
 You can compose p expressions easily.
 
 ```js
-//
-
 const isOnlyLowerCase = p`String & !Nc & !Uc`;
 const hasExtendedChars = p`String & Xc`;
 
@@ -112,8 +110,6 @@ isValidUser({ username: "ryardley", password: "Hello1234!", age: 17 }); //false
 isValidUser({ username: "Ryardley", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "123456", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
-
-//
 ```
 
 The more complex things get, the more PDSL shines see the above example in vanilla JS:
