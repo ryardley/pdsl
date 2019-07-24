@@ -174,7 +174,7 @@ isKitchenSinc({
 
 ## Disclaimer
 
-This should work but there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues.
+This should work but there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues. This Syntax is DRAFT and we are open for RFCs on the syntax. All feedback welcome. If you want to be a maintainer just ask. 
 
 ## Installation
 
