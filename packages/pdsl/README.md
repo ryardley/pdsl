@@ -56,7 +56,7 @@ hasName({ name: true }); // true
 hasName({}); // false
 ```
 
-### Number is between two values
+### Number is part of range
 
 _Vanilla JS:_
 
