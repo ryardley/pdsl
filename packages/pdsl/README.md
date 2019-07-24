@@ -80,7 +80,7 @@ isRoughlyPi(3.1417); // flse
 _Vanilla JS:_
 
 ```js
-const isNumeric = input => typeof input === 'number`;
+const isNumeric = input => typeof input === 'number';
 ```
 
 **PDSL:**
