@@ -56,6 +56,13 @@ hasName({ name: true }); // true
 hasName({}); // false
 ```
 
+### Usage with Array.prototype.filter
+
+```js
+// Finding users in an array
+const user = Users().find(p`{name:"Rudi"}`);
+```
+
 ### Number is between two values
 
 _Vanilla JS:_
