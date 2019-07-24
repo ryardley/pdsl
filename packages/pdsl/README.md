@@ -70,18 +70,18 @@ isNumeric(3.1415); // true
 isNumeric("123"); // false
 ```
 
-### Input is an Array with more than 4 items
+### Input is an Array with exactly 4 items
 
 _Vanilla JS:_
 
 ```js
-const is4ItemArray = input => Array.isArray(input) && input.length > 4;
+const is4ItemArray = input => Array.isArray(input) && input.length === 4;
 ```
 
 _PDSL:_
 
 ```js
-const is4ItemArray = p`Array&&{length:>4}`;
+const is4ItemArray = p`Array&&{length:4}`;
 ```
 
 ```js
