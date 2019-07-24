@@ -356,7 +356,7 @@ pred(String)("Hello"); // true
 
 Available helpers:
 
-| Helper                                                     | Description                                 | pdsl operator       |
+| Helper                                                     | Description                                 | PDSL Operator       |
 | ---------------------------------------------------------- | ------------------------------------------- | ------------------- |
 | [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a & b` or `a && b` |
 | [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`        |
