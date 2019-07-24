@@ -1,4 +1,4 @@
-export default function foo(
+export default function predicateCreator<T extends object>(
   strings: TemplateStringsArray,
   ...expressions: any[]
-): (a: any) => boolean;
+): (input: any) => input is T;
