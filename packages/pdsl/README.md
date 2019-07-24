@@ -399,15 +399,15 @@ const isUser = p<User>`{
 
 
 function doStuff(input:string | User) {
-  // myVal
-  if(isString(myVal)) {
-    // myval is now considered a string
-    return myVal.toLowerCase();
+  // input is either string or User
+  if(isString(input)) {
+    // input is now considered a string
+    return input.toLowerCase();
   }
   
-  if(isUser(myVal)) {
-    // myval is now considered a User
-    return myVal.name;
+  if(isUser(input)) {
+    // input is now considered a User
+    return input.name;
   }
 }
 ```
