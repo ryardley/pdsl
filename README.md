@@ -23,7 +23,7 @@ const hasName = input => input && input.name;
 PDSL:
 
 ```js
-const hasName = p`{ name }`;
+const hasName = p`{name}`;
 ```
 
 ```js
@@ -43,7 +43,7 @@ const isRoughlyPi = input => input > 3.1415 && input < 3.1416;
 PDSL:
 
 ```js
-const isRoughlyPi = p`3.1415 < < 3.1416`;
+const isRoughlyPi = p`3.1415< <3.1416`;
 ```
 
 ```js
@@ -80,7 +80,7 @@ const is4ItemArray = input => Array.isArray(input) && input.length > 4;
 With PDSL:
 
 ```js
-const is4ItemArray = p`Array && {length: > 4}`;
+const is4ItemArray = p`Array&&{length:>4}`;
 ```
 
 ```js
