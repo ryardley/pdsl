@@ -14,13 +14,13 @@ With `pdsl` we can easily visualize the expected input's structure and intent.
 
 ### Object has truthy property
 
-Vanilla JS:
+_Vanilla JS:_
 
 ```js
 const hasName = input => input && input.name;
 ```
 
-PDSL:
+_PDSL:_
 
 ```js
 const hasName = p`{name}`;
@@ -34,13 +34,13 @@ hasName({}); // false
 
 ### Number is between two values
 
-Vanilla JS:
+_Vanilla JS:_
 
 ```js
 const isRoughlyPi = input => input > 3.1415 && input < 3.1416;
 ```
 
-PDSL:
+_PDSL:_
 
 ```js
 const isRoughlyPi = p`3.1415< <3.1416`;
@@ -59,7 +59,7 @@ Vanilla JS:
 const isNumeric = input => typeof input === 'number`;
 ```
 
-PDSL:
+_PDSL:_
 
 ```js
 const isNumeric = p`Number`;
@@ -71,13 +71,14 @@ isNumeric("123"); // false
 ```
 
 ### Input is an Array with more than 4 items
-With JS:
+
+_Vanilla JS:_
 
 ```js
 const is4ItemArray = input => Array.isArray(input) && input.length > 4;
 ```
 
-With PDSL:
+_PDSL:_
 
 ```js
 const is4ItemArray = p`Array&&{length:>4}`;
