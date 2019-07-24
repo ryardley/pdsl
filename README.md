@@ -358,3 +358,7 @@ Coming soon.
 #### What does pdsl stand for?
 
 Predicate Domain Specific Language.
+
+#### Why did you write this?
+
+I had a need for it when filtering on events in an app working with my event bus framework [ts-bus](https://github.com/ryardley/ts-bus). I also wanted to learn to create a compiler from scratch. 
