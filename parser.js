@@ -50,91 +50,97 @@ function toNode(token) {
 function parser(input) {
   const stack = [];
   const arity = [];
-  const finalOut = input
-    .map(toNode)
-    .reduce((output, node) => {
-      let type;
-      let msg = [];
-      // Operands
-      if (isLiteral(node) || isPredicateLookup(node)) {
-        type = "operand";
-        // send to output
-        output.push(node);
+  try {
+    const finalOut = input
+      .map(toNode)
+      .reduce((output, node) => {
+        let type;
+        let msg = [];
+        // Operands
+        if (isLiteral(node) || isPredicateLookup(node)) {
+          type = "operand";
+          // send to output
+          output.push(node);
 
-        return debug(output, stack, node, type, msg);
-      }
-
-      if (isVaradicFunction(node)) {
-        type = "varadic";
-        stack.push(node);
-        arity.push(1);
-        return debug(output, stack, node, type, msg);
-      }
-
-      if (isArgumentSeparator(node)) {
-        type = "comma";
-        while (stack.length > 0 && !isVaradicFunction(peek(stack))) {
-          output.push(stack.pop());
-        }
-        arity.push(arity.pop() + 1);
-        return debug(output, stack, node, type, msg);
-      }
-
-      if (isVaradicFunctionClose(node)) {
-        type = "varadic-close";
-        while (stack.length > 0 && !isVaradicFunction(peek(stack))) {
-          output.push(stack.pop());
+          return debug(output, stack, node, type, msg);
         }
 
-        const fn = stack.pop();
-        // msg.push(fn);
-        fn.arity = arity.pop();
-        output.push(fn);
-        return debug(output, stack, node, type, msg);
-      }
+        if (isVaradicFunction(node)) {
+          type = "varadic";
+          stack.push(node);
+          arity.push(1);
+          return debug(output, stack, node, type, msg);
+        }
 
-      if (isOperator(node)) {
-        type = "operator";
-        while (
-          stack.length > 0 &&
-          !isPrecidenceOperator(peek(stack)) &&
-          !(peek(stack).prec >= node.prec)
-        ) {
-          if (peek(stack).prec > node.prec) {
-            msg.push("Stack precedence is higher than node!");
-          } else {
-            msg.push("Stack precedence is equal or lower than node!");
+        if (isArgumentSeparator(node)) {
+          type = "comma";
+          while (stack.length > 0 && !isVaradicFunction(peek(stack))) {
+            output.push(stack.pop());
           }
-          msg.push("flushing stack");
-          output.push(stack.pop());
-        }
-        stack.push(node);
-        return debug(output, stack, node, type, msg);
-      }
-
-      if (isPrecidenceOperator(node)) {
-        type = "precedence";
-        stack.push(node);
-
-        return debug(output, stack, node, type, msg);
-      }
-
-      if (isPrecidenceOperatorClose(node)) {
-        type = "precedence-close";
-        while (!isPrecidenceOperator(peek(stack))) {
-          output.push(stack.pop());
+          arity.push(arity.pop() + 1);
+          return debug(output, stack, node, type, msg);
         }
 
-        stack.pop();
+        if (isVaradicFunctionClose(node)) {
+          type = "varadic-close";
+          while (stack.length > 0 && !isVaradicFunction(peek(stack))) {
+            output.push(stack.pop());
+          }
+
+          const fn = stack.pop();
+
+          fn.arity = arity.pop();
+          output.push(fn);
+          return debug(output, stack, node, type, msg);
+        }
+
+        if (isOperator(node)) {
+          type = "operator";
+          while (
+            stack.length > 0 &&
+            !isPrecidenceOperator(peek(stack)) &&
+            !(peek(stack).prec >= node.prec)
+          ) {
+            if (peek(stack).prec > node.prec) {
+              msg.push("Stack precedence is higher than node!");
+            } else {
+              msg.push("Stack precedence is equal or lower than node!");
+            }
+            msg.push("flushing stack");
+            output.push(stack.pop());
+          }
+          stack.push(node);
+          return debug(output, stack, node, type, msg);
+        }
+
+        if (isPrecidenceOperator(node)) {
+          type = "precedence";
+          stack.push(node);
+
+          return debug(output, stack, node, type, msg);
+        }
+
+        if (isPrecidenceOperatorClose(node)) {
+          type = "precedence-close";
+          while (!isPrecidenceOperator(peek(stack))) {
+            output.push(stack.pop());
+          }
+
+          stack.pop();
+
+          return debug(output, stack, node, type, msg);
+        }
 
         return debug(output, stack, node, type, msg);
-      }
+      }, [])
+      .concat(stack.reverse());
 
-      return debug(output, stack, node, type, msg);
-    }, [])
-    .concat(stack.reverse());
-
-  return finalOut;
+    return finalOut;
+  } catch (e) {
+    throw new Error(
+      `Malformed Input! pdsl could not parse the tokenized input stream : ${input}`
+    );
+  }
 }
 
 module.exports = { parser };
