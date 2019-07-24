@@ -20,7 +20,7 @@ _Vanilla JS:_
 const hasName = input => input && input.name;
 ```
 
-_PDSL:_
+__PDSL:__
 
 ```js
 const hasName = p`{name}`;
@@ -40,7 +40,7 @@ _Vanilla JS:_
 const isRoughlyPi = input => input > 3.1415 && input < 3.1416;
 ```
 
-_PDSL:_
+__PDSL:__
 
 ```js
 const isRoughlyPi = p`3.1415< <3.1416`;
@@ -53,13 +53,13 @@ isRoughlyPi(3.1417); // flse
 
 ### Input is numeric
 
-Vanilla JS:
+_Vanilla JS:_
 
 ```js
 const isNumeric = input => typeof input === 'number`;
 ```
 
-_PDSL:_
+__PDSL:__
 
 ```js
 const isNumeric = p`Number`;
