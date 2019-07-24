@@ -23,7 +23,7 @@ const notNil = input => input !== null && input !== undefined;
 ```
 
 ```js
-const notNil = p`!(null | undefined)`;
+const notNil = p`!(null|undefined)`;
 
 notNil("something"); // true
 notNil(false); // true
