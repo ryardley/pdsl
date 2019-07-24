@@ -145,8 +145,8 @@ const isValidUser = input => {
     typeof input.username === "string" &&
     !input.username.match(/[^0-9]/) &&
     !input.username.match(/[^A-Z]/) &&
-    input.username.length > 5 &&
-    input.username.length < 9 &&
+    input.username.length >= 4 &&
+    input.username.length <= 8 &&
     typeof input.password === "string" &&
     input.password.match(/[^a-zA-Z0-9]/);
   input.password.length > 8 && input.age > 17;
