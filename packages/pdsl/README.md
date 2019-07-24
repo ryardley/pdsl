@@ -8,11 +8,13 @@
 
 ## Predicate functions are just easier with PDSL
 
-Often when programming we need to create predicate or boolean returning functions to assert facts about a given input value. This is often the case when filtering an array, validating input or determining type. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. `pdsl` provides the developer a simple but powerful shorthand based on a combination of template strings and helper functions for defining predicate functions that makes it easy to understand intent.
+Often when programming we need to create predicate or boolean returning functions to assert facts about a given input value. This is often the case when filtering an array, validating input or determining type. Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. 
 
-With `pdsl` we can easily visualize the expected input's structure and intent using it's intuitive DSL.
+PDSL provides the developer a simple but powerful shorthand based on a combination of template strings and helper functions for defining predicate functions that makes it easy to understand intent. With `pdsl` we can easily visualize the expected input's structure and intent using it's intuitive predicate composition language.
 
 ## Examples
+
+PDSL doesnt really take much learning. Best thing to do is to look at a few examples.
 
 ### Quick nil check
 
