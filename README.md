@@ -191,8 +191,9 @@ isKitchenSinc({
 ## Goals
 
 - No dependencies
+- Intuitive DSL
 - Avoid eval
-- Bundle size as small as possible
+- Small bundle size
 - Fast
 
 ## Disclaimer
