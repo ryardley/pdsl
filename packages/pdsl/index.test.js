@@ -254,8 +254,8 @@ it("should handle emptys", () => {
 });
 
 it("should handle a user credentials object", () => {
-  const isOnlyLowerCase = p`String && !Nc && !Uc`;
-  const hasExtendedChars = p`String && Xc`;
+  const isOnlyLowerCase = p`String & !Nc & !Uc`;
+  const hasExtendedChars = p`String & Xc`;
 
   const isValidUser = p`{
     username: ${isOnlyLowerCase} && {length: 5 < < 9 },
@@ -283,4 +283,14 @@ it("should handle a user credentials object", () => {
 it("should handle roughly PI", () => {
   expect(p`3.1415 < < 3.1416`(Math.PI)).toBe(true);
   expect(p`3.1415 < < 3.1416`(3.1417)).toBe(false);
+});
+
+it("should notNil", () => {
+  const notNil = p`!(null | undefined)`;
+
+  expect(notNil("something")).toBe(true);
+  expect(notNil(false)).toBe(true);
+  expect(notNil(0)).toBe(true);
+  expect(notNil(null)).toBe(false);
+  expect(notNil(undefined)).toBe(false);
 });

@@ -25,6 +25,8 @@ const tokens = {
   NOT: "\\!",
   AND: "\\&\\&",
   OR: "\\|\\|",
+  AND_SHORT: "\\&",
+  OR_SHORT: "\\|",
   BTW: "\\<\\s\\<",
   GT: "\\>",
   GTE: "\\>\\=",
@@ -71,13 +73,6 @@ const grammar = {
   [tokens.TRUE]: token => ({
     type: "BooleanLiteral",
     token: token === "true",
-    toString() {
-      return token;
-    }
-  }),
-  [tokens.FALSE]: token => ({
-    type: "BooleanLiteral",
-    token: token === "false",
     toString() {
       return token;
     }
@@ -289,8 +284,28 @@ const grammar = {
       return token;
     }
   }),
+  [tokens.AND_SHORT]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: and,
+    prec: 20,
+    toString() {
+      return token;
+    }
+  }),
 
   [tokens.OR]: token => ({
+    type: "Operator",
+    token,
+    arity: 2,
+    runtime: or,
+    prec: 30,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.OR_SHORT]: token => ({
     type: "Operator",
     token,
     arity: 2,

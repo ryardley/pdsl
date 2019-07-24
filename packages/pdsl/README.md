@@ -14,6 +14,24 @@ With `pdsl` we can easily visualize the expected input's structure and intent us
 
 ## Examples
 
+### Quick nil check
+
+_Vanilla JS:_
+
+```js
+const notNil = input => input !== null && input !== undefined;
+```
+
+```js
+const notNil = p`!(null | undefined)`;
+
+notNil("something"); // true
+notNil(false); // true
+notNil(0); // true
+notNil(null); // false
+notNil(undefined); // false
+```
+
 ### Object has truthy property
 
 _Vanilla JS:_
@@ -22,15 +40,15 @@ _Vanilla JS:_
 const hasName = input => input && input.name;
 ```
 
-__PDSL:__
+**PDSL:**
 
 ```js
 const hasName = p`{name}`;
 ```
 
 ```js
-hasName({name: "A name"}); // true
-hasName({name: true}); // true
+hasName({ name: "A name" }); // true
+hasName({ name: true }); // true
 hasName({}); // false
 ```
 
@@ -42,7 +60,7 @@ _Vanilla JS:_
 const isRoughlyPi = input => input > 3.1415 && input < 3.1416;
 ```
 
-__PDSL:__
+**PDSL:**
 
 ```js
 const isRoughlyPi = p`3.1415< <3.1416`;
@@ -61,7 +79,7 @@ _Vanilla JS:_
 const isNumeric = input => typeof input === 'number`;
 ```
 
-__PDSL:__
+**PDSL:**
 
 ```js
 const isNumeric = p`Number`;
@@ -83,12 +101,12 @@ const is4ItemArray = input => Array.isArray(input) && input.length === 4;
 _PDSL:_
 
 ```js
-const is4ItemArray = p`Array && { length: 4 }`;
+const is4ItemArray = p`Array & { length: 4 }`;
 ```
 
 ```js
-is4ItemArray([1,2,3,4]); // true
-is4ItemArray([1,2,3,4,5]); // false
+is4ItemArray([1, 2, 3, 4]); // true
+is4ItemArray([1, 2, 3, 4, 5]); // false
 ```
 
 ### User validation
@@ -96,12 +114,12 @@ is4ItemArray([1,2,3,4,5]); // false
 You can compose p expressions easily.
 
 ```js
-const isOnlyLowerCase = p`String && !Nc && !Uc`;
-const hasExtendedChars = p`String && Xc`;
+const isOnlyLowerCase = p`String & !Nc & !Uc`;
+const hasExtendedChars = p`String & Xc`;
 
 const isValidUser = p`{
-  username: ${isOnlyLowerCase} && {length: 5 < < 9 },
-  password: ${hasExtendedChars} && {length: > 8},
+  username: ${isOnlyLowerCase} & {length: 5 < < 9 },
+  password: ${hasExtendedChars} & {length: > 8},
   age: > 17
 }`;
 
@@ -116,18 +134,17 @@ The more complex things get, the more PDSL shines see the above example in vanil
 
 ```js
 const isValidUser = input => {
-  input && 
-  input.username &&
-  typeof input.username === 'string' &&
-  !input.username.match(/[^0-9]/) &&
-  !input.username.match(/[^A-Z]/) &&
-  input.username.length > 5 &&
-  input.username.length < 9 &&
-  typeof input.password === 'string' &&
-  input.password.match(/[^a-zA-Z0-9]/)
-  input.password.length > 8 &&
-  input.age > 17
-}
+  input &&
+    input.username &&
+    typeof input.username === "string" &&
+    !input.username.match(/[^0-9]/) &&
+    !input.username.match(/[^A-Z]/) &&
+    input.username.length > 5 &&
+    input.username.length < 9 &&
+    typeof input.password === "string" &&
+    input.password.match(/[^a-zA-Z0-9]/);
+  input.password.length > 8 && input.age > 17;
+};
 ```
 
 ### Complex Example
@@ -140,7 +157,7 @@ const isKitchenSinc = p`
   {
     type: ${/^.+foo$/},
     payload: {
-      email: Email && { length: > 5 },
+      email: Email & { length: > 5 },
       arr: ![6],
       foo: !true,
       num: -4 < < 100,
@@ -176,7 +193,7 @@ isKitchenSinc({
 
 ## Disclaimer
 
-This should work but there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues. This Syntax is DRAFT and we are open for RFCs on the syntax. All feedback welcome. If you want to be a maintainer just ask. 
+This should work but there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. Please help this open source project by creating issues. Pull requests appreciated! Feel free to help with open issues. This Syntax is DRAFT and we are open for RFCs on the syntax. All feedback welcome. If you want to be a maintainer just ask.
 
 ## Installation
 
@@ -232,14 +249,14 @@ const isNull = p`null`;
 
 ### Operators
 
-You can use familiar JS boolean operators and brackets such as `!`, `&&`, `||`, `(`, or `)`:
+You can use familiar JS boolean operators and brackets such as `!`, `&&`, `||`, `(`, or `)` as well as the shorter `&` and `|`:
 
 ```js
 const isNotNil = p`!(null||undefined)`;
 ```
 
 ```js
-const is6CharString = p`String && { length: 6 }`;
+const is6CharString = p`String & { length: 6 }`;
 ```
 
 ### Object properties
@@ -256,7 +273,7 @@ validate({ name: 20 }); // false
 This applies to checking properties of all javascript objects. For example to check a string's length:
 
 ```js
-const validate = p`String && { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`String & { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
@@ -332,23 +349,23 @@ pred(String)("Hello"); // true
 
 Available helpers:
 
-| Helper                                                     | Description                                 | pdsl operator  |
-| ---------------------------------------------------------- | ------------------------------------------- | -------------- |
-| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a && b`       |
-| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`   |
-| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10 <= <= 100` |
-| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |                |
-| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                | `> 5`          |
-| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      | `>= 5`         |
-| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           | `[4,3]`        |
-| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   | `< 5`          |
-| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            | `<= 5`         |
-| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 | `!6`           |
-| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  | `a || b`       |
-| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${}`          |
-| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   | `Array` etc.   |
-| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                | `${/^foo/}`    |
-| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |                |
+| Helper                                                     | Description                                 | pdsl operator       |
+| ---------------------------------------------------------- | ------------------------------------------- | ------------------- |
+| [and](https://ryardley.github.io/pdsl/global.html#and)     | Logical AND                                 | `a & b` or `a && b` |
+| [btw](https://ryardley.github.io/pdsl/global.html#btw)     | Between                                     | `10 < < 100`        |
+| [btwe](https://ryardley.github.io/pdsl/global.html#btwe)   | Between or equals                           | `10 <= <= 100`      |
+| [deep](https://ryardley.github.io/pdsl/global.html#deep)   | Deep equality                               |                     |
+| [gt](https://ryardley.github.io/pdsl/global.html#gt)       | Greater than                                | `> 5`               |
+| [gte](https://ryardley.github.io/pdsl/global.html#gte)     | Greater than or equals                      | `>= 5`              |
+| [holds](https://ryardley.github.io/pdsl/global.html#holds) | Array holds input                           | `[4,3]`             |
+| [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   | `< 5`               |
+| [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            | `<= 5`              |
+| [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 | `!6`                |
+| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  | `a || b` or `a | b` |
+| [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${}`               |
+| [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   | `Array` etc.        |
+| [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                | `${/^foo/}`         |
+| [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             |                     |
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
@@ -364,10 +381,10 @@ Predicate Domain Specific Language.
 
 #### Why did you write this?
 
-I had a need for it when filtering on events in an app working with my event bus framework [ts-bus](https://github.com/ryardley/ts-bus). I also wanted to learn to create a compiler from scratch. 
+I had a need for it when filtering on events in an app working with my event bus framework [ts-bus](https://github.com/ryardley/ts-bus). I also wanted to learn to create a compiler from scratch.
 
-#### How does this work? 
+#### How does this work?
 
-It is comprised of a [lexer](https://en.wikipedia.org/wiki/Lexical_analysis) a [parser](https://en.wikipedia.org/wiki/Parsing#Parser) and a [code generator](https://en.wikipedia.org/wiki/Code_generation_(compiler)). I used a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) but using objects in an array. I then added parsing for Varadic Functions. A lot of it was by trial and error. 
+It is comprised of a [lexer](https://en.wikipedia.org/wiki/Lexical_analysis) a [parser](https://en.wikipedia.org/wiki/Parsing#Parser) and a [code generator](<https://en.wikipedia.org/wiki/Code_generation_(compiler)>). I used a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) but using objects in an array. I then added parsing for Varadic Functions. A lot of it was by trial and error.
 
-I am certain there are better ways to do it. If you know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - I want to learn  - please file an issue!
+I am certain there are better ways to do it. If you know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - I want to learn - please file an issue!
