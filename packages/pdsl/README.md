@@ -136,15 +136,6 @@ isValidUser({ username: "12345", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
 ```
 
-```js
-import p from "pdsl";
-
-const isTeenager = p`{ age: 13..19 }`;
-
-isTeenager({ age: 15 }); // true
-isTeenager({ age: 20 }); // false
-```
-
 The more complex things get, the more PDSL shines see the above example in vanilla JS:
 
 ```js
