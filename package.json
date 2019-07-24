@@ -8,7 +8,7 @@
   "license": "MIT",
   "repository": "github:ryardley/pdsl",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "docs": "jsdoc --destination ./docs helpers.js"
   },
   "devDependencies": {
