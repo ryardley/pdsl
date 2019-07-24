@@ -1,6 +1,6 @@
 # pdsl
 
-> An expressive declarative toolkit for creating predicate functions
+> An expressive declarative toolkit for creating functions that return true or false (predicate functions)
 
 [![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
 
