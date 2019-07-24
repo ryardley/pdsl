@@ -14,27 +14,76 @@ With `pdsl` we can easily visualize the expected input's structure and intent.
 
 ### Object has truthy property
 
+Vanilla JS:
+
+```js
+const hasName = input => input && input.name;
+```
+
+PDSL:
+
 ```js
 const hasName = p`{ name }`;
+```
 
+```js
 hasName({name: "A name"}); // true
 hasName({name: true}); // true
+hasName({}); // false
+```
+
+### Number is between two values
+
+Vanilla JS:
+
+```js
+const isRoughlyPi = input => input > 3.1415 && input < 3.1416;
+```
+
+PDSL:
+
+```js
+const isRoughlyPi = p`3.1415 < < 3.1416`;
+```
+
+```js
+isRoughlyPi(Math.PI); // true
+isRoughlyPi(3.1417); // flse
 ```
 
 ### Input is numeric
 
+Vanilla JS:
+
+```js
+const isNumeric = input => typeof input === 'number`;
+```
+
+PDSL:
+
 ```js
 const isNumeric = p`Number`;
+```
 
+```js
 isNumeric(3.1415); // true
 isNumeric("123"); // false
 ```
 
 ### Input is an Array with more than 4 items
+With JS:
+
+```js
+const is4ItemArray = input => Array.isArray(input) && input.length > 4;
+```
+
+With PDSL:
 
 ```js
 const is4ItemArray = p`Array && {length: > 4}`;
+```
 
+```js
 is4ItemArray([1,2,3,4]); // true
 is4ItemArray([1,2,3,4,5]); // false
 ```
@@ -58,6 +107,24 @@ isValidUser({ username: "ryardley", password: "Hello1234!", age: 17 }); //false
 isValidUser({ username: "Ryardley", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "123456", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
+```
+
+The more complex things get, the more PDSL shines:
+
+```js
+const isValidUser = input => {
+  input && 
+  input.username &&
+  typeof input.username === 'string' &&
+  !input.username.match(/[^0-9]/) &&
+  !input.username.match(/[^A-Z]/) &&
+  input.username.length > 5 &&
+  input.username.length < 9 &&
+  typeof input.password === 'string' &&
+  input.password.match(/[^a-zA-Z0-9]/)
+  input.password.length > 8 &&
+  input.age > 17
+}
 ```
 
 ### Complex Example
