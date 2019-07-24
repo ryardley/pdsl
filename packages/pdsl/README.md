@@ -368,7 +368,7 @@ Available helpers:
 | [lt](https://ryardley.github.io/pdsl/global.html#lt)       | Less than                                   | `< 5`               |
 | [lte](https://ryardley.github.io/pdsl/global.html#lte)     | Less than equals                            | `<= 5`              |
 | [not](https://ryardley.github.io/pdsl/global.html#not)     | Logical NOT                                 | `!6`                |
-| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  | `a || b` or `a | b` |
+| [or](https://ryardley.github.io/pdsl/global.html#or)       | Logical OR                                  | `a \|\| b` or `a \| b` |
 | [pred](https://ryardley.github.io/pdsl/global.html#pred)   | Select the correct predicate based on input | `${}`               |
 | [prim](https://ryardley.github.io/pdsl/global.html#prim)   | Primative typeof checking                   | `Array` etc.        |
 | [regx](https://ryardley.github.io/pdsl/global.html#regx)   | Regular expression predicate                | `${/^foo/}`         |
