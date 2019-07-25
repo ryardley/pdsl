@@ -431,6 +431,7 @@ Help organise our priorities by [telling us what is the most important to you](h
 - [ ] Validation errors
 - [ ] Babel Plugin to remove compiler perf overhead
 - [ ] Syntax Highlighting VSCode and others
+- [ ] Get Prettier to format the syntax on save
 - [ ] VSCode Autocomplete
 
 ## Disclaimer
