@@ -30,8 +30,6 @@ const notNil = input => input !== null && input !== undefined;
 const notNil = p`!(null|undefined)`;
 ```
 
-PDSL is quicker to type, expresses intent and is much shorter.
-
 ```js
 notNil("something"); // true
 notNil(false); // true
@@ -39,6 +37,8 @@ notNil(0); // true
 notNil(null); // false
 notNil(undefined); // false
 ```
+
+PDSL is quicker to type, expresses intent and is much shorter.
 
 ### Object has truthy property
 
