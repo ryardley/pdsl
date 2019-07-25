@@ -348,6 +348,41 @@ Any function passed as an expression to the template literal will be used as a p
 p`${a => a.indexOf("foo") === 0}`("food"); // true
 ```
 
+## Usage with TypeScript
+
+PDSL is really quite useful in TypeScript as guard functions are important to a good type management strategy. To use in TypeScript simply pass in the guard type you want your predicate to determine as a type prop.
+
+```ts
+import p from "pdsl";
+
+// pass in string
+const isString = p<string>`String`;
+
+type User = {
+  name: string;
+  password: string;
+};
+
+// pass in User
+const isUser = p<User>`{
+  name: String & { length: 3..8 },
+  password: String & { length: > 5 }
+}`;
+
+function doStuff(input: string | User) {
+  // input is either string or User
+  if (isString(input)) {
+    // input is now considered a string
+    return input.toLowerCase();
+  }
+
+  if (isUser(input)) {
+    // input is now considered a User
+    return input.name;
+  }
+}
+```
+
 ## Helpers
 
 PDSL provides a number of helpers that can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
@@ -390,40 +425,10 @@ Available helpers:
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
-## Usage with TypeScript
+## This sucks because... 
 
-PDSL is really quite useful in TypeScript as guard functions are important to a good type management strategy. To use in TypeScript simply pass in the guard type you want your predicate to determine as a type prop.
+So you think this project is dumb and it sucks or is a stupid idea thats awesome [let us know about it here](https://github.com/ryardley/pdsl/issues/new) and perhaps we can fix your problem or prioritize it in our roadmap! We don't know what's in your head and we want to make libraries that help people get the most out of their effort.
 
-```ts
-import p from "pdsl";
-
-// pass in string
-const isString = p<string>`String`;
-
-type User = {
-  name: string;
-  password: string;
-};
-
-// pass in User
-const isUser = p<User>`{
-  name: String & { length: 3..8 },
-  password: String & { length: > 5 }
-}`;
-
-function doStuff(input: string | User) {
-  // input is either string or User
-  if (isString(input)) {
-    // input is now considered a string
-    return input.toLowerCase();
-  }
-
-  if (isUser(input)) {
-    // input is now considered a User
-    return input.name;
-  }
-}
-```
 ## Roadmap
 
 - [ ] Babel Plugin to remove compiler perf overhead
@@ -438,10 +443,10 @@ Predicate Domain Specific Language.
 
 #### Why did you write this?
 
-I had a need for it when filtering on events in an app working with my event bus framework [ts-bus](https://github.com/ryardley/ts-bus). I also wanted to learn to create a compiler from scratch.
+@ryardley had a need for it when filtering on events in an app working with [ts-bus](https://github.com/ryardley/ts-bus). He also wanted to learn how to create a compiler from scratch.
 
 #### How does this work?
 
-It is comprised of a [grammar](grammar.js), a [lexer](lexer.js) a [parser](parser.js) and a [code generator](generator.js). I used a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) but using objects in an array instead of a tree. I then added parsing for Varadic Functions. A lot of it was by trial and error.
+It is comprised of a [grammar](grammar.js), a [lexer](lexer.js) a [parser](parser.js) and a [code generator](generator.js). It uses a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) but using objects in an array instead of a tree. Then parsing was added for Varadic Functions. A lot of it was by trial and error.
 
-I am certain there are better ways to do it. If you know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - I want to learn - please file an issue!
+There are better ways to do it. If you know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - we want to learn - [let us know about it here](https://github.com/ryardley/pdsl/issues/new)
