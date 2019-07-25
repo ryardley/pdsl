@@ -170,7 +170,7 @@ const isKitchenSinc = p`
       email: Email & { length: > 5 },
       arr: ![6], // This checks to see if the iterable does not contain a 6
       foo: !true,
-      num: -4 < < 100,
+      num: -4..100,
       bar: {
         baz: ${/^foo/},
         foo
