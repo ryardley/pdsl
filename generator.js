@@ -1,25 +1,14 @@
 const { val } = require("./helpers");
 const {
   isPredicateLookup,
-  isPredicateLiteral,
+  isVaradicFunction,
+  isOperator,
   isLiteral
 } = require("./grammar");
 
 const lookupPredicateFunction = (node, funcs) => {
   return funcs[node.token];
 };
-
-function isOperator(node) {
-  if (!node) return false;
-  return (
-    {
-      VariableArityOperator: 1,
-      VariableArityOperatorClose: 1,
-      Operator: 1,
-      ArgumentSeparator: 1
-    }[node.type] || false
-  );
-}
 
 function generator(input, funcs) {
   const [runnable] = input.reduce((stack, node) => {
@@ -33,14 +22,12 @@ function generator(input, funcs) {
       return stack;
     }
 
-    if (isOperator(node)) {
+    if (isOperator(node) || isVaradicFunction(node)) {
       const { arity, runtime } = node;
       const args = stack.splice(-1 * arity);
       stack.push(runtime(...args));
       return stack;
     }
-
-    return stack;
   }, []);
 
   return val(runnable);
