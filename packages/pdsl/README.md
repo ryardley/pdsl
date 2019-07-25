@@ -129,12 +129,9 @@ const Nums = /[0-9]/;
 const UpCase = /[A-Z]/;
 const Extended = /[^a-zA-Z0-9]/;
 
-const isOnlyLowerCase = p`String & !${Nums} & !${UpCase}`;
-const hasExtendedChars = p`String & ${Extended}`;
-
 const isValidUser = p`{
-  username: ${isOnlyLowerCase} & {length: 4..8 },
-  password: ${hasExtendedChars} & {length: > 8},
+  username: String & !${Nums} & !${UpCase} & {length: 4..8 },
+  password: String & ${Extended} & {length: > 8},
   age: > 17
 }`;
 
