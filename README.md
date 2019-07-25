@@ -231,6 +231,14 @@ const isFunction = p`Function`; // typeof value === 'function'
 const isArray = p`Array`; // Array.isArray(value)
 ```
 
+You can also pass in a Javascript primitive to the template string.
+
+```js
+const isNumeric = p`${Number}`; // typeof value === 'number'
+const isBoolean = p`${Boolean}`; // typeof value === 'boolean'
+const isString = p`${String}`; // typeof value === 'string'
+```
+
 ### Reference equality
 
 If you pass a value `pdsl` will match that specific value:
