@@ -428,7 +428,7 @@ function doStuff(input: string | User) {
 ```
 ## Roadmap
 
-- [ ] Babel Plugin
+- [ ] Babel Plugin to remove compiler perf overhead
 - [ ] Syntax Highlighting VSCode and others
 - [ ] VSCode Autocomplete
 
