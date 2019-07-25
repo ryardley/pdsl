@@ -1,30 +1,22 @@
 const { lexer } = require("./lexer");
-
+const { astToString } = require("./utils");
 describe("lexer", () => {
   it("should tokenize", () => {
     expect(
-      lexer("   {   name   :   @{LINK:0} && @{LINK:2} ,age:@{LINK:1}}")
-    ).toEqual([
-      "{",
-      "name",
-      ":",
-      "@{LINK:0}",
-      "&&",
-      "@{LINK:2}",
-      ",",
-      "age",
-      ":",
-      "@{LINK:1}",
-      "}"
-    ]);
+      astToString(
+        lexer("   {   name   :   @{LINK:0} && @{LINK:2} ,age:@{LINK:1}}")
+      )
+    ).toEqual("{0·name·:·@{LINK:0}·&&·@{LINK:2}·,·age·:·@{LINK:1}·}");
   });
   it("should strip comments", () => {
     expect(
-      lexer(`{
+      astToString(
+        lexer(`{
         name: "Rudi", // foo
         // thing
         age
       }`)
-    ).toEqual(["{", "name", ":", '"Rudi"', ",", "age", "}"]);
+      )
+    ).toEqual('{0·name·:·"Rudi"·,·age·}');
   });
 });

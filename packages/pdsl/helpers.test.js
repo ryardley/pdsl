@@ -31,12 +31,14 @@ it("should Email", () => {
 it("should btw", () => {
   expect(btw(10, 100)(50)).toBe(true);
   expect(btw(10, 100)(-50)).toBe(false);
+  expect(btw(100, 10)(-50)).toBe(false);
   expect(btw(10, 100)(100)).toBe(false);
   expect(btw(10, 100)(10)).toBe(false);
 });
 
 it("should btwe", () => {
   expect(btwe(10, 100)(50)).toBe(true);
+  expect(btwe(100, 10)(50)).toBe(true);
   expect(btwe(10, 100)(-50)).toBe(false);
   expect(btwe(10, 100)(100)).toBe(true);
   expect(btwe(10, 100)(10)).toBe(true);

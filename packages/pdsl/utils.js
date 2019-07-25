@@ -16,6 +16,21 @@ function isPrimative(expression) {
     ].indexOf(expression.name) > -1
   );
 }
+function astToString(ast) {
+  return ast.map(a => a.toString()).join("·");
+}
+
+function debug(output, stack, node, type, msg) {
+  console.log(
+    [
+      `token: ${node.token}`,
+      `type: ${type}`,
+      ...msg.map(m => ` msg:${m}`),
+      `stack: ${astToString(stack)}`,
+      `output: ${astToString(output)}`
+    ].join("\n")
+  );
+}
 
 function isDeepVal(expression) {
   return ["{}", "[]", '""'].indexOf(JSON.stringify(expression)) > -1;
@@ -27,4 +42,12 @@ function isFunction(expression) {
 
 const identity = a => a;
 
-module.exports = { identity, isRegEx, isDeepVal, isFunction, isPrimative };
+module.exports = {
+  debug,
+  identity,
+  astToString,
+  isRegEx,
+  isDeepVal,
+  isFunction,
+  isPrimative
+};

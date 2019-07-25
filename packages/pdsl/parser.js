@@ -1,10 +1,9 @@
 // This article really helped work this out:
 // http://wcipeg.com/wiki/Shunting_yard_algorithm#Variadic_functions
 
-const DEBUG = false;
+const DEBUG = process && process.env && process.env.DEBUG;
 
 const {
-  grammar,
   isPrecidenceOperatorClose,
   isPrecidenceOperator,
   isArgumentSeparator,
@@ -15,44 +14,16 @@ const {
   isOperator
 } = require("./grammar");
 
+const { debug } = require("./utils");
+
 const peek = a => a[a.length - 1];
-
-const grammers = Object.entries(grammar);
-
-function astToString(ast) {
-  return ast.map(a => a.toString()).join("·");
-}
-
-function debug(output, stack, node, type, msg) {
-  if (DEBUG)
-    console.log(
-      [
-        `token: ${node.token}`,
-        `type: ${type}`,
-        ...msg.map(m => ` msg:${m}`),
-        `stack: ${astToString(stack)}`,
-        `output: ${astToString(output)}`
-      ].join("\n")
-    );
-  return output;
-}
-
-function toNode(token) {
-  for (let i = 0; i < grammers.length; i++) {
-    const [test, createNode] = grammers[i];
-    const testPassed = new RegExp(`^${test}$`).test(token);
-    if (testPassed) {
-      return createNode(token);
-    }
-  }
-}
 
 function parser(input) {
   const stack = [];
   const arity = [];
   try {
     const finalOut = input
-      .map(toNode)
+      // .map(toNode)
       .reduce((output, node) => {
         let type;
         let msg = [];
@@ -61,15 +32,12 @@ function parser(input) {
           type = "operand";
           // send to output
           output.push(node);
-
-          return debug(output, stack, node, type, msg);
         }
 
         if (isVaradicFunction(node)) {
           type = "varadic";
           stack.push(node);
           arity.push(1);
-          return debug(output, stack, node, type, msg);
         }
 
         if (isArgumentSeparator(node)) {
@@ -78,7 +46,6 @@ function parser(input) {
             output.push(stack.pop());
           }
           arity.push(arity.pop() + 1);
-          return debug(output, stack, node, type, msg);
         }
 
         if (isVaradicFunctionClose(node)) {
@@ -91,7 +58,6 @@ function parser(input) {
 
           fn.arity = arity.pop();
           output.push(fn);
-          return debug(output, stack, node, type, msg);
         }
 
         if (isOperator(node)) {
@@ -101,23 +67,22 @@ function parser(input) {
             !isPrecidenceOperator(peek(stack)) &&
             !(peek(stack).prec >= node.prec)
           ) {
+            /* istanbul ignore next */
             if (peek(stack).prec > node.prec) {
               msg.push("Stack precedence is higher than node!");
             } else {
               msg.push("Stack precedence is equal or lower than node!");
             }
             msg.push("flushing stack");
+
             output.push(stack.pop());
           }
           stack.push(node);
-          return debug(output, stack, node, type, msg);
         }
 
         if (isPrecidenceOperator(node)) {
           type = "precedence";
           stack.push(node);
-
-          return debug(output, stack, node, type, msg);
         }
 
         if (isPrecidenceOperatorClose(node)) {
@@ -127,11 +92,12 @@ function parser(input) {
           }
 
           stack.pop();
-
-          return debug(output, stack, node, type, msg);
         }
 
-        return debug(output, stack, node, type, msg);
+        /* istanbul ignore next */
+        if (DEBUG) debug(output, stack, node, type, msg);
+
+        return output;
       }, [])
       .concat(stack.reverse());
 
