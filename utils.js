@@ -9,7 +9,7 @@ function isPrimative(expression) {
       "Boolean",
       "Number",
       "Symbol",
-      "BigInt",
+      // "BigInt", // waiting for stage 4
       "String",
       "Function",
       "Object"

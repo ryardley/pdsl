@@ -61,7 +61,6 @@ const tokens = {
   PRIM_ARRAY: "Array",
   PRIM_BOOLEAN: "Boolean",
   PRIM_STRING: "String",
-  PRIM_BIG_INT: "BigInt",
   PRIM_SYMBOL: "Symbol",
   PRIM_FUNCTION: "Function",
   STRING_DOUBLE: `\\"[^\\"]*\\"`,
@@ -74,14 +73,14 @@ const grammar = {
   // LITERALS
   [tokens.TRUE]: token => ({
     type: "BooleanLiteral",
-    token: token === "true",
+    token: true,
     toString() {
       return token;
     }
   }),
   [tokens.FALSE]: token => ({
     type: "BooleanLiteral",
-    token: token === "false",
+    token: false,
     toString() {
       return token;
     }
@@ -203,13 +202,6 @@ const grammar = {
     token: prim(String),
     toString() {
       return "String";
-    }
-  }),
-  [tokens.PRIM_BIG_INT]: token => ({
-    type: "PredicateLiteral",
-    token: prim(BigInt),
-    toString() {
-      return "BigInt";
     }
   }),
   [tokens.PRIM_SYMBOL]: token => ({
