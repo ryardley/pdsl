@@ -429,7 +429,8 @@ function doStuff(input: string | User) {
 ## Roadmap
 
 - [ ] Babel Plugin
-- [ ] Syntax Highlighting
+- [ ] Syntax Highlighting VSCode and others
+- [ ] VSCode Autocomplete
 
 ## FAQ
 
