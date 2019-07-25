@@ -103,8 +103,7 @@ const holds = (...args) =>
     // prepare args as an array of predicate fns and an array to keep track of success
     for (i = 0; i < args.length; i++) {
       const arg = args[i];
-      const fn = typeof arg === "function" ? arg : a => a === arg;
-      fns.push(fn);
+      fns.push(val(arg));
       success.push(false);
     }
 
