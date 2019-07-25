@@ -1,4 +1,4 @@
-# Predicate DSL
+# PDSL
 
 #### An expressive declarative toolkit for composing predicate functions
 
