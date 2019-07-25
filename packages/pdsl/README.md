@@ -422,6 +422,10 @@ function doStuff(input: string | User) {
   }
 }
 ```
+## Roadmap
+
+- [ ] Babel Plugin
+- [ ] Syntax Highlighting
 
 ## FAQ
 
