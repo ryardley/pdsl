@@ -328,3 +328,22 @@ it("should handle .. operator", () => {
   expect(p`1..10`(10)).toBe(true);
   expect(p`1..10`(11)).toBe(false);
 });
+
+it("should handle all the symbols", () => {
+  expect(p`true`(true)).toBe(true);
+  expect(p`false`(false)).toBe(true);
+  expect(p`Lc`("abcdef")).toBe(true);
+  expect(p`Lc`("ABCDEF")).toBe(false);
+  expect(p`Lc`("aBCDEF")).toBe(true);
+  expect(p`LUc`("ABCDEF")).toBe(false);
+  expect(p`LUc`("AbCDEF")).toBe(true);
+  expect(p`LUc`("abcdef")).toBe(false);
+  expect(p`""`("")).toBe(true);
+  expect(p`''`("")).toBe(true);
+  expect(p`Boolean`(false)).toBe(true);
+  expect(p`Boolean`(0)).toBe(false);
+  expect(p`Symbol`(Symbol("hello"))).toBe(true);
+  expect(p`Symbol`("hello")).toBe(false);
+  expect(p`Function`(() => {})).toBe(true);
+  expect(p`'A single string'`("A single string")).toBe(true);
+});
