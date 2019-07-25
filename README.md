@@ -30,7 +30,7 @@ const notNil = input => input !== null && input !== undefined;
 const notNil = p`!(null|undefined)`;
 ```
 
-Both result in the same behaviour:
+PDSL is quicker to type, expresses intent and is much shorter.
 
 ```js
 notNil("something"); // true
