@@ -5,6 +5,7 @@
 [![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
 ![npm](https://img.shields.io/npm/v/pdsl.svg)
+![Codecov](https://img.shields.io/codecov/c/github/ryardley/pdsl)
 
 ## Predicate functions are just easier with PDSL
 
