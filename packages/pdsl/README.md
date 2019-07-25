@@ -124,8 +124,12 @@ is4ItemArray([1, 2, 3, 4, 5]); // false
 You can compose p expressions easily.
 
 ```js
-const isOnlyLowerCase = p`String & !Nc & !Uc`;
-const hasExtendedChars = p`String & Xc`;
+const Nums = /[0-9]/;
+const UpCase = /[A-Z]/;
+const Extended = /[^a-zA-Z0-9]/;
+
+const isOnlyLowerCase = p`String & !${Nums} & !${UpCase}`;
+const hasExtendedChars = p`String & ${Extended}`;
 
 const isValidUser = p`{
   username: ${isOnlyLowerCase} & {length: 4..8 },
