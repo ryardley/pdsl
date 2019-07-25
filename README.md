@@ -170,9 +170,9 @@ const isKitchenSinc = p`
     type: ${/^.+foo$/},
     payload: {
       email: Email & { length: > 5 },
-      arr: ![6], // This checks to see if the iterable does not contain a 6
+      arr: [6,'foo'], 
       foo: !true,
-      num: -4..100,
+      num: 1..10,
       bar: {
         baz: ${/^foo/},
         foo
@@ -182,15 +182,15 @@ const isKitchenSinc = p`
 `;
 
 isKitchenSinc({
-  type: "yafoo",
+  type: "snafoo",
   payload: {
-    email: "a@b.com",
-    arr: [1, 2, 3, "foo"],
+    email: "hello@world.com",
+    arr: ["foo", 1, 2, 3, 4, 5, 6],
     foo: false,
     num: 2,
     bar: {
       baz: "food",
-      foo: "yup"
+      foo: "I am truthy"
     }
   }
 }); // true
