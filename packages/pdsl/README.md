@@ -204,16 +204,6 @@ isKitchenSinc({
 - Small bundle size
 - Fast
 
-## Disclaimer
-
-This should work however this project is young and there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. Please help this open source project by [creating issues](https://github.com/ryardley/pdsl/issues/new). 
-
-Pull requests appreciated! [Feel free to help with open issues](https://github.com/ryardley/pdsl/issues). 
-
-This Syntax is DRAFT and we are open for [RFCs on the syntax](https://github.com/ryardley/pdsl/issues/new). 
-
-All feedback welcome. If you want to be a maintainer [create a pull request](https://github.com/ryardley/pdsl/pulls)
-
 ## Installation
 
 Install with npm or yarn
@@ -431,15 +421,33 @@ Available helpers:
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
 
-## This sucks because... 
-
-So you think this project is dumb and it sucks or is an insanely stupid idea. Great! [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap! We don't know what's in your head and we want to make libraries that help people get the most out of their effort.
-
 ## Roadmap
 
+Help organise our priorities by [telling us what is the most important to you](https://github.com/ryardley/pdsl/issues/new)
+
+- [x] Basic Laanaguage Design
+- [x] PDSL Compiler
+- [x] Comprehensive Test cases
+- [ ] Validation errors
 - [ ] Babel Plugin to remove compiler perf overhead
 - [ ] Syntax Highlighting VSCode and others
 - [ ] VSCode Autocomplete
+
+## Disclaimer
+
+This should work however this project is young and there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. 
+
+Please help this open source project by [creating issues](https://github.com/ryardley/pdsl/issues/new). 
+
+Pull requests appreciated! [Feel free to help with open issues](https://github.com/ryardley/pdsl/issues). 
+
+This Syntax is DRAFT and we are open for [RFCs on the syntax](https://github.com/ryardley/pdsl/issues/new). 
+
+All feedback welcome. If you want to be a maintainer [create a pull request](https://github.com/ryardley/pdsl/pulls)
+
+## This sucks because... 
+
+So you think this project is dumb and it sucks or is an insanely stupid idea. Great! [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap! We don't know what's in your head and we want to make libraries that help people get the most out of their effort.
 
 ## FAQ
 
