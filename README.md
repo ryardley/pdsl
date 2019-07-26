@@ -448,7 +448,7 @@ All feedback welcome. If you want to be a maintainer [create a pull request](htt
 
 ## This sucks because... 
 
-So you think this project is dumb and it sucks or is an insanely stupid idea. Great! [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap! We don't know what's in your head and we want to make libraries that help people get the most out of their effort.
+So you think this project is dumb. Great! [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap! We don't know what's in your head and we want to make libraries that help more people get the most out of programming.
 
 ## FAQ
 
