@@ -4,6 +4,18 @@
 
 #### An expressive declarative toolkit for composing predicates
 
+```js
+import p from "pdsl";
+
+const isSoftwareCreator = p`{
+  name: string,
+  age: > 16,
+  occupation: "Engineer" | "Designer" | "Project Manager"
+}`;
+
+isSoftwareCreator(someone); // true | false
+```
+
 [![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
 ![npm](https://img.shields.io/npm/v/pdsl.svg)
