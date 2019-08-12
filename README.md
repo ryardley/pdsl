@@ -41,7 +41,7 @@ notNil(null); // false
 notNil(undefined); // false
 ```
 
-PDSL is quicker to type, expresses intent and is much shorter.
+PDSL is quicker to type, expresses intent and is a fair bit shorter.
 
 ### Object has truthy property
 
