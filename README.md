@@ -9,6 +9,30 @@
 ![npm](https://img.shields.io/npm/v/pdsl.svg)
 [![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
 
+---
+
+```js
+import p from "pdsl";
+
+const isSoftwareCreator = p`{
+  name: string,
+  age: > 16,
+  occupation: "Engineer" | "Designer" | "Project Manager"
+}`;
+
+isSoftwareCreator({
+  name: "Sabine",
+  age: 25,
+  occupation: "Engineer"
+}); // true
+
+isSoftwareCreator({
+  name: "Georg",
+  age: 32,
+  occupation: "Banker"
+}); // false
+```
+
 ## Predicate functions are just easier with PDSL
 
 Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. We need predicate functions all the time when filtering an array, validating input, determining the type of an unknown object or creating guard conditions in TypeScript.
@@ -457,7 +481,6 @@ Pull requests appreciated! [Feel free to help with open issues](https://github.c
 This Syntax is DRAFT and we are open for [RFCs on the syntax](https://github.com/ryardley/pdsl/issues/new).
 
 All feedback welcome. If you want to be a maintainer [create a pull request](https://github.com/ryardley/pdsl/pulls)
-
 
 ## FAQ
 
