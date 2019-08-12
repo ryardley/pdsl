@@ -4,13 +4,6 @@
 
 #### An expressive declarative toolkit for composing predicates
 
-[![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
-![npm](https://img.shields.io/npm/v/pdsl.svg)
-[![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
-
----
-
 ```js
 import p from "pdsl";
 
@@ -22,6 +15,11 @@ const isSoftwareCreator = p`{
 
 isSoftwareCreator(someone); // true | false
 ```
+
+[![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
+![npm](https://img.shields.io/npm/v/pdsl.svg)
+[![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
 
 ## Predicate functions are just easier with PDSL
 
