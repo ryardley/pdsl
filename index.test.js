@@ -43,6 +43,13 @@ describe("Javascript primitives", () => {
     expect(p`${Array}`(1234)).toBe(false);
     expect(p`${Object}`({ foo: "foo" })).toBe(true);
   });
+  it("should accept primative value definitions and test typeof associations", () => {
+    expect(p`number`(5)).toBe(true);
+    expect(p`string`(5)).toBe(false);
+    expect(p`boolean`(false)).toBe(true);
+    expect(p`string`("Foo")).toBe(true);
+    expect(p`symbol`(Symbol("Foo"))).toBe(true);
+  });
 });
 
 describe("Deep value predicates", () => {
@@ -144,12 +151,57 @@ it("should match the examples", () => {
   expect(p`${String} && { length: ${7} }`("123456")).toBe(false);
 });
 
+it("should be able to debug the ast", () => {
+  expect(
+    p.unsafe_tokens`
+  {
+    type: ${/^.+foo$/},
+    payload: {
+      email: (${Email} && { length: > 5 }),
+      arr: ![6],
+      foo: !true,
+      num: -4 < < 100,
+      bar: {
+        baz: ${/^foo/},
+        foo
+      }
+    }
+  }`
+  ).toBe(
+    "{0 type : @{LINK:0} , payload : {0 email : ( @{LINK:1} && {0 length : > 5 } ) , arr : ! [0 6 ] , foo : ! true , num : -4 < < 100 , bar : {0 baz : @{LINK:2} , foo } } }"
+  );
+  expect(
+    p.unsafe_rpn`
+  {
+    type: ${/^.+foo$/},
+    payload: {
+      email: (${Email} && { length: > 5 }),
+      arr: ![6],
+      foo: !true,
+      num: -4 < < 100,
+      bar: {
+        baz: ${/^foo/},
+        foo
+      }
+    }
+  }`
+  ).toBe(
+    "type @{LINK:0} : payload email @{LINK:1} length 5 > : {1 && : arr 6 [1 ! : foo true ! : num -4 100 < < : bar baz @{LINK:2} : foo {2 : {5 : {2"
+  );
+
+  expect(
+    p.unsafe_tokens`[1..4] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | '' | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true`
+  ).toBe(
+    `[0 1 .. 4 ] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | "" | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true`
+  );
+});
+
 it("should handle complex objects", () => {
   expect(
-    p`${String} || {
-    username: ${String},
-    password: ${String} && {
-      length: ${gt(3)}
+    p`string || {
+    username: string,
+    password: string && {
+      length: > 3
     }
   }`({ username: "hello", password: "mike" })
   ).toBe(true);
@@ -332,12 +384,6 @@ it("should handle .. operator", () => {
 it("should handle all the symbols", () => {
   expect(p`true`(true)).toBe(true);
   expect(p`false`(false)).toBe(true);
-  expect(p`Lc`("abcdef")).toBe(true);
-  expect(p`Lc`("ABCDEF")).toBe(false);
-  expect(p`Lc`("aBCDEF")).toBe(true);
-  expect(p`LUc`("ABCDEF")).toBe(false);
-  expect(p`LUc`("AbCDEF")).toBe(true);
-  expect(p`LUc`("abcdef")).toBe(false);
   expect(p`""`("")).toBe(true);
   expect(p`''`("")).toBe(true);
   expect(p`Boolean`(false)).toBe(true);
@@ -346,4 +392,12 @@ it("should handle all the symbols", () => {
   expect(p`Symbol`("hello")).toBe(false);
   expect(p`Function`(() => {})).toBe(true);
   expect(p`'A single string'`("A single string")).toBe(true);
+
+  // TODO: These will be deprecated
+  expect(p`Lc`("abcdef")).toBe(true);
+  expect(p`Lc`("ABCDEF")).toBe(false);
+  expect(p`Lc`("aBCDEF")).toBe(true);
+  expect(p`LUc`("ABCDEF")).toBe(false);
+  expect(p`LUc`("AbCDEF")).toBe(true);
+  expect(p`LUc`("abcdef")).toBe(false);
 });

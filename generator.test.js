@@ -1,5 +1,16 @@
 const { generator } = require("./generator");
-const { grammar, tokens } = require("./grammar");
+const {
+  grammar,
+  tokens,
+  isPrecidenceOperatorClose,
+  isPrecidenceOperator,
+  isArgumentSeparator,
+  isVaradicFunction,
+  isVaradicFunctionClose,
+  isPredicateLookup,
+  isLiteral,
+  isOperator
+} = require("./grammar");
 
 const link = grammar[tokens.PREDICATE_LOOKUP];
 const not = grammar[tokens.NOT];
@@ -53,6 +64,23 @@ describe("generator", () => {
 
     itFunc(stringifyAst(ast), () => {
       expect(generator(ast, fns)(inp)).toBe(out);
+    });
+  });
+});
+
+describe("operator predicates", () => {
+  [
+    isPrecidenceOperatorClose,
+    isPrecidenceOperator,
+    isArgumentSeparator,
+    isVaradicFunction,
+    isVaradicFunctionClose,
+    isPredicateLookup,
+    isLiteral,
+    isOperator
+  ].forEach(p => {
+    it("should return false for falsy input", () => {
+      expect(p()).toBe(false);
     });
   });
 });
