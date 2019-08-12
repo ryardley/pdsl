@@ -458,11 +458,6 @@ This Syntax is DRAFT and we are open for [RFCs on the syntax](https://github.com
 
 All feedback welcome. If you want to be a maintainer [create a pull request](https://github.com/ryardley/pdsl/pulls)
 
-## Why would I ever use this?
-
-We think PDSL is a great addition to the JavaScript language and hope you feel that way too. If there is something stopping you from wanting to use this in your projects we would like to know so [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap!
-
-We don't know what's in your head and we want to make libraries that help more people get the most out of programming.
 
 ## FAQ
 
@@ -473,6 +468,12 @@ Predicate Domain Specific Language.
 #### Why did you write this?
 
 @ryardley had a need for it when filtering on events in an app working with [ts-bus](https://github.com/ryardley/ts-bus). He also wanted to learn how to create a compiler from scratch.
+
+#### Why would I ever use this?
+
+We think PDSL is a great addition to the JavaScript language and hope you feel that way too. If there is something stopping you from wanting to use this in your projects we would like to know so [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap!
+
+We don't know what's in your head and we want to make libraries that help more people get the most out of programming.
 
 #### How does this work?
 
