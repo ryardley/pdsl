@@ -483,7 +483,7 @@ Predicate Domain Specific Language.
 
 #### Why would I ever use this?
 
-We think PDSL is a great addition to the JavaScript language and hope you feel that way too. If there is something stopping you from wanting to use this in your projects we would like to know so [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap!
+We think PDSL is a great addition to working with predicates in JavaScript and hope you feel that way too. If there is something stopping you from wanting to use this in your projects we would like to know so [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap!
 
 We don't know what's in your head and we want to make libraries that help more people get the most out of programming.
 
