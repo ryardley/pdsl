@@ -7,12 +7,9 @@
 ![npm](https://img.shields.io/npm/v/pdsl.svg)
 [![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
 
-
-
-
 ## Predicate functions are just easier with PDSL
 
-Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. We need predicate functions all the time when filtering an array, validating input, determining the type of an unknown object or creating guard conditions in TypeScript. 
+Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. We need predicate functions all the time when filtering an array, validating input, determining the type of an unknown object or creating guard conditions in TypeScript.
 
 PDSL provides the developer a simple but powerful shorthand based on a combination of template strings and helper functions for defining predicate functions that makes it easy to understand intent. With `pdsl` we can easily visualize the expected input's structure and intent using it's intuitive predicate composition language.
 
@@ -96,7 +93,7 @@ const isNumeric = input => typeof input === "number";
 **PDSL:**
 
 ```js
-const isNumeric = p`Number`;
+const isNumeric = p`number`;
 ```
 
 ```js
@@ -133,8 +130,8 @@ const UpCase = /[A-Z]/;
 const Extended = /[^a-zA-Z0-9]/;
 
 const isValidUser = p`{
-  username: String & !${Nums} & !${UpCase} & {length: 4..8 },
-  password: String & ${Extended} & {length: > 8},
+  username: string & !${Nums} & !${UpCase} & {length: 4..8 },
+  password: string & ${Extended} & {length: > 8},
   age: > 17
 }`;
 
@@ -229,11 +226,21 @@ If you pass a JavaScript primative object you will get the appropriate typeof ch
 const isNumeric = p`Number`; // typeof value === 'number'
 const isBoolean = p`Boolean`; // typeof value === 'boolean'
 const isString = p`String`; // typeof value === 'string'
-const isObject = p`Object`; // typeof value === 'object'
-const isBigInt = p`BigInt`; // typeof value === 'bigint'
 const isSymbol = p`Symbol`; // typeof value === 'symbol'
-const isFunction = p`Function`; // typeof value === 'function'
 const isArray = p`Array`; // Array.isArray(value)
+const isObject = p`Object`; // typeof value === 'object'
+const isFunction = p`Function`; // typeof value === 'function'
+// const isBigInt = p`BigInt`;// BigInt will be coming soon once standardised
+```
+
+For consistency with typesystems such as TypeScript and Flow you can use lower case for the following:
+
+```js
+const isNumeric = p`number`; // typeof value === 'number'
+const isBoolean = p`boolean`; // typeof value === 'boolean'
+const isString = p`string`; // typeof value === 'string'
+const isSymbol = p`symbol`; // typeof value === 'symbol'
+const isArray = p`array`; // Array.isArray(value)
 ```
 
 You can also pass in a Javascript primitive to the template string.
@@ -272,11 +279,11 @@ const isNull = p`null`;
 You can use familiar JS boolean operators and brackets such as `!`, `&&`, `||`, `(`, or `)` as well as the shorter `&` and `|`:
 
 ```js
-const isNotNil = p`!(null||undefined)`;
+const isNotNil = p`!( null || undefined )`;
 ```
 
 ```js
-const is6CharString = p`String & { length: 6 }`;
+const is6CharString = p`string & { length: 6 }`;
 ```
 
 ### Object properties
@@ -284,7 +291,7 @@ const is6CharString = p`String & { length: 6 }`;
 You can test for an object's properties using the object syntax:
 
 ```js
-const validate = p`{ name: String }`; // value && typeof value.name === 'string';
+const validate = p`{ name: string }`; // value && typeof value.name === 'string';
 
 validate({ name: "Hello" }); // true
 validate({ name: 20 }); // false
@@ -293,7 +300,7 @@ validate({ name: 20 }); // false
 This applies to checking properties of all javascript objects. For example to check a string's length:
 
 ```js
-const validate = p`String & { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`string & { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
@@ -355,7 +362,7 @@ PDSL is really quite useful in TypeScript as guard functions are important to a 
 import p from "pdsl";
 
 // pass in string
-const isString = p<string>`String`;
+const isString = p<string>`string`;
 
 type User = {
   name: string;
@@ -364,8 +371,8 @@ type User = {
 
 // pass in User
 const isUser = p<User>`{
-  name: String & { length: 3..8 },
-  password: String & { length: > 5 }
+  name: string & { length: 3..8 },
+  password: string & { length: > 5 }
 }`;
 
 function doStuff(input: string | User) {
@@ -439,19 +446,21 @@ Help organise our priorities by [telling us what is the most important to you](h
 
 ## Disclaimer
 
-This should work however this project is young and there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this. 
+This should work however this project is young and there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this.
 
-Please help this open source project by [creating issues](https://github.com/ryardley/pdsl/issues/new). 
+Please help this open source project by [creating issues](https://github.com/ryardley/pdsl/issues/new).
 
-Pull requests appreciated! [Feel free to help with open issues](https://github.com/ryardley/pdsl/issues). 
+Pull requests appreciated! [Feel free to help with open issues](https://github.com/ryardley/pdsl/issues).
 
-This Syntax is DRAFT and we are open for [RFCs on the syntax](https://github.com/ryardley/pdsl/issues/new). 
+This Syntax is DRAFT and we are open for [RFCs on the syntax](https://github.com/ryardley/pdsl/issues/new).
 
 All feedback welcome. If you want to be a maintainer [create a pull request](https://github.com/ryardley/pdsl/pulls)
 
-## This sucks because... 
+## Why would I ever use this?
 
-So you think this project is dumb. Great! [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap! We don't know what's in your head and we want to make libraries that help more people get the most out of programming.
+We think PDSL is a great addition to the JavaScript language and hope you feel that way too. If there is something stopping you from wanting to use this in your projects we would like to know so [let us know about it here](https://github.com/ryardley/pdsl/issues/new) - perhaps we can fix your problem or prioritize it in our roadmap!
+
+We don't know what's in your head and we want to make libraries that help more people get the most out of programming.
 
 ## FAQ
 

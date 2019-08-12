@@ -56,6 +56,11 @@ const tokens = {
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
   EMPTY_STRING_SINGLE: "\\'\\'",
+  PRIM_NUMBER_VAL: "number",
+  PRIM_BOOLEAN_VAL: "boolean",
+  PRIM_SYMBOL_VAL: "symbol",
+  PRIM_STRING_VAL: "string",
+  PRIM_ARRAY_VAL: "array",
   PRIM_NUMBER: "Number",
   PRIM_OBJECT: "Object",
   PRIM_ARRAY: "Array",
@@ -188,6 +193,41 @@ const grammar = {
     token: val(undefined),
     toString() {
       return "undefined";
+    }
+  }),
+  [tokens.PRIM_NUMBER_VAL]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Number),
+    toString() {
+      return "number";
+    }
+  }),
+  [tokens.PRIM_BOOLEAN_VAL]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Boolean),
+    toString() {
+      return "boolean";
+    }
+  }),
+  [tokens.PRIM_SYMBOL_VAL]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Symbol),
+    toString() {
+      return "symbol";
+    }
+  }),
+  [tokens.PRIM_STRING_VAL]: token => ({
+    type: "PredicateLiteral",
+    token: prim(String),
+    toString() {
+      return "string";
+    }
+  }),
+  [tokens.PRIM_ARRAY_VAL]: token => ({
+    type: "PredicateLiteral",
+    token: prim(Array),
+    toString() {
+      return "array";
     }
   }),
   [tokens.PRIM_BOOLEAN]: token => ({

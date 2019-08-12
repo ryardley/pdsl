@@ -4,12 +4,38 @@ const { generator } = require("./generator");
 const { pred } = require("./helpers");
 const { pretokenizer } = require("./pretokenizer");
 
+const flow = (...funcs) => input =>
+  funcs.reduce((out, func) => func(out), input);
+
+const debugAst = ast => ast.map(a => a.toString()).join(" ");
+
+const toAst = flow(
+  pretokenizer,
+  lexer,
+  parser
+);
+
 function p(strings, ...expressions) {
-  const pretokenized = pretokenizer(strings);
-  const tokenized = lexer(pretokenized);
-  const ast = parser(tokenized);
-  return generator(ast.filter(Boolean), expressions.map(pred));
+  return generator(toAst(strings).filter(Boolean), expressions.map(pred));
 }
+
+function debugRpn(strings) {
+  return flow(
+    toAst,
+    debugAst
+  )(strings);
+}
+
+function debugTokens(strings) {
+  return flow(
+    pretokenizer,
+    lexer,
+    debugAst
+  )(strings);
+}
+
+p.unsafe_rpn = debugRpn;
+p.unsafe_tokens = debugTokens;
 
 module.exports = p;
 module.exports.default = p;
