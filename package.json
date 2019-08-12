@@ -11,6 +11,18 @@
     "test": "jest --coverage",
     "docs": "jsdoc --destination ./docs helpers.js"
   },
+  "keywords": [
+    "pdsl",
+    "predicate",
+    "validation",
+    "object validation",
+    "expression",
+    "predicate expression",
+    "boolean expression",
+    "boolean functions",
+    "form validation",
+    "predicate domain specific language"
+  ],
   "devDependencies": {
     "codecov": "^3.5.0",
     "jest": "^24.8.0",
