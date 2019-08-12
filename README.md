@@ -20,17 +20,7 @@ const isSoftwareCreator = p`{
   occupation: "Engineer" | "Designer" | "Project Manager"
 }`;
 
-isSoftwareCreator({
-  name: "Sabine",
-  age: 25,
-  occupation: "Engineer"
-}); // true
-
-isSoftwareCreator({
-  name: "Georg",
-  age: 32,
-  occupation: "Banker"
-}); // false
+isSoftwareCreator(someone); // true | false
 ```
 
 ## Predicate functions are just easier with PDSL
