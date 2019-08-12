@@ -2,7 +2,7 @@
 
 # Predicate Domain Specific Language
 
-#### An expressive declarative toolkit for composing predicates
+#### An expressive declarative toolkit for composing predicates in TypeScript or JavaScript
 
 ```js
 import p from "pdsl";
