@@ -21,7 +21,7 @@ isSoftwareCreator(someone); // true | false
 - [x] Lightweight
 - [x] No dependencies
 - [x] Small bundle size
-- [ ] Super fast
+- [ ] Super fast (very soon!)
 
 <br/>
 
