@@ -21,19 +21,6 @@ isSoftwareCreator(someone); // true | false
 ![npm](https://img.shields.io/npm/v/pdsl.svg)
 [![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
 
----
-
-```js
-import p from "pdsl";
-
-const isSoftwareCreator = p`{
-  name: string,
-  age: > 16,
-  occupation: "Engineer" | "Designer" | "Project Manager"
-}`;
-
-isSoftwareCreator(someone); // true | false
-```
 
 ## Predicate functions are just easier with PDSL
 
