@@ -232,6 +232,7 @@ it("should handle between ", () => {
   expect(p`-10 < < 10`(-20)).toBe(false);
   expect(p`{age :1 < < 5}`({ age: 4 })).toBe(true);
 });
+
 it("should know when to turn a value into a predicate", () => {
   expect(p`10`(10)).toBe(true);
   expect(p`!10`(9)).toBe(true);

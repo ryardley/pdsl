@@ -9,14 +9,17 @@ const flow = (...funcs) => input =>
 
 const debugAst = ast => ast.map(a => a.toString()).join(" ");
 
+const cleanup = a => a.filter(Boolean);
+
 const toAst = flow(
   pretokenizer,
   lexer,
-  parser
+  parser,
+  cleanup
 );
 
 function p(strings, ...expressions) {
-  return generator(toAst(strings).filter(Boolean), expressions.map(pred));
+  return generator(toAst(strings), expressions.map(pred));
 }
 
 function debugRpn(strings) {
@@ -35,6 +38,7 @@ function debugTokens(strings) {
 }
 
 p.unsafe_rpn = debugRpn;
+p.unsafe_ast = toAst;
 p.unsafe_tokens = debugTokens;
 
 module.exports = p;
