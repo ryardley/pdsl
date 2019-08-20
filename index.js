@@ -38,8 +38,8 @@ function debugTokens(strings) {
 }
 
 p.unsafe_rpn = debugRpn;
-p.unsafe_ast = toAst;
 p.unsafe_tokens = debugTokens;
 
 module.exports = p;
 module.exports.default = p;
+module.exports.unsafe_toAst = toAst;
