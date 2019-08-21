@@ -21,4 +21,4 @@ fi
 yarn test
 npm version $1
 git push --tags && git push
-npm publish
+npm publish --access public
