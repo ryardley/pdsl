@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+if [ -z "$1" ]; then 
+  echo "Please provide update type: patch, minor major"
+  exit 1;
+fi
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$BRANCH" != "master" ]]; then
+  echo 'This script can only be run from the master branch';
+  exit 1;
+fi
+
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Please ensure your git folder is clean";
+  exit 1;
+fi
+
+yarn test
+yarn docs
+git add -A && git commit -m 'Update docs'
+npm version $1
+git push --tags && git push
+npm publish
