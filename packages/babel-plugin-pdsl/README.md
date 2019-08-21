@@ -1,18 +1,24 @@
 # `@pdsl/babel-plugin-pdsl`
 
-This plugin speeds up `pdsl` in babelified codebases by pre-compiling p-expressions to predicate function definitions.
+This plugin speeds up [`pdsl`](https://github.com/ryardley/pdsl) in babelified codebases by pre-compiling p-expressions to predicate function definitions.
+
+## Prerequisites
+
+Ensure you have [`pdsl`](https://github.com/ryardley/pdsl) installed in your project.
 
 ## Installation
 
-Install with yarn or npm.
+Install the plugin with yarn or npm.
 
 ```bash
-$ yarn add --dev @pdsl/babel-plugin-pdsl
+yarn add --dev @pdsl/babel-plugin-pdsl
 ```
 
 ```bash
-$ npm install -D @pdsl/babel-plugin-pdsl
+npm install -D @pdsl/babel-plugin-pdsl
 ```
+
+## Configuration
 
 Add the plugin to your `.bablerc`:
 
