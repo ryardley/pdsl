@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "main": "./src/index.js",
   "license": "MIT",
+  "repository": "github:ryardley/babel-plugin-pdsl",
   "dependencies": {
     "@babel/generator": "^7.5.5",
     "@babel/helper-module-imports": "^7.0.0",
