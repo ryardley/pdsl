@@ -21,7 +21,7 @@ isSoftwareCreator(someone); // true | false
 - [x] Lightweight
 - [x] No dependencies
 - [x] Small bundle size
-- [ ] Super fast (very soon!)
+- [x] Fast
 
 <br/>
 
@@ -29,7 +29,6 @@ isSoftwareCreator(someone); // true | false
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
 ![npm](https://img.shields.io/npm/v/pdsl.svg)
 [![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
-
 
 ## Predicate functions are just easier with PDSL
 
@@ -413,6 +412,20 @@ function doStuff(input: string | User) {
 }
 ```
 
+## Usage with Babel
+
+PDSL comes with a [babel plugin](https://github.com/ryardley/babel-plugin-pdsl).
+
+```bash
+yarn add --dev @pdsl/babel-plugin-pdsl
+```
+
+```js
+{
+  plugins: ["@pdsl/babel-plugin-pdsl"];
+}
+```
+
 ## Helpers
 
 PDSL provides a number of helpers that can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
@@ -462,8 +475,8 @@ Help organise our priorities by [telling us what is the most important to you](h
 - [x] Basic Laanaguage Design
 - [x] PDSL Compiler
 - [x] Comprehensive Test cases
+- [x] Babel Plugin to remove compiler perf overhead
 - [ ] Validation errors
-- [ ] Babel Plugin to remove compiler perf overhead
 - [ ] Syntax Highlighting VSCode and others
 - [ ] Get Prettier to format the syntax on save
 - [ ] VSCode Autocomplete
