@@ -22,6 +22,7 @@ const {
   val,
   Xc
 } = require("./helpers");
+
 const tokens = {
   NOT: "\\!",
   AND: "\\&\\&",
@@ -74,213 +75,230 @@ const tokens = {
   PRECEDENCE: "\\(",
   PRECEDENCE_CLOSE: "\\)"
 };
+
+const types = {
+  BooleanLiteral: "BooleanLiteral",
+  PredicateLiteral: "PredicateLiteral",
+  SymbolLiteral: "SymbolLiteral",
+  NumericLiteral: "NumericLiteral",
+  StringLiteral: "StringLiteral",
+  PredicateLookup: "PredicateLookup",
+  Operator: "Operator",
+  VariableArityOperator: "VariableArityOperator",
+  VariableArityOperatorClose: "VariableArityOperatorClose",
+  ArgumentSeparator: "ArgumentSeparator",
+  PrecidenceOperator: "PrecidenceOperator",
+  PrecidenceOperatorClose: "PrecidenceOperatorClose"
+};
+
 const grammar = {
   // LITERALS
   [tokens.TRUE]: token => ({
-    type: "BooleanLiteral",
+    type: types.BooleanLiteral,
     token: true,
     toString() {
       return token;
     }
   }),
   [tokens.FALSE]: token => ({
-    type: "BooleanLiteral",
+    type: types.BooleanLiteral,
     token: false,
     toString() {
       return token;
     }
   }),
   [tokens.EMAIL_REGX]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: regx(Email),
     toString() {
       return "Email";
     }
   }),
   [tokens.EXTENDED_CHARS_REGX]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: regx(Xc),
     toString() {
       return "Xc";
     }
   }),
   [tokens.NUM_CHARS_REGX]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: regx(Nc),
     toString() {
       return "Nc";
     }
   }),
   [tokens.LOW_CHARS_REGX]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: regx(Lc),
     toString() {
       return "Lc";
     }
   }),
   [tokens.UP_CHARS_REGX]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: regx(Uc),
     toString() {
       return "Uc";
     }
   }),
   [tokens.LOW_UP_CHARS_REGX]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: regx(LUc),
     toString() {
       return "LUc";
     }
   }),
   [tokens.EMPTY_OBJ]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: deep({}),
     toString() {
       return "{}";
     }
   }),
   [tokens.EMPTY_ARRAY]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: deep([]),
     toString() {
       return "[]";
     }
   }),
   [tokens.EMPTY_STRING_DOUBLE]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: deep(""),
     toString() {
       return `""`;
     }
   }),
   [tokens.EMPTY_STRING_SINGLE]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: deep(""),
     toString() {
       return `""`;
     }
   }),
   [tokens.PRIM_NUMBER]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Number),
     toString() {
       return "Number";
     }
   }),
   [tokens.PRIM_OBJECT]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Object),
     toString() {
       return "Object";
     }
   }),
   [tokens.PRIM_ARRAY]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Array),
     toString() {
       return "Array";
     }
   }),
   [tokens.NULL]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: val(null),
     toString() {
       return "null";
     }
   }),
   [tokens.UNDEFINED]: () => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: val(undefined),
     toString() {
       return "undefined";
     }
   }),
   [tokens.PRIM_NUMBER_VAL]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Number),
     toString() {
       return "number";
     }
   }),
   [tokens.PRIM_BOOLEAN_VAL]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Boolean),
     toString() {
       return "boolean";
     }
   }),
   [tokens.PRIM_SYMBOL_VAL]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Symbol),
     toString() {
       return "symbol";
     }
   }),
   [tokens.PRIM_STRING_VAL]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(String),
     toString() {
       return "string";
     }
   }),
   [tokens.PRIM_ARRAY_VAL]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Array),
     toString() {
       return "array";
     }
   }),
   [tokens.PRIM_BOOLEAN]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Boolean),
     toString() {
       return "Boolean";
     }
   }),
   [tokens.PRIM_STRING]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(String),
     toString() {
       return "String";
     }
   }),
   [tokens.PRIM_SYMBOL]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Symbol),
     toString() {
       return "Symbol";
     }
   }),
   [tokens.PRIM_FUNCTION]: token => ({
-    type: "PredicateLiteral",
+    type: types.PredicateLiteral,
     token: prim(Function),
     toString() {
       return "Function";
     }
   }),
+  // TODO: The following should be renamed to be an "Identifier" (rookie mistake)
   [tokens.SYMBOL]: token => ({
-    type: "SymbolLiteral",
+    type: types.SymbolLiteral,
     token,
     toString() {
       return token;
     }
   }),
   [tokens.NUMBER]: token => ({
-    type: "NumericLiteral",
+    type: types.NumericLiteral,
     token: Number(token),
     toString() {
       return token;
     }
   }),
   [tokens.STRING_DOUBLE]: token => ({
-    type: "StringLiteral",
+    type: types.StringLiteral,
     token: token.match(/\"(.*)\"/)[1],
     toString() {
       return token;
     }
   }),
   [tokens.STRING_SINGLE]: token => ({
-    type: "StringLiteral",
+    type: types.StringLiteral,
     token: token.match(/\'(.*)\'/)[1],
     toString() {
       return token;
@@ -288,7 +306,7 @@ const grammar = {
   }),
   [tokens.PREDICATE_LOOKUP]: token => {
     return {
-      type: "PredicateLookup",
+      type: types.PredicateLookup,
       token: token.match(/@{LINK:(\d+)}/)[1],
       toString() {
         return token;
@@ -299,7 +317,7 @@ const grammar = {
   // OPERATORS
 
   [tokens.NOT]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 1,
     runtime: not,
@@ -309,7 +327,7 @@ const grammar = {
     prec: 10
   }),
   [tokens.AND]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 2,
     runtime: and,
@@ -319,7 +337,7 @@ const grammar = {
     }
   }),
   [tokens.AND_SHORT]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 2,
     runtime: and,
@@ -330,7 +348,7 @@ const grammar = {
   }),
 
   [tokens.OR]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 2,
     runtime: or,
@@ -340,7 +358,7 @@ const grammar = {
     }
   }),
   [tokens.OR_SHORT]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 2,
     runtime: or,
@@ -350,7 +368,7 @@ const grammar = {
     }
   }),
   [tokens.BTW]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 2,
     runtime: btw,
@@ -360,7 +378,7 @@ const grammar = {
     }
   }),
   [tokens.BTWE]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 2,
     runtime: btwe,
@@ -370,7 +388,7 @@ const grammar = {
     }
   }),
   [tokens.GTE]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 1,
     runtime: gte,
@@ -380,7 +398,7 @@ const grammar = {
     }
   }),
   [tokens.LTE]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 1,
     runtime: lte,
@@ -390,7 +408,7 @@ const grammar = {
     }
   }),
   [tokens.GT]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 1,
     runtime: gt,
@@ -400,7 +418,7 @@ const grammar = {
     }
   }),
   [tokens.LT]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 1,
     runtime: lt,
@@ -412,7 +430,7 @@ const grammar = {
 
   // functions have highest precidence
   [tokens.ENTRY]: token => ({
-    type: "Operator",
+    type: types.Operator,
     token,
     arity: 2,
     runtime: entry,
@@ -423,7 +441,7 @@ const grammar = {
   }),
 
   [tokens.OBJ]: token => ({
-    type: "VariableArityOperator",
+    type: types.VariableArityOperator,
     token,
     arity: 0,
     runtime: obj,
@@ -434,7 +452,7 @@ const grammar = {
   }),
 
   [tokens.OBJ_CLOSE]: token => ({
-    type: "VariableArityOperatorClose",
+    type: types.VariableArityOperatorClose,
     token,
     matchingToken: "{",
     toString() {
@@ -443,7 +461,7 @@ const grammar = {
   }),
 
   [tokens.HOLDS]: token => ({
-    type: "VariableArityOperator",
+    type: types.VariableArityOperator,
     token,
     arity: 0,
     runtime: holds,
@@ -454,7 +472,7 @@ const grammar = {
   }),
 
   [tokens.HOLDS_CLOSE]: token => ({
-    type: "VariableArityOperatorClose",
+    type: types.VariableArityOperatorClose,
     token,
     matchingToken: "[",
     toString() {
@@ -463,7 +481,7 @@ const grammar = {
   }),
 
   [tokens.ARG]: token => ({
-    type: "ArgumentSeparator",
+    type: types.ArgumentSeparator,
     token,
     toString() {
       return token;
@@ -471,14 +489,14 @@ const grammar = {
   }),
 
   [tokens.PRECEDENCE]: token => ({
-    type: "PrecidenceOperator",
+    type: types.PrecidenceOperator,
     token,
     toString() {
       return token;
     }
   }),
   [tokens.PRECEDENCE_CLOSE]: token => ({
-    type: "PrecidenceOperatorClose",
+    type: types.PrecidenceOperatorClose,
     token,
     toString() {
       return token;
@@ -488,7 +506,7 @@ const grammar = {
 
 function isOperator(node) {
   if (!node) return false;
-  return node.type === "Operator";
+  return node.type === types.Operator;
 }
 
 function isLiteral(node) {
@@ -506,35 +524,36 @@ function isLiteral(node) {
 
 function isPredicateLookup(node) {
   if (!node) return false;
-  return node.type === "PredicateLookup";
+  return node.type === types.PredicateLookup;
 }
 function isVaradicFunctionClose(node) {
   if (!node) return false;
-  return node.type === "VariableArityOperatorClose";
+  return node.type === types.VariableArityOperatorClose;
 }
 
 function isVaradicFunction(node) {
   if (!node) return false;
-  return node.type === "VariableArityOperator";
+  return node.type === types.VariableArityOperator;
 }
 
 function isArgumentSeparator(node) {
   if (!node) return false;
-  return node.type === "ArgumentSeparator";
+  return node.type === types.ArgumentSeparator;
 }
 function isPrecidenceOperator(node) {
   if (!node) return false;
-  return node.type === "PrecidenceOperator";
+  return node.type === types.PrecidenceOperator;
 }
 
 function isPrecidenceOperatorClose(node) {
   if (!node) return false;
-  return node.type === "PrecidenceOperatorClose";
+  return node.type === types.PrecidenceOperatorClose;
 }
 
 module.exports = {
   grammar,
   tokens,
+  types,
   isPrecidenceOperatorClose,
   isPrecidenceOperator,
   isArgumentSeparator,
