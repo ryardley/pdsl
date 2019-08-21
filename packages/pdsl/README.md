@@ -219,14 +219,6 @@ isKitchenSinc({
 }); // true
 ```
 
-## Goals
-
-- No dependencies
-- Intuitive DSL
-- Avoid eval
-- Small bundle size
-- Fast
-
 ## Installation
 
 Install with npm or yarn
