@@ -275,6 +275,7 @@ const grammar = {
       return "Function";
     }
   }),
+  // TODO: The following should be renamed to be an "Identifier" (rookie mistake)
   [tokens.SYMBOL]: token => ({
     type: types.SymbolLiteral,
     token,
@@ -552,6 +553,7 @@ function isPrecidenceOperatorClose(node) {
 module.exports = {
   grammar,
   tokens,
+  types,
   isPrecidenceOperatorClose,
   isPrecidenceOperator,
   isArgumentSeparator,
