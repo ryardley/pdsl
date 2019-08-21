@@ -412,7 +412,7 @@ PDSL comes with an experimental [babel plugin](https://github.com/ryardley/babel
 yarn add --dev @pdsl/babel-plugin-pdsl
 ```
 
-You should place it before any treeshaking.
+You should ensure it is placed before any plugins that affect module import syntax.
 
 ```js
 {
