@@ -1,5 +1,5 @@
 {
-  "name": "babel-plugin-pdsl",
+  "name": "@pdsl/babel-plugin-pdsl",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -8,14 +8,18 @@
     "@babel/helper-module-imports": "^7.0.0",
     "@babel/template": "^7.4.4",
     "@babel/traverse": "^7.5.5",
-    "@babel/types": "^7.5.5",
-    "babel-plugin-tester": "^7.0.1",
-    "pdsl": "^3.5.3"
+    "@babel/types": "^7.5.5"
   },
   "scripts": {
     "test": "jest"
   },
   "devDependencies": {
-    "jest": "^24.9.0"
+    "@babel/core": "^7.5.5",
+    "babel-plugin-tester": "^7.0.1",
+    "jest": "^24.9.0",
+    "pdsl": "^3.5.4"
+  },
+  "peerDependencies": {
+    "pdsl": ">=3.5.4"
   }
 }

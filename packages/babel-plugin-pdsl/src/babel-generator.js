@@ -3,7 +3,7 @@ const {
   isVaradicFunction,
   isOperator,
   isLiteral
-} = require("../../pdsl/grammar");
+} = require("pdsl/grammar");
 
 const { literal } = require("./literals");
 const { runtimeCreator } = require("./runtime");
@@ -30,7 +30,7 @@ function generator(input, babelExpressionList) {
     }
   }, []);
 
-  return { ast: val(runnable) };
+  return val(runnable);
 }
 
 module.exports = { generator };

@@ -5,15 +5,9 @@ const {
   numericLiteral,
   stringLiteral
 } = require("./literals");
-const { grammar, tokens } = require("../../pdsl/grammar");
+const { grammar, tokens } = require("pdsl/grammar");
 const generate = require("@babel/generator").default;
-// const link = grammar[tokens.PREDICATE_LOOKUP];
-// const not = grammar[tokens.NOT];
-// const or = grammar[tokens.OR];
-// const and = grammar[tokens.AND];
-// const obj = grammar[tokens.OBJ];
-// const symbol = grammar[tokens.SYMBOL];
-// const entry = grammar[tokens.ENTRY];
+
 describe("numericLiteral", () => {
   test("3.1415", () => {
     expect(generate(numericLiteral({ token: 3.1415 })).code).toBe("3.1415");

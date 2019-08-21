@@ -9,7 +9,7 @@
   dependencies:
     "@babel/highlight" "^7.0.0"
 
-"@babel/core@^7.1.0":
+"@babel/core@^7.1.0", "@babel/core@^7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.5.5.tgz#17b2686ef0d6bc58f963dddd68ab669755582c30"
   integrity sha512-i4qoSr2KTtce0DmkuuQBV4AuQgGPUcPXMr9L5MyYAtk06z068lQ10a4O009fe5OB/DfNV+h+qqT7ddNV8UnRjg==
@@ -2623,10 +2623,10 @@ path-type@^3.0.0:
   dependencies:
     pify "^3.0.0"
 
-pdsl@^3.5.3:
-  version "3.5.3"
-  resolved "https://registry.yarnpkg.com/pdsl/-/pdsl-3.5.3.tgz#244b3ba3a11b7d104c916f11913ea1263bc9c3ce"
-  integrity sha512-g0d7UERDJKM0aQEdj9ZDDV0VE7b/+dH1INf76orOMDRe7ZzN8NoqYXWviPW5qq3HqUb2+VEZ/mUNY076967Ybw==
+pdsl@^3.5.4:
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/pdsl/-/pdsl-3.5.4.tgz#480c10872b2f8a8cb67036bae55cb1c9e025254d"
+  integrity sha512-cQKhja4KInhVAbQDNCby2iYyLFC6+2eNjo8Zt76CD9fwODzDwAqEDrPBZ4XwB2eBCwgy2FRF0OHTlZF217zbkw==
 
 performance-now@^2.1.0:
   version "2.1.0"

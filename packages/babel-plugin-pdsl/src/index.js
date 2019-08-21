@@ -2,7 +2,7 @@
 const traverse = require("@babel/traverse").default;
 
 const { generator } = require("./babel-generator");
-const { unsafe_toAst } = require("../../pdsl");
+const { unsafe_toAst } = require("pdsl");
 
 // 1. Find TaggedTemplateExpression
 // 2. If the identifier is p then continue
@@ -20,22 +20,57 @@ function findStringsAndAstNodeList(path) {
   return { strings, nodeList };
 }
 
+const AVAILABLE_IDENTS = [
+  "Email",
+  "btw",
+  "btwe",
+  "lt",
+  "lte",
+  "gt",
+  "gte",
+  "holds",
+  "or",
+  "and",
+  "not",
+  "obj",
+  "val",
+  "regx",
+  "entry",
+  "prim",
+  "pred",
+  "deep"
+];
+
 module.exports = function pdslPlugin({ template }) {
-  const imps = [];
   return {
     name: "pdsl",
     visitor: {
-      TaggedTemplateExpression(path) {
-        if (path.node.tag.name !== "p") return;
-        const { strings, nodeList } = findStringsAndAstNodeList(path);
-        const { ast } = generator(unsafe_toAst(strings), nodeList);
-        path.replaceWith(ast);
-      },
-      ImportDeclaration(path) {
-        if (path.node.source.value !== "pdsl") return;
-        console.log({ imps });
-        path.replaceWith(
-          template.ast(`const {not, or} = require("pdsl/helpers");`)
+      ImportDeclaration(pathImport) {
+        if (pathImport.node.source.value !== "pdsl") return;
+        let imps = new Set();
+        pathImport.parentPath.traverse({
+          TaggedTemplateExpression(path) {
+            if (path.node.tag.name !== "p") return;
+            const { strings, nodeList } = findStringsAndAstNodeList(path);
+            const ast = generator(unsafe_toAst(strings), nodeList);
+            traverse(
+              { type: "File", program: { type: "Program", body: [ast] } },
+              {
+                Identifier(pathIdentifier) {
+                  imps.add(pathIdentifier.node.name);
+                }
+              }
+            );
+            path.replaceWith(ast);
+          }
+        });
+
+        pathImport.replaceWith(
+          template.ast(
+            `const {${Array.from(imps)
+              .filter(a => AVAILABLE_IDENTS.includes(a))
+              .join(",")}} = require("pdsl/helpers");`
+          )
         );
       }
     }
