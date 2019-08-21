@@ -404,46 +404,6 @@ function doStuff(input: string | User) {
 }
 ```
 
-## Usage with Babel
-
-PDSL comes with an experimental [babel plugin](https://github.com/ryardley/babel-plugin-pdsl).
-
-```bash
-yarn add --dev @pdsl/babel-plugin-pdsl
-```
-
-You should ensure it is placed before any plugins that affect module import syntax.
-
-```js
-{
-  plugins: ["@pdsl/babel-plugin-pdsl"];
-}
-```
-
-The Babel plugin removes all compilation overhead by transforming your code into nested helpers like so: 
-
-### Input
-
-```js
-import p from "pdsl";
-
-const notNil = p`!(null|undefined)`;
-const hasName = p`{name}`;
-const isTrue = p`true`;
-const hasNameWithFn = p`{name:${a => a.length > 10}}`;
-```
-
-### Output
-
-```js
-import { val, not, or, obj, entry, pred } from "pdsl/helpers";
-
-const notNil = val(not(or(val(null), val(undefined))));
-const hasName = val(obj("name"));
-const isTrue = val(true);
-const hasNameWithFn = val(obj(entry("name", pred(a => a.length > 10))));
-```
-
 ## Helpers
 
 PDSL provides a number of helpers that can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
@@ -485,6 +445,46 @@ Available helpers:
 | [val](https://ryardley.github.io/pdsl/global.html#val)     | Strict equality                             | N/A                    |
 
 For the helper docs please chec the [helper docs](https://ryardley.github.io/pdsl/index.html).
+
+## Usage with Babel
+
+PDSL comes with an experimental [babel plugin](https://github.com/ryardley/babel-plugin-pdsl).
+
+```bash
+yarn add --dev @pdsl/babel-plugin-pdsl
+```
+
+You should ensure it is placed before any plugins that affect module import syntax.
+
+```js
+{
+  plugins: ["@pdsl/babel-plugin-pdsl"];
+}
+```
+
+The Babel plugin removes all compilation overhead by transforming your code into nested helpers like so: 
+
+##### INPUT
+
+```js
+import p from "pdsl";
+
+const notNil = p`!(null|undefined)`;
+const hasName = p`{name}`;
+const isTrue = p`true`;
+const hasNameWithFn = p`{name:${a => a.length > 10}}`;
+```
+
+##### OUTPUT
+
+```js
+import { val, not, or, obj, entry, pred } from "pdsl/helpers";
+
+const notNil = val(not(or(val(null), val(undefined))));
+const hasName = val(obj("name"));
+const isTrue = val(true);
+const hasNameWithFn = val(obj(entry("name", pred(a => a.length > 10))));
+```
 
 ## Roadmap
 
