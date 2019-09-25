@@ -32,5 +32,5 @@ isSoftwareCreator(someone); // true | false
 
 # Read the docs!
 
-[pdsl docs](packages/pdsl/README.md)
-[babel-plugin-pdsl docs](packages/babel-plugin-pdsl/README.md)
+* [pdsl docs](packages/pdsl)
+* [babel-plugin-pdsl docs](packages/babel-plugin-pdsl)
