@@ -3,11 +3,11 @@
   "private": true,
   "scripts": {
     "test": "lerna run test --concurrency=1 --stream",
+    "docs": "lerna run docs --concurrency=1 --stream",
     "bootstrap": "lerna bootstrap --no-ci",
     "clean": "yarn clean:artifacts && yarn clean:packages",
     "clean:artifacts": "lerna run clean --parallel",
-    "clean:packages": "lerna clean --yes",
-    "build": "lerna run build --concurrency=1 --stream"
+    "clean:packages": "lerna clean --yes"
   },
   "devDependencies": {
     "lerna": "^3.16.4"
