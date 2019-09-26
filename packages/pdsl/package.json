@@ -9,7 +9,7 @@
   "repository": "github:ryardley/pdsl",
   "scripts": {
     "test": "jest --coverage",
-    "docs": "jsdoc --destination ./docs helpers.js"
+    "docs": "jsdoc --destination ../../docs helpers.js"
   },
   "keywords": [
     "pdsl",
