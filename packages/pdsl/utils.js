@@ -51,3 +51,5 @@ module.exports = {
   isFunction,
   isPrimative
 };
+
+// 3.5.11
