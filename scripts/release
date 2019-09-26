@@ -23,4 +23,4 @@ yarn docs
 git add -A && git commit -m 'Update docs'
 $(yarn bin)/lerna version $1
 git push --tags && git push
-$(yarn bin)/lerna publish
+$(yarn bin)/lerna publish --registry https://registry.npmjs.org/
