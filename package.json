@@ -7,7 +7,10 @@
     "bootstrap": "lerna bootstrap --no-ci",
     "clean": "yarn clean:artifacts && yarn clean:packages",
     "clean:artifacts": "lerna run clean --parallel",
-    "clean:packages": "lerna clean --yes"
+    "clean:packages": "lerna clean --yes",
+    "release:patch": "./scripts/release patch",
+    "release:minor": "./scripts/release minor",
+    "release:major": "./scripts/release major"
   },
   "devDependencies": {
     "lerna": "^3.16.4"

@@ -21,6 +21,6 @@ fi
 yarn test
 yarn docs
 git add -A && git commit -m 'Update docs'
-npm version $1
+$(yarn bin)/lerna version $1
 git push --tags && git push
-npm publish
+# $(yarn bin)/lerna publish
