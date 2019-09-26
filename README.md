@@ -448,7 +448,7 @@ For the helper docs please chec the [helper docs](https://ryardley.github.io/pds
 
 ## Usage with Babel
 
-PDSL comes with an experimental [babel plugin](https://github.com/ryardley/babel-plugin-pdsl).
+PDSL comes with an experimental [babel plugin](https://github.com/ryardley/pdsl/tree/monorepo/packages/babel-plugin-pdsl).
 
 This plugin speeds up [`pdsl`](https://github.com/ryardley/pdsl) in babelified codebases by pre-compiling p-expressions to predicate function definitions.
 
