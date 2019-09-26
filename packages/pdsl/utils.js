@@ -51,5 +51,3 @@ module.exports = {
   isFunction,
   isPrimative
 };
-
-// Adding a comment so this gets published
