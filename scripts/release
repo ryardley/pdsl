@@ -12,7 +12,7 @@ if [ "$BRANCH" != "master" ] && [ "$BRANCH" != "develop" ]; then
   echo 'This script can only be run from the master or develop branches';
   exit 1;
 fi
-DIST_TAG=$(( "$BRANCH" == "master" ? "latest" : "next" ))
+DIST_TAG=$([ "$BRANCH" == "master" ] && echo "latest" || echo "next")
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "Please ensure your git folder is clean";
