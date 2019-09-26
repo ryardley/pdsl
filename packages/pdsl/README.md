@@ -38,4 +38,4 @@ PDSL provides the developer a simple but powerful shorthand based on a combinati
 
 ## Documentation
 
-For docs see https://github.com/ryardley/pdsl/README.md
+[Read the docs](https://github.com/ryardley/pdsl/blob/master/README.md)
