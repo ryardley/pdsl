@@ -32,9 +32,8 @@ isSoftwareCreator(someone); // true | false
 
 # Documentation
 
-* [PDSL](packages/pdsl)
-* [PDSL Babel Plugin](packages/babel-plugin-pdsl)
-
+- [PDSL](packages/pdsl/README.md)
+- [PDSL Babel Plugin](packages/babel-plugin-pdsl/README.md)
 
 ## Roadmap
 
