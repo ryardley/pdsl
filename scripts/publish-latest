@@ -10,7 +10,7 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1;
 fi
 
-read -p "This script will move next to latest" YN
+read -p "This script will move next to latest. (Ny): " YN
 
 if [ "$YN" != "y" ] || [ "$YN" != "Y" ]; then 
   echo "Cancelled by user";
