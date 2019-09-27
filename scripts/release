@@ -12,7 +12,7 @@ fi
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$BRANCH" != "develop" ]; then
-  echo 'This script can only be run from the master or develop branches';
+  echo 'This script can only be run from the develop branche';
   exit 1;
 fi
 
