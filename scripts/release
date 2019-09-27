@@ -2,12 +2,19 @@
 
 set -e
 
+# patch, minor or major
+SEMVER_TYPE=$1
+
+if [ "$SEMVER_TYPE" != "patch" ] && [ "$SEMVER_TYPE" != "minor" ] && [ "$SEMVER_TYPE" != "major" ]; then 
+  echo "Please provide update type: patch, minor major"
+  exit 1;
+fi
+
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [ "$BRANCH" != "master" ] && [ "$BRANCH" != "develop" ]; then
+if [ "$BRANCH" != "develop" ]; then
   echo 'This script can only be run from the master or develop branches';
   exit 1;
 fi
-DIST_TAG=$([ "$BRANCH" == "master" ] && echo "latest" || echo "next")
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "Please ensure your git folder is clean";
@@ -17,8 +24,7 @@ fi
 yarn test
 yarn docs
 git add -A && git commit -m 'Update docs'
-if [ -n "$1" ]; then 
-  $(yarn bin)/lerna version $1
-  git push --tags && git push
-fi
-$(yarn bin)/lerna publish from-package --dist-tag $DIST_TAG --registry https://registry.npmjs.org/
+
+$(yarn bin)/lerna version $SEMVER_TYPE
+git push --tags && git push
+$(yarn bin)/lerna publish from-package --dist-tag next --registry https://registry.npmjs.org/
