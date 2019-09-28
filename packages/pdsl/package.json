@@ -8,7 +8,7 @@
   "license": "MIT",
   "repository": "github:ryardley/pdsl",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage --coverageDirectory ../../coverage",
     "docs": "jsdoc --destination ../../docs helpers.js"
   },
   "keywords": [
