@@ -3,6 +3,7 @@
 set -e
 
 source ./scripts/git-check.sh
+source ./scripts/standard-lib.sh
 
 exit_unless_valid_branch "develop"
 exit_unless_clean_git_folder
