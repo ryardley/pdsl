@@ -9,7 +9,7 @@ source ./scripts/publishing.sh
 semver_type=$1
 dist_tag=${2:-next}
 exit_unless_valid_semver "$semver_type"
-exit_unless_valid_branch "develop"
+exit_unless_valid_branch "master"
 exit_unless_clean_git_folder
 yarn test
 yarn docs && git add -A && git commit -m 'Update docs'
