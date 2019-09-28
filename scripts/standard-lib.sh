@@ -10,6 +10,9 @@ exit_unless_say_yes() {
 
 exit_if_empty() {
   if [[ -z "$1" ]]; then
+    if [[ -n "$2" ]]; then
+      echo "$2"
+    fi
     exit 1
   fi 
 }
