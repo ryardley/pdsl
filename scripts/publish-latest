@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./git-check.sh
+set -e
+
+source ./scripts/git-check.sh
 
 exit_unless_valid_branch "develop"
 exit_unless_clean_git_folder
