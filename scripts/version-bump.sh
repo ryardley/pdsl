@@ -3,16 +3,16 @@
 
 version_bump() {
   # patch, minor or major
-  local SEMVER_TYPE=$1
+  local semver_type=$1
 
-  exit_unless_valid_semver "$SEMVER_TYPE"
+  exit_unless_valid_semver "$semver_type"
 
-  $(yarn bin)/lerna version "$SEMVER_TYPE"
+  $(yarn bin)/lerna version "$semver_type"
 }
 
 exit_unless_valid_semver() {
-  local SEMVER_TYPE=$1
-  if [ "$SEMVER_TYPE" != "patch" ] && [ "$SEMVER_TYPE" != "minor" ] && [ "$SEMVER_TYPE" != "major" ]; then 
+  local semver_type=$1
+  if [ "$semver_type" != "patch" ] && [ "$semver_type" != "minor" ] && [ "$semver_type" != "major" ]; then 
     echo "Please provide update type: patch, minor major"
     exit 1;
   fi

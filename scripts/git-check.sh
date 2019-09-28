@@ -1,7 +1,7 @@
 
 exit_unless_valid_branch() {
-  BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  if [ "$BRANCH" != "$1" ]; then
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  if [ "$branch" != "$1" ]; then
     echo 'This script can only be run from the develop branche';
     exit 1;
   fi

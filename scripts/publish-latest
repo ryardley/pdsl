@@ -8,5 +8,4 @@ source ./scripts/standard-lib.sh
 exit_unless_valid_branch "develop"
 exit_unless_clean_git_folder
 exit_unless_say_yes "This script will move next to latest. Are you sure? (Ny): " "User cancelled action"
-
 promote_next_to_latest

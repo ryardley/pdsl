@@ -1,6 +1,6 @@
 exit_unless_say_yes() {
-  read -p "$1" YN
-  if [[ "$YN" != "y" ]] && [[ "$YN" != "Y" ]]; then
+  read -p "$1" yn
+  if [[ "$yn" != "y" ]] && [[ "$yn" != "Y" ]]; then
     if [[ -n "$2" ]]; then 
       echo $2
     fi 
