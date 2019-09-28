@@ -8,4 +8,4 @@ exit_unless_valid_branch "develop"
 exit_unless_clean_git_folder
 exit_unless_say_yes "This script will move next to latest. Are you sure? (Ny): " "User cancelled action"
 
-$(yarn bin)/lerna exec --stream --no-bail --concurrency 1 -- 'PKG_VERSION=$(npm v . dist-tags.next); [ -n "$PKG_VERSION" ] && ( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} latest ) || exit 0'
+promote_next_to_latest
