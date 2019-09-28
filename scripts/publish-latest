@@ -1,21 +1,11 @@
 #!/bin/bash
 
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [ "$BRANCH" != "master" ]; then
-  echo 'This script can only be run from the master or develop branches';
-  exit 1;
-fi
+set -e
 
-if [ -n "$(git status --porcelain)" ]; then
-  echo "Please ensure your git folder is clean";
-  exit 1;
-fi
+source ./scripts/git-check.sh
+source ./scripts/standard-lib.sh
 
-read -p "This script will move next to latest. Are you sure? (Ny): " YN
-
-if [ "$YN" != "y" ] && [ "$YN" != "Y" ]; then 
-  echo "Cancelled by user";
-  exit 0;
-fi
-
-$(yarn bin)/lerna exec --stream --no-bail --concurrency 1 -- 'PKG_VERSION=$(npm v . dist-tags.next); [ -n "$PKG_VERSION" ] && ( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} latest && npm dist-tag rm $LERNA_PACKAGE_NAME next) || exit 0'
+exit_unless_valid_branch "master"
+exit_unless_clean_git_folder
+exit_unless_say_yes "This script will move next to latest. Are you sure? (Ny): " "User cancelled action"
+promote_next_to_latest
