@@ -5,11 +5,9 @@ notifications:
 node_js:
   - "10"
 branches:
-  except:
-    - /^v\d+\.\d+\.\d+$/
-script:
-  yarn test
-env:
-  CODECOV_TOKEN=68c38489-4793-4bfb-8f76-ebaa324053fa
+  only:
+    - master
+script: yarn test
+env: CODECOV_TOKEN=68c38489-4793-4bfb-8f76-ebaa324053fa
 after_success:
   - codecov

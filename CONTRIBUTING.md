@@ -9,5 +9,5 @@
 Publishing scripts can only be run when the env var is set:
 
 ```
-DANGEROUSLY_PUBLISH=1 yarn release:patch
+LIVE_RUN=1 yarn release:patch
 ```
