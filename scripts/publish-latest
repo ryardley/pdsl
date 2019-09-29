@@ -5,7 +5,11 @@ set -e
 source ./scripts/git-check.sh
 source ./scripts/standard-lib.sh
 
+source_tag=$1
+destination_tag=$2
+exit_if_empty "$source_tag"
+exit_if_empty "$destination_tag"
 exit_unless_valid_branch "master"
 exit_unless_clean_git_folder
-exit_unless_say_yes "This script will move next to latest. Are you sure? (Ny): " "User cancelled action"
-promote_next_to_latest
+exit_unless_say_yes "This script will move ${source_tag} to ${destination_tag}. Are you sure? (Ny): " "User cancelled action"
+promote_tag_to_tag "$source_tag" "$destination_tag"
