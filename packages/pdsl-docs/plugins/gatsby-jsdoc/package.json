@@ -1,0 +1,9 @@
+{
+  "name": "gatsby-jsdoc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "jsdoc-to-markdown": "^5.0.1"
+  }
+}
