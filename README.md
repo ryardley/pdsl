@@ -494,7 +494,7 @@ const hasNameWithFn = val(obj(entry("name", pred(a => a.length > 10))));
 
 Help organise our priorities by [telling us what is the most important to you](https://github.com/ryardley/pdsl/issues/new)
 
-- [x] Basic Laanaguage Design
+- [x] Basic Language Design
 - [x] PDSL Compiler
 - [x] Comprehensive Test cases
 - [x] Babel Plugin to remove compiler perf overhead
