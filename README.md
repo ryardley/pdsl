@@ -498,10 +498,9 @@ Help organise our priorities by [telling us what is the most important to you](h
 - [x] PDSL Compiler
 - [x] Comprehensive Test cases
 - [x] Babel Plugin to remove compiler perf overhead
+- [ ] Exact matching by default
 - [ ] Validation errors
-- [ ] Syntax Highlighting VSCode and others
-- [ ] Get Prettier to format the syntax on save
-- [ ] VSCode Autocomplete
+- [ ] Syntax Highlighting / VSCode Autocomplete / Prettier formatting
 
 ## Disclaimer
 
