@@ -4,6 +4,7 @@ set -e
 
 source ./scripts/git-check.sh
 source ./scripts/standard-lib.sh
+source ./scripts/publishing.sh
 
 source_tag=${1:-next}
 destination_tag=${2:-latest}
