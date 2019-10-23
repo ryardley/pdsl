@@ -14,7 +14,7 @@ if [[ "$YN" != "y" ]] && [[ "$YN" != "Y" ]]; then
   exit 0;
 fi 
 
-git revert HEAD -m "Revert publishing mistake"
+git revert HEAD
 git checkout master 
 git branch -d "v$thisversion"
 git tag -d "v$thisversion"
