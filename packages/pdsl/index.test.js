@@ -247,6 +247,22 @@ it("should handle greater than ", () => {
   expect(p`{age:>5}`({ age: 34 })).toBe(true);
 });
 
+it("should handle a wildcard", () => {
+  expect(p`*`()).toBe(true);
+  expect(p`*`("Foo")).toBe(true);
+  expect(p`*`(false)).toBe(true);
+  expect(p`*`(undefined)).toBe(true);
+  expect(p`*`(null)).toBe(true);
+  expect(p`*`(NaN)).toBe(true);
+});
+
+it("should respect a wildcard on an object", () => {
+  expect(p`{name: *}`({ name: undefined })).toBe(true);
+  expect(p`{name: *}`({ name: null })).toBe(true);
+  expect(p`{name: *}`({ name: false })).toBe(true);
+  expect(p`{name: *}`({})).toBe(false);
+});
+
 it("should handle greater than equals ", () => {
   expect(p`>=5`(6)).toBe(true);
   expect(p`>=5`(5)).toBe(true);

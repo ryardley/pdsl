@@ -58,7 +58,8 @@ const tokens = {
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
   EMPTY_STRING_SINGLE: "\\'\\'",
-  EXTANT: "_",
+  EXTANT_PREDICATE: "_",
+  WILDCARD_PREDICATE: "\\*",
   PRIM_NUMBER_VAL: "number",
   PRIM_BOOLEAN_VAL: "boolean",
   PRIM_SYMBOL_VAL: "symbol",
@@ -277,11 +278,18 @@ const grammar = {
       return "Function";
     }
   }),
-  [tokens.EXTANT]: token => ({
+  [tokens.EXTANT_PREDICATE]: token => ({
     type: types.PredicateLiteral,
     token: a => a !== null && a !== undefined,
     toString() {
       return "_";
+    }
+  }),
+  [tokens.WILDCARD_PREDICATE]: token => ({
+    type: types.PredicateLiteral,
+    token: () => true,
+    toString() {
+      return "*";
     }
   }),
   // TODO: The following should be renamed to be an "Identifier" (rookie mistake)
