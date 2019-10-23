@@ -55,7 +55,10 @@ describe("parser", () => {
     { input: "{ age : < 5 }", output: "age 5 < : {1" },
     { input: "10 < < 100", output: "10 100 < <" },
     { input: ">=100", output: "100 >=" },
-    { input: "<=100", output: "100 <=" }
+    { input: "<=100", output: "100 <=" },
+    { only: true, input: "!8", output: "8 !1" },
+    { only: true, input: "{name: ! }", output: "name ! : {1" },
+    { only: true, input: "{name: !! }", output: "name !! : {1" }
   ].forEach(({ input, output, skip, only }) => {
     const itFunc = skip ? it.skip : only ? it.only : it;
 
