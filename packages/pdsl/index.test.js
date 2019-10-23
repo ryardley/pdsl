@@ -90,21 +90,39 @@ it("should use the extant predicate as the default object checking behaviour", (
   expect(p`{ name }`({ name: null })).toBe(false);
 });
 
+it("should use exact matching", () => {
+  expect(p`{ name }`({ name: "Fred" })).toBe(true);
+  expect(p`{ name }`({ name: "Fred", age: 12 })).toBe(false);
+  expect(p`{ name, age }`({ name: "Fred", age: 12 })).toBe(true);
+});
+
+it("should use a rest symbol to allow loose matching", () => {
+  expect(p`{ name }`({ name: "Fred", age: 12 })).toBe(false);
+  expect(p`{ name, ... }`({ name: "Fred", age: 12 })).toBe(true);
+  expect(p`{ name, age, ... }`({ name: "Fred", age: 12 })).toBe(true);
+});
+
 it("should be able to use nested object property templates", () => {
   expect(
-    p`{ meta: { remote }}`({ type: "shared.foo", meta: { remote: true } })
+    p`{ meta: { remote }, ...}`({ type: "shared.foo", meta: { remote: true } })
   ).toBe(true);
   expect(
-    p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { thing: "foo" } })
+    p`{ meta: !{ remote }, ...}`({ type: "shared.foo", meta: { thing: "foo" } })
   ).toBe(true);
   expect(
-    p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { remote: "thing" } })
+    p`{ meta: !{ remote }, ...}`({
+      type: "shared.foo",
+      meta: { remote: "thing" }
+    })
   ).toBe(false);
   expect(
-    p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { remote: false } })
+    p`{ meta: !{ remote }, ...}`({
+      type: "shared.foo",
+      meta: { remote: false }
+    })
   ).toBe(false);
   expect(
-    p`{ meta: { remote:${false} }}`({
+    p`{ meta: { remote:${false} }, ...}`({
       type: "shared.foo",
       meta: { remote: false }
     })
@@ -112,16 +130,16 @@ it("should be able to use nested object property templates", () => {
 });
 
 it("should match the examples", () => {
-  expect(p`{length: ${5}}`("12345")).toBe(true);
-  expect(p`{length: ${gt(5)}}`("123456")).toBe(true);
-  expect(p`{foo:{length:${5}}}`({ foo: "12345" })).toBe(true);
-  expect(p`{foo:{length:${gt(5)}}}`({ foo: "123456" })).toBe(true);
+  expect(p`{length: ${5}, ...}`("12345")).toBe(true);
+  expect(p`{length: ${gt(5)}, ...}`("123456")).toBe(true);
+  expect(p`{foo:{length:${5}, ...}}`({ foo: "12345" })).toBe(true);
+  expect(p`{foo:{length:${gt(5)}, ...}}`({ foo: "123456" })).toBe(true);
   expect(
     p`
   {
     type: ${/^.+foo$/},
     payload: {
-      email: ${Email} && { length: > 5 },
+      email: ${Email} && { length: > 5, ... },
       arr: ![6],
       foo: !true,
       num: -4 < < 100,
@@ -163,8 +181,8 @@ it("should match the examples", () => {
   }`({ username: "hello", password: "mi" })
   ).toBe(false);
 
-  expect(p`${String} && { length: ${6} }`("123456")).toBe(true);
-  expect(p`${String} && { length: ${7} }`("123456")).toBe(false);
+  expect(p`${String} && { length: ${6}, ... }`("123456")).toBe(true);
+  expect(p`${String} && { length: ${7}, ... }`("123456")).toBe(false);
 });
 
 it("should be able to debug the ast", () => {
@@ -217,7 +235,7 @@ it("should handle complex objects", () => {
     p`string || {
     username: string,
     password: string && {
-      length: > 3
+      length: > 3, ...
     }
   }`({ username: "hello", password: "mike" })
   ).toBe(true);
@@ -292,8 +310,8 @@ it("should support String", () => {
   expect(p`String`("as@as.com")).toBe(true);
   expect(p`String`({ foo: "asd" })).toBe(false);
   expect(p`String`(4)).toBe(false);
-  expect(p`String && {length: > 3}`("Hi")).toBe(false);
-  expect(p`String && {length: > 3}`("Hello")).toBe(true);
+  expect(p`String && {length: > 3, ...}`("Hi")).toBe(false);
+  expect(p`String && {length: > 3, ...}`("Hello")).toBe(true);
 });
 
 it("should support Object", () => {
@@ -327,8 +345,8 @@ it("should handle a user credentials object", () => {
   const hasExtendedChars = p`String & Xc`;
 
   const isValidUser = p`{
-    username: ${isOnlyLowerCase} && {length: 5 < < 9 },
-    password: ${hasExtendedChars} && {length: > 8},
+    username: ${isOnlyLowerCase} && {length: 5 < < 9, ... },
+    password: ${hasExtendedChars} && {length: > 8, ...},
     age: > 17
   }`;
 
@@ -368,7 +386,7 @@ it("should handle comments", () => {
   const isValidUser = p`{
     username: String, // foo
     // thing
-    password: String 
+    password: String, ...
   }`;
   expect(
     isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })
@@ -378,7 +396,7 @@ it("should handle comments", () => {
 it("should handle trailing commas", () => {
   const isValidUser = p`{
     username: String,
-    password: String,
+    password: String, ...,
   }`;
   expect(
     isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 })

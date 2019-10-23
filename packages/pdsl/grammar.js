@@ -42,6 +42,7 @@ const tokens = {
   HOLDS_CLOSE: "\\]",
   ARG: "\\,",
   SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
+  REST_SYMBOL: "\\.\\.\\.",
   NUMBER: "-?\\d+(\\.\\d+)?",
   TRUE: "true",
   FALSE: "false",
@@ -285,6 +286,13 @@ const grammar = {
   }),
   // TODO: The following should be renamed to be an "Identifier" (rookie mistake)
   [tokens.SYMBOL]: token => ({
+    type: types.SymbolLiteral,
+    token,
+    toString() {
+      return token;
+    }
+  }),
+  [tokens.REST_SYMBOL]: token => ({
     type: types.SymbolLiteral,
     token,
     toString() {

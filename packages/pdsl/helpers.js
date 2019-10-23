@@ -161,12 +161,31 @@ const not = input =>
 
 const extant = a => a !== null && a !== undefined;
 
-const obj = (...entries) =>
+const obj = (...entriesWithRest) =>
   function objFn(a) {
-    return entries.reduce((acc, entry) => {
-      const [key, predicate] = Array.isArray(entry) ? entry : [entry, extant];
-      return acc && extant(a) && predicate(a[key]);
-    }, true);
+    const { hasRest, entriesMatch, entryCount } = entriesWithRest.reduce(
+      ({ hasRest, entriesMatch, entryCount }, entry) => {
+        // ignore ... entries
+        if (entry === "...") {
+          return { hasRest: hasRest || true, entriesMatch, entryCount };
+        }
+
+        // continue with the match checking
+        const [key, predicate] = Array.isArray(entry) ? entry : [entry, extant];
+
+        return {
+          hasRest,
+          entriesMatch: entriesMatch && extant(a) && predicate(a[key]),
+          entryCount: entryCount + 1
+        };
+      },
+      { hasRest: false, entriesMatch: true, entryCount: 0 }
+    );
+    // If there was a rest arg we don't need to check length
+    if (hasRest) return entriesMatch;
+
+    // Check entry length
+    return entriesMatch && Object.keys(a).length === entryCount;
   };
 
 /**
