@@ -9,7 +9,8 @@
   "repository": "github:ryardley/pdsl",
   "scripts": {
     "test": "jest --coverage --coverageDirectory ../../coverage",
-    "docs": "jsdoc --destination ../../docs helpers.js"
+    "docs": "jsdoc --destination ../../docs helpers.js",
+    "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( echo @pdsl/babel-plugin-pdsl@$pkg_version latest ) || exit 0"
   },
   "keywords": [
     "pdsl",

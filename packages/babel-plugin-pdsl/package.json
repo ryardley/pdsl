@@ -12,7 +12,8 @@
     "@babel/types": "^7.5.5"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( echo @pdsl/babel-plugin-pdsl@$pkg_version latest ) || exit 0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
