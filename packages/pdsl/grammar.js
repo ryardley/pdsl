@@ -28,7 +28,7 @@ const {
 const tokens = {
   NOT: "\\!",
   TRUTHY: "\\!\\!",
-  FALSY_KEYWORD: "falsey",
+  FALSY_KEYWORD: "falsey", // Using literal falsey as if we use "\\!" it will be picked up all the not operators
   AND: "\\&\\&",
   OR: "\\|\\|",
   AND_SHORT: "\\&",
