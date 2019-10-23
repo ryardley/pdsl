@@ -1,0 +1,19 @@
+#!/bin/bash
+
+thisversionraw=$(cat lerna.json | jq '.version')
+thisversion=$(sed -e 's/^"//' -e 's/"$//' <<<"$thisversionraw")
+lastversionraw=$(git show HEAD~1:lerna.json | jq '.version')
+lastversion=$(sed -e 's/^"//' -e 's/"$//' <<<"$lastversionraw")
+
+echo "Lerna version for this repo is $thisversion whilst the last commit is $lastversion do you want to revert? (yN)"
+
+read YN
+
+if [[ "$YN" != "y" ]] && [[ "$YN" != "Y" ]]; then
+  echo "Aborting script"
+  exit 0;
+fi 
+
+git reset --hard HEAD~1
+git tag -d "v$thisversion"
+git push origin ":v$thisversion"
