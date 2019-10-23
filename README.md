@@ -271,10 +271,22 @@ const isString = p`${String}`; // typeof value === 'string'
 If you pass a value `pdsl` will match that specific value:
 
 ```js
-const isTrue = p`true`; // value === true;
-const isFalse = p`false`; // value === false;
+const isLiterallyTrue = p`true`; // value === true;
+const isLiterallyFalse = p`false`; // value === false;
 const isNine = p`9`; // value === 9;
 const isRupert = p`"Rupert"`; // value === "Rupert";
+```
+
+### Truthy and Falsey
+
+You can check for truthfullness using the truthy and falsey predicates
+
+```js
+p`!!`(0); // false
+p`!!`(1); // true
+p`!`(false); // true
+p`!`(null); // true
+p`!`("hello"); // false
 ```
 
 ### Empty comparisons
