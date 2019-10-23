@@ -39,7 +39,7 @@ describe("generator", () => {
         obj("{2")
       ],
       fns: [a => a === "foo", a => a === 41],
-      inp: { name: "foo", thing: "asd", age: 41 },
+      inp: { name: "foo", age: 41 },
       out: true
     },
     {
