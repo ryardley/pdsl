@@ -451,18 +451,16 @@ const grammar = {
   }),
 
   // functions have highest precidence
-  [tokens.ENTRY]: token => {
-    return {
-      type: types.Operator,
-      token,
-      arity: 2,
-      runtime: entry,
-      prec: 100,
-      toString() {
-        return token;
-      }
-    };
-  },
+  [tokens.ENTRY]: token => ({
+    type: types.Operator,
+    token,
+    arity: 2,
+    runtime: entry,
+    prec: 100,
+    toString() {
+      return token;
+    }
+  }),
 
   [tokens.OBJ]: token => ({
     type: types.VariableArityOperator,
