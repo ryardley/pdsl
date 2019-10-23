@@ -159,11 +159,13 @@ const not = input =>
     return !val(input)(a);
   };
 
+const extant = a => a !== null && a !== undefined;
+
 const obj = (...entries) =>
   function objFn(a) {
     return entries.reduce((acc, entry) => {
-      const [key, predicate] = Array.isArray(entry) ? entry : [entry, Boolean];
-      return acc && Boolean(a) && predicate(a[key]);
+      const [key, predicate] = Array.isArray(entry) ? entry : [entry, extant];
+      return acc && extant(a) && predicate(a[key]);
     }, true);
   };
 
@@ -277,5 +279,6 @@ module.exports = {
   entry,
   prim,
   pred,
-  deep
+  deep,
+  extant
 };

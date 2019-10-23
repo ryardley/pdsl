@@ -74,6 +74,22 @@ it("should be able to use brackets and or in template properties", () => {
   expect(p`{name:(${"Rudi"} || ${"Gregor"})}`({ name: "Other" })).toBe(false);
 });
 
+it("should have an extant predicate", () => {
+  expect(p`_`(true)).toBe(true);
+  expect(p`_`(false)).toBe(true);
+  expect(p`_`(null)).toBe(false);
+  expect(p`_`(undefined)).toBe(false);
+  expect(p`{ name : _ }`({ name: false })).toBe(true);
+  expect(p`{ name : _ }`({ name: undefined })).toBe(false);
+  expect(p`{ name : _ }`({ name: null })).toBe(false);
+});
+
+it("should use the extant predicate as the default object checking behaviour", () => {
+  expect(p`{ name }`({ name: false })).toBe(true);
+  expect(p`{ name }`({ name: undefined })).toBe(false);
+  expect(p`{ name }`({ name: null })).toBe(false);
+});
+
 it("should be able to use nested object property templates", () => {
   expect(
     p`{ meta: { remote }}`({ type: "shared.foo", meta: { remote: true } })
@@ -86,7 +102,7 @@ it("should be able to use nested object property templates", () => {
   ).toBe(false);
   expect(
     p`{ meta: !{ remote }}`({ type: "shared.foo", meta: { remote: false } })
-  ).toBe(true);
+  ).toBe(false);
   expect(
     p`{ meta: { remote:${false} }}`({
       type: "shared.foo",
