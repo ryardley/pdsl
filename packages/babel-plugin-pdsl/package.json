@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "jest",
-    "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( echo @pdsl/babel-plugin-pdsl@$pkg_version latest ) || exit 0"
+    "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( npm dist-tag add @pdsl/babel-plugin-pdsl@$pkg_version latest ) || exit 0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
