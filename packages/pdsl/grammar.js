@@ -18,6 +18,8 @@ const {
   or,
   prim,
   regx,
+  falsey,
+  truthy,
   Uc,
   val,
   Xc
@@ -280,7 +282,7 @@ const grammar = {
   [tokens.TRUTHY]: token => {
     return {
       type: types.PredicateLiteral,
-      token: Boolean,
+      token: truthy,
       toString() {
         return token;
       }
@@ -289,7 +291,7 @@ const grammar = {
   [tokens.FALSY_KEYWORD]: token => {
     return {
       type: types.PredicateLiteral,
-      token: a => !a,
+      token: falsey,
       toString() {
         return "!";
       }

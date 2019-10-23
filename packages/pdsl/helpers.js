@@ -159,6 +159,9 @@ const not = input =>
     return !val(input)(a);
   };
 
+const truthy = a => !!a;
+const falsey = a => !a;
+
 const obj = (...entries) =>
   function objFn(a) {
     return entries.reduce((acc, entry) => {
@@ -277,5 +280,7 @@ module.exports = {
   entry,
   prim,
   pred,
-  deep
+  deep,
+  truthy,
+  falsey
 };
