@@ -12,5 +12,5 @@ promote_tag_to_tag() {
   local destination_tag="$2"
   exit_if_empty "$LIVE_RUN" "Mocking promoting next to latest."
   echo "$source_tag" "$destination_tag"
-  $(yarn bin)/lerna exec --stream --no-bail --concurrency 1 -- pkg_version=$(npm v . dist-tags."$source_tag"); [ -n "$pkg_version" ] && ( echo "$LERNA_PACKAGE_NAME"@"$pkg_version" "$destination_tag" ) || exit 0
+  $(yarn bin)/lerna exec --stream --no-bail --concurrency 1 -- pkg_version="$(npm v . dist-tags.$source_tag)" [ -n "$pkg_version" ] && ( echo "$LERNA_PACKAGE_NAME"@"$pkg_version" "$destination_tag" ) || exit 0
 }
