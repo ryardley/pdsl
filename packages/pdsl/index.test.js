@@ -190,9 +190,9 @@ it("should be able to debug the ast", () => {
   );
 
   expect(
-    p.unsafe_tokens`[1..4] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | '' | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true`
+    p.unsafe_tokens`[1..4] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | '' | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true | ! 3 | ! | !! | >= 2 | <= 2 | < 2 |`
   ).toBe(
-    `[0 1 .. 4 ] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | "" | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true`
+    `[0 1 .. 4 ] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | "" | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true | !1 3 | ! | !! | >= 2 | <= 2 | < 2 |`
   );
 });
 
