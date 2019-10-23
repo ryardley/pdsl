@@ -15,5 +15,7 @@ if [[ "$YN" != "y" ]] && [[ "$YN" != "Y" ]]; then
 fi 
 
 git reset --hard HEAD~1
+git checkout master 
+git branch -d "v$thisversion"
 git tag -d "v$thisversion"
 git push origin ":v$thisversion"

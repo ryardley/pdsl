@@ -6,6 +6,13 @@ source ./scripts/version-bump.sh
 source ./scripts/git-check.sh
 source ./scripts/publishing.sh
 
+echo "Have you set the env var for actually publishing? Eg."
+echo ""
+echo "  LIVE_RUN=1 yarn release:patch"
+echo ""
+echo "Press a key when ready..."
+read 
+
 semver_type=$1
 dist_tag=${2:-next}
 exit_unless_valid_semver "$semver_type"
@@ -14,5 +21,11 @@ exit_unless_clean_git_folder
 yarn test
 yarn docs && git add -A && git commit -m 'Update docs'
 version_bump "$semver_type"
-git push --tags && git push
+if [[ -n "$LIVE_RUN" ]]; then 
+  thisversionraw=$(cat lerna.json | jq '.version')
+  thisversion=$(sed -e 's/^"//' -e 's/"$//' <<<"$thisversionraw")
+  echo "Pushing tags to remote on branch v$thisversion"
+  git checkout -b "v$thisversion" && git push --tags && git push
+  git checkout master
+fi
 publish_to_dist_tag "$dist_tag"
