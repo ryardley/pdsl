@@ -163,24 +163,28 @@ const extant = a => a !== null && a !== undefined;
 
 const obj = (...entriesWithRest) =>
   function objFn(a) {
-    const { hasRest, entriesMatch, entryCount } = entriesWithRest.reduce(
-      ({ hasRest, entriesMatch, entryCount }, entry) => {
-        // ignore ... entries
-        if (entry === "...") {
-          return { hasRest: hasRest || true, entriesMatch, entryCount };
-        }
+    let hasRest = false;
+    let entriesMatch = true;
+    let entryCount = 0;
 
-        // continue with the match checking
-        const [key, predicate] = Array.isArray(entry) ? entry : [entry, extant];
+    // For loop is faster
+    for (let i = 0; i < entriesWithRest.length; i++) {
+      const entry = entriesWithRest[i];
 
-        return {
-          hasRest,
-          entriesMatch: entriesMatch && extant(a) && predicate(a[key]),
-          entryCount: entryCount + 1
-        };
-      },
-      { hasRest: false, entriesMatch: true, entryCount: 0 }
-    );
+      // Ignore rest and note we have one
+      if (entry === "...") {
+        hasRest = hasRest || true;
+        continue;
+      }
+
+      // Extract key and predicate from the entry and run the predicate against the value
+      const [key, predicate] = Array.isArray(entry) ? entry : [entry, extant];
+      entriesMatch = entriesMatch && extant(a) && predicate(a[key]);
+
+      // We just logged an entry track it
+      entryCount++;
+    }
+
     // If there was a rest arg we don't need to check length
     if (hasRest) return entriesMatch;
 
