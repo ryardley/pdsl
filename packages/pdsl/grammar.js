@@ -284,7 +284,7 @@ const grammar = {
       type: types.PredicateLiteral,
       token: truthy,
       toString() {
-        return token;
+        return "!!";
       }
     };
   },
