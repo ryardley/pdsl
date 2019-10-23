@@ -159,6 +159,24 @@ const not = input =>
     return !val(input)(a);
   };
 
+/**
+ * <h3>Truthy</h3>
+ * A predicate that takes an input value and returns whether or not the value is truthy
+ *
+ * @param {function} input The input value
+ * @return {boolean} Boolean value indicating if the input is truthy
+ */
+const truthy = a => !!a;
+
+/**
+ * <h3>Falsey</h3>
+ * A predicate that takes an input value and returns whether or not the value is falsey
+ *
+ * @param {function} input The input value
+ * @return {boolean} Boolean value indicating if the input is falsey
+ */
+const falsey = a => !a;
+
 const obj = (...entries) =>
   function objFn(a) {
     return entries.reduce((acc, entry) => {
@@ -277,5 +295,7 @@ module.exports = {
   entry,
   prim,
   pred,
-  deep
+  deep,
+  truthy,
+  falsey
 };

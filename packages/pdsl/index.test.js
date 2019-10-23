@@ -168,7 +168,7 @@ it("should be able to debug the ast", () => {
     }
   }`
   ).toBe(
-    "{0 type : @{LINK:0} , payload : {0 email : ( @{LINK:1} && {0 length : > 5 } ) , arr : ! [0 6 ] , foo : ! true , num : -4 < < 100 , bar : {0 baz : @{LINK:2} , foo } } }"
+    "{0 type : @{LINK:0} , payload : {0 email : ( @{LINK:1} && {0 length : > 5 } ) , arr : !1 [0 6 ] , foo : !1 true , num : -4 < < 100 , bar : {0 baz : @{LINK:2} , foo } } }"
   );
   expect(
     p.unsafe_rpn`
@@ -186,13 +186,13 @@ it("should be able to debug the ast", () => {
     }
   }`
   ).toBe(
-    "type @{LINK:0} : payload email @{LINK:1} length 5 > : {1 && : arr 6 [1 ! : foo true ! : num -4 100 < < : bar baz @{LINK:2} : foo {2 : {5 : {2"
+    "type @{LINK:0} : payload email @{LINK:1} length 5 > : {1 && : arr 6 [1 !1 : foo true !1 : num -4 100 < < : bar baz @{LINK:2} : foo {2 : {5 : {2"
   );
 
   expect(
-    p.unsafe_tokens`[1..4] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | '' | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true`
+    p.unsafe_tokens`[1..4] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | '' | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true | ! 3 | ! | !! | >= 2 | <= 2 | < 2 |`
   ).toBe(
-    `[0 1 .. 4 ] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | "" | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true`
+    `[0 1 .. 4 ] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | "" | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true | !1 3 | ! | !! | >= 2 | <= 2 | < 2 |`
   );
 });
 
@@ -401,4 +401,13 @@ it("should handle all the symbols", () => {
   expect(p`LUc`("ABCDEF")).toBe(false);
   expect(p`LUc`("AbCDEF")).toBe(true);
   expect(p`LUc`("abcdef")).toBe(false);
+});
+
+it("should be able to use a tuthy operator", () => {
+  expect(p`!`(true)).toBe(false);
+  expect(p`!`(false)).toBe(true);
+  expect(p`!!`(true)).toBe(true);
+  expect(p`!!`(false)).toBe(false);
+  expect(p`{name: !}`({ name: 1 })).toBe(false);
+  expect(p`{name: !}`({ name: 0 })).toBe(true);
 });
