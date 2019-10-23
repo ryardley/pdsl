@@ -17,7 +17,7 @@ function toNode(token) {
 function lexer(input) {
   rex.lastIndex = 0;
   return input
-    .replace(/\/\/.*(\n|$)/g, "")
+    .replace(/\/\/.*(\n|$)/g, "") // remove comments
     .match(rex)
     .map(toNode);
 }

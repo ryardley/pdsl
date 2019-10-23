@@ -57,6 +57,7 @@ const tokens = {
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
   EMPTY_STRING_SINGLE: "\\'\\'",
+  EXTANT: "_",
   PRIM_NUMBER_VAL: "number",
   PRIM_BOOLEAN_VAL: "boolean",
   PRIM_SYMBOL_VAL: "symbol",
@@ -273,6 +274,13 @@ const grammar = {
     token: prim(Function),
     toString() {
       return "Function";
+    }
+  }),
+  [tokens.EXTANT]: token => ({
+    type: types.PredicateLiteral,
+    token: a => a !== null && a !== undefined,
+    toString() {
+      return "_";
     }
   }),
   // TODO: The following should be renamed to be an "Identifier" (rookie mistake)

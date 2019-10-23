@@ -11,7 +11,8 @@ const {
   obj,
   regx,
   prim,
-  val
+  val,
+  extant
 } = require("./helpers");
 
 it("should obj", () => {
@@ -21,6 +22,12 @@ it("should obj", () => {
       age: 41
     })
   ).toBe(true);
+});
+
+it("should extant", () => {
+  expect(extant(false)).toBe(true);
+  expect(extant(undefined)).toBe(false);
+  expect(extant(null)).toBe(false);
 });
 
 it("should Email", () => {
