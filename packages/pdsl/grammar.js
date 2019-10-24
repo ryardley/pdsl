@@ -23,7 +23,8 @@ const {
   Uc,
   val,
   Xc,
-  arrArgMatch
+  arrArgMatch,
+  arrTypeMatch
 } = require("./helpers");
 
 const tokens = {
@@ -36,7 +37,7 @@ const tokens = {
   OR_SHORT: "\\|",
   BTW: "\\<\\s\\<",
   BTWE: "\\.\\.",
-  GT: "\\>",
+  GT: "\\>(?=(?:\\s*)?[\\.\\d])", // disambiguation checks if followed by a number
   GTE: "\\>\\=",
   LT: "\\<",
   LTE: "\\<\\=",
@@ -45,6 +46,7 @@ const tokens = {
   OBJ_CLOSE: "\\}",
   ARRAY: "\\[",
   ARRAY_CLOSE: "\\]",
+  ARRAY_TYPED: "Array<",
   ARG: "\\,",
   SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
   REST_SYMBOL: "\\.\\.\\.",
@@ -197,6 +199,16 @@ const grammar = {
     token: prim(Object),
     toString() {
       return "Object";
+    }
+  }),
+  [tokens.ARRAY_TYPED]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 10,
+    runtime: arrTypeMatch,
+    toString() {
+      return "Array<";
     }
   }),
   [tokens.PRIM_ARRAY]: token => ({
@@ -606,6 +618,10 @@ function isPrecidenceOperatorClose(node) {
   return node.type === types.PrecidenceOperatorClose;
 }
 
+function hasToken(node, token) {
+  return node && node.token === token;
+}
+
 module.exports = {
   grammar,
   tokens,
@@ -617,6 +633,7 @@ module.exports = {
   isVaradicFunctionClose,
   isPredicateLookup,
   isBooleanable,
+  hasToken,
   isLiteral,
   isOperator
 };

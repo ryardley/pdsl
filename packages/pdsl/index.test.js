@@ -262,7 +262,8 @@ it("should test the toString() calls for code coverage", () => {
     <= 2 |
     < 2 |
     _ |
-    ... |`
+    ... |
+    Array< |`
   ).toBe(
     [
       "[0 1 .. 4 ]",
@@ -300,7 +301,8 @@ it("should test the toString() calls for code coverage", () => {
       "<= 2",
       "< 2",
       "_",
-      "..."
+      "...",
+      "Array<"
     ].join(" | ") + " |"
   );
 });
@@ -567,5 +569,24 @@ it("should only match exact array values", () => {
 it("should match array values with greedy wildcard", () => {
   expect(
     p`[number, number, string, ...]`([1, 2, "3", "four", undefined, undefined])
+  ).toBe(true);
+});
+
+it("should match Array<type> syntax", () => {
+  expect(p`Array<number>`([1, 2, 3, 4, 5])).toBe(true);
+  expect(p`Array<number>`([1, 2, 3, 4, "5"])).toBe(false);
+  expect(p`Array<{name:string}>`([{ name: "foo" }])).toBe(true);
+  expect(p`Array<{name:string|number}>`([{ name: "foo" }, { name: 3 }])).toBe(
+    true
+  );
+  expect(
+    p`{adults: Array<number>}`({
+      adults: [1]
+    })
+  ).toBe(true);
+  expect(
+    p`{adults: ! number}`({
+      adults: "7"
+    })
   ).toBe(true);
 });
