@@ -21,6 +21,8 @@ function lexer(input) {
     .match(rex)
     .map(toNode)
     .map((token, index, arr) => {
+      // Can the following be done on the parser level?
+
       // Find a not operator
       if (token.token !== "!" || token.type !== "Operator") {
         return token;
