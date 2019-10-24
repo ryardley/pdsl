@@ -104,7 +104,9 @@ function parser(input) {
     return finalOut;
   } catch (e) {
     throw new Error(
-      `Malformed Input! pdsl could not parse the tokenized input stream : ${input}`
+      `Malformed Input! pdsl could not parse the tokenized input stream : ${input.join(
+        " "
+      )}`
     );
   }
 }

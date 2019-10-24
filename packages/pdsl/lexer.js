@@ -1,4 +1,10 @@
-const { grammar, tokens, isBooleanable } = require("./grammar");
+const {
+  grammar,
+  tokens,
+  isBooleanable,
+  isOperator,
+  hasToken
+} = require("./grammar");
 
 const rex = new RegExp(`(${Object.keys(grammar).join("|")})`, "g");
 
@@ -7,11 +13,34 @@ const grammers = Object.entries(grammar);
 function toNode(token) {
   for (let i = 0; i < grammers.length; i++) {
     const [test, createNode] = grammers[i];
-    const testPassed = new RegExp(`^${test}$`).test(token);
+
+    // HACK:  remove lookahed
+    //        need to work out a better way to do this
+    const testWithoutLookahead = test === tokens.GT ? "\\>" : test;
+
+    const testPassed = new RegExp(`^${testWithoutLookahead}$`).test(token);
+
     if (testPassed) {
       return createNode(token);
     }
   }
+}
+
+function disambiguateNotOperator(node, index, arr) {
+  // Find a not operator
+  if (!(isOperator(node) && hasToken(node, "!"))) {
+    return node;
+  }
+
+  // if next node is not a booleanable
+  // thing this is meant to be the falsey operator
+  const nextNode = arr[index + 1];
+
+  if (isBooleanable(nextNode)) {
+    return node;
+  }
+
+  return grammar[tokens.FALSY_KEYWORD]();
 }
 
 function lexer(input) {
@@ -20,23 +49,7 @@ function lexer(input) {
     .replace(/\/\/.*(\n|$)/g, "") // remove comments
     .match(rex)
     .map(toNode)
-    .map((token, index, arr) => {
-      // Can the following be done on the parser level?
-
-      // Find a not operator
-      if (token.token !== "!" || token.type !== "Operator") {
-        return token;
-      }
-
-      // if next token is not a booleanable thing this is meant to be the falsey operator
-      const nextToken = arr[index + 1];
-
-      if (isBooleanable(nextToken)) {
-        return token;
-      }
-
-      return grammar[tokens.FALSY_KEYWORD]();
-    });
+    .map(disambiguateNotOperator);
 }
 
 module.exports = { lexer };

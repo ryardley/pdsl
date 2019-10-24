@@ -38,7 +38,6 @@ describe("parser", () => {
       output: "name a : age b : {2"
     },
     {
-      // only: true,
       input: "{ name : {foo, bar}, age : b }",
       output: "name foo bar {2 : age b : {2"
     },
