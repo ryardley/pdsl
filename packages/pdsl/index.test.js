@@ -222,11 +222,86 @@ it("should be able to debug the ast", () => {
   ).toBe(
     "type @{LINK:0} : payload email @{LINK:1} length 5 > : {1 && : arr 6 [1 !1 : foo true !1 : num -4 100 < < : bar baz @{LINK:2} : foo {2 : {5 : {2"
   );
+});
 
+it("should test the toString() calls for code coverage", () => {
   expect(
-    p.unsafe_tokens`[1..4] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | '' | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true | ! 3 | ! | !! | >= 2 | <= 2 | < 2 |`
+    p.unsafe_tokens`
+    [1..4] |
+    'foo' |
+    Function |
+    Symbol |
+    String |
+    Boolean |
+    array |
+    string |
+    symbol |
+    boolean |
+    number |
+    undefined |
+    null |
+    Array |
+    Object |
+    Number |
+    '' |
+    "" |
+    [] |
+    {} |
+    LUc |
+    Uc |
+    Lc |
+    Nc |
+    Xc |
+    Email |
+    false |
+    true |
+    ! 3 |
+    ! |
+    !! |
+    >= 2 |
+    <= 2 |
+    < 2 |
+    _ |
+    ... |`
   ).toBe(
-    `[0 1 .. 4 ] | 'foo' | Function | Symbol | String | Boolean | array | string | symbol | boolean | number | undefined | null | Array | Object | Number | "" | "" | [] | {} | LUc | Uc | Lc | Nc | Xc | Email | false | true | !1 3 | ! | !! | >= 2 | <= 2 | < 2 |`
+    [
+      "[0 1 .. 4 ]",
+      "'foo'",
+      "Function",
+      "Symbol",
+      "String",
+      "Boolean",
+      "array",
+      "string",
+      "symbol",
+      "boolean",
+      "number",
+      "undefined",
+      "null",
+      "Array",
+      "Object",
+      "Number",
+      '""',
+      '""',
+      "[]",
+      "{}",
+      "LUc",
+      "Uc",
+      "Lc",
+      "Nc",
+      "Xc",
+      "Email",
+      "false",
+      "true",
+      "!1 3",
+      "!",
+      "!!",
+      ">= 2",
+      "<= 2",
+      "< 2",
+      "_",
+      "..."
+    ].join(" | ") + " |"
   );
 });
 

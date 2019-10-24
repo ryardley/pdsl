@@ -179,7 +179,7 @@ const truthy = a => !!a;
  */
 const falsey = a => !a;
 
-const obj = (...entries) =>
+const obj = (...entriesWithRest) =>
   function objFn(a) {
     let hasRest = false;
     let entriesMatch = true;
