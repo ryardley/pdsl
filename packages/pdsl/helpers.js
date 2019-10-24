@@ -83,6 +83,31 @@ const gte = a =>
   };
 
 /**
+ * <h3>Array match</h3>
+ * Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
+ * Eg,
+ * <pre><code>
+ * // Helper functions
+ * const isNumeric = a => typeof a === 'number';
+ * const isString = a => typeof a === 'string';
+ *
+ * arrMatch(isNumeric, isNumeric, isNumeric)([1,2,3]); // true
+ * arrMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3]); // true
+ * arrMatch(isString, isNumeric, isNumeric, '...')([1,2,3]); // false
+ * arrMatch(isString, isNumeric, isNumeric, '...')(['1',2,3]); // true
+ * arrMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3,4]); // true
+ * arrMatch(1, 2)([1,3]); // false
+ * </code></pre>
+ *
+ * @param {...function|*} args Either values or predicate functions used to test the contents of the array.
+ * @return {function} A function of the form <code>{array => boolean}</code>
+ */
+const arrMatch = (...args) => {
+  function matchFn(arr) {}
+  return matchFn;
+};
+
+/**
  * <h3>Array holds</h3>
  * Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
  * Eg,
