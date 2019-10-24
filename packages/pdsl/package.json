@@ -1,6 +1,6 @@
 {
   "name": "pdsl",
-  "version": "3.5.12",
+  "version": "3.6.0",
   "description": "Predicate DSL",
   "main": "index.js",
   "types": "index.d.ts",
@@ -9,7 +9,8 @@
   "repository": "github:ryardley/pdsl",
   "scripts": {
     "test": "jest --coverage --coverageDirectory ../../coverage",
-    "docs": "jsdoc --destination ../../docs helpers.js"
+    "docs": "jsdoc --destination ../../docs helpers.js",
+    "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( npm dist-tag add pdsl@$pkg_version latest ) || exit 0"
   },
   "keywords": [
     "pdsl",

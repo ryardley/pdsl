@@ -18,6 +18,8 @@ const {
   or,
   prim,
   regx,
+  falsey,
+  truthy,
   Uc,
   val,
   Xc
@@ -25,6 +27,8 @@ const {
 
 const tokens = {
   NOT: "\\!",
+  TRUTHY: "\\!\\!",
+  FALSY_KEYWORD: "falsey", // Using literal falsey as if we use "\\!" it will be picked up all the not operators
   AND: "\\&\\&",
   OR: "\\|\\|",
   AND_SHORT: "\\&",
@@ -292,6 +296,24 @@ const grammar = {
       return "*";
     }
   }),
+  [tokens.TRUTHY]: token => {
+    return {
+      type: types.PredicateLiteral,
+      token: truthy,
+      toString() {
+        return "!!";
+      }
+    };
+  },
+  [tokens.FALSY_KEYWORD]: token => {
+    return {
+      type: types.PredicateLiteral,
+      token: falsey,
+      toString() {
+        return "!";
+      }
+    };
+  },
   // TODO: The following should be renamed to be an "Identifier" (rookie mistake)
   [tokens.SYMBOL]: token => ({
     type: types.SymbolLiteral,
@@ -346,7 +368,7 @@ const grammar = {
     arity: 1,
     runtime: not,
     toString() {
-      return token;
+      return token + this.arity;
     },
     prec: 10
   }),
@@ -560,6 +582,15 @@ function isVaradicFunction(node) {
   return node.type === types.VariableArityOperator;
 }
 
+function isBooleanable(node) {
+  return (
+    isLiteral(node) ||
+    isPredicateLookup(node) ||
+    isVaradicFunction(node) ||
+    isPrecidenceOperator(node)
+  );
+}
+
 function isArgumentSeparator(node) {
   if (!node) return false;
   return node.type === types.ArgumentSeparator;
@@ -584,6 +615,7 @@ module.exports = {
   isVaradicFunction,
   isVaradicFunctionClose,
   isPredicateLookup,
+  isBooleanable,
   isLiteral,
   isOperator
 };
