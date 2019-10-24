@@ -129,4 +129,11 @@ it("should arrArgMatch", () => {
   expect(arrArgMatch(1, "...")([2, 2, "foo"])).toBe(false);
   expect(arrArgMatch("...")([2, 2, "foo"])).toBe(true);
   expect(arrArgMatch(1, "...")([1, "two", "three", "ten"])).toBe(true);
+  expect(arrArgMatch(3, "...")([1, "two", "three", "ten"])).toBe(false);
+  expect(arrArgMatch(3, 4, 5, "...")([3, 4, "two", "three", "ten"])).toBe(
+    false
+  );
+  expect(arrArgMatch(3, 4, 5, "...")([3, 4, 5, 6, "two", "three", "ten"])).toBe(
+    true
+  );
 });
