@@ -91,19 +91,29 @@ const gte = a =>
  * const isNumeric = a => typeof a === 'number';
  * const isString = a => typeof a === 'string';
  *
- * arrMatch(isNumeric, isNumeric, isNumeric)([1,2,3]); // true
- * arrMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3]); // true
- * arrMatch(isString, isNumeric, isNumeric, '...')([1,2,3]); // false
- * arrMatch(isString, isNumeric, isNumeric, '...')(['1',2,3]); // true
- * arrMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3,4]); // true
- * arrMatch(1, 2)([1,3]); // false
+ * arrArgMatch(isNumeric, isNumeric, isNumeric)([1,2,3]); // true
+ * arrArgMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3]); // true
+ * arrArgMatch(isString, isNumeric, isNumeric, '...')([1,2,3]); // false
+ * arrArgMatch(isString, isNumeric, isNumeric, '...')(['1',2,3]); // true
+ * arrArgMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3,4]); // true
+ * arrArgMatch(1, 2)([1,3]); // false
  * </code></pre>
  *
- * @param {...function|*} args Either values or predicate functions used to test the contents of the array.
+ * @param {...function|*} tests Either values, `['...', predicate]` or predicate functions used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const arrMatch = (...args) => {
-  function matchFn(arr) {}
+const arrArgMatch = (...tests) => {
+  function matchFn(arr) {
+    const hasWildcard = tests.slice(-1)[0] === "...";
+    let matches = hasWildcard || arr.length === tests.length;
+    for (let i = 0; i < tests.length; i++) {
+      const testVal = tests[i];
+      const predicate = testVal === "..." ? wildcard : val(testVal);
+      const pass = predicate(arr[i]);
+      matches = matches && pass;
+    }
+    return matches;
+  }
   return matchFn;
 };
 
@@ -310,6 +320,8 @@ function pred(input) {
   return expParser(input);
 }
 
+const wildcard = input => true;
+
 function entry(name, predicate) {
   return [name, val(predicate)];
 }
@@ -348,5 +360,7 @@ module.exports = {
   deep,
   extant,
   truthy,
-  falsey
+  falsey,
+  arrArgMatch,
+  wildcard
 };

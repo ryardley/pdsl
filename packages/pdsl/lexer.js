@@ -33,9 +33,7 @@ function lexer(input) {
         return token;
       }
 
-      const newNode = grammar[tokens.FALSY_KEYWORD]();
-
-      return newNode;
+      return grammar[tokens.FALSY_KEYWORD]();
     });
 }
 
