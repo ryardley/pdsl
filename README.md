@@ -51,15 +51,21 @@ const notNil = input => input !== null && input !== undefined;
 **PDSL:**
 
 ```js
-const notNil = p`!(null|undefined)`;
+const extant = p`!(null|undefined)`;
 ```
 
 ```js
-notNil("something"); // true
-notNil(false); // true
-notNil(0); // true
-notNil(null); // false
-notNil(undefined); // false
+extant("something"); // true
+extant(false); // true
+extant(0); // true
+extant(null); // false
+extant(undefined); // false
+```
+
+NOTE: Version 4+ has a special new extant predicate:
+
+```js
+const extant = p`_`;
 ```
 
 PDSL is quicker to type, expresses intent and is a fair bit shorter.
@@ -75,13 +81,29 @@ const hasName = input => input && input.name;
 **PDSL:**
 
 ```js
-const hasName = p`{name}`;
+const isObjWithName = p`{name}`;
 ```
 
 ```js
-hasName({ name: "A name" }); // true
-hasName({ name: true }); // true
-hasName({}); // false
+isObjWithName({ name: "A name" }); // true
+isObjWithName({ name: true }); // true
+isObjWithName({}); // false
+```
+
+Note PDSL is exact matching by default which means the following:
+
+```js
+isObjWithName({ name: "A name", age: 234 }); // false
+```
+
+However you can add a rest parameter to fix this:
+
+```js
+p`{ name, ... }`({
+  name: "A name",
+  age: 234,
+  occupation: "developer"
+}); // false
 ```
 
 ### Number is part of range
@@ -135,7 +157,8 @@ const is4ItemArray = input => Array.isArray(input) && input.length === 4;
 _PDSL:_
 
 ```js
-const is4ItemArray = p`Array & { length: 4 }`;
+// We temporarily have to use a rest parameter when checking for length this will be removed soon
+const is4ItemArray = p`Array & { length: 4, ... }`;
 ```
 
 ```js
@@ -153,8 +176,8 @@ const UpCase = /[A-Z]/;
 const Extended = /[^a-zA-Z0-9]/;
 
 const isValidUser = p`{
-  username: string & !${Nums} & !${UpCase} & {length: 4..8 },
-  password: string & ${Extended} & {length: > 8},
+  username: string & !${Nums} & !${UpCase} & {length: 4..8, ... },
+  password: string & ${Extended} & { length: > 8, ... },
   age: > 17
 }`;
 
@@ -192,7 +215,7 @@ const isKitchenSinc = p`
   {
     type: ${/^.+foo$/},
     payload: {
-      email: Email & { length: > 5 },
+      email: Email & { length: > 5, ... },
       arr: [6,'foo'], 
       foo: !true,
       num: 1..10,
@@ -310,7 +333,7 @@ const isNotNil = p`!( null || undefined )`;
 ```
 
 ```js
-const is6CharString = p`string & { length: 6 }`;
+const is6CharString = p`string & { length: 6, ... }`;
 ```
 
 ### Object properties
@@ -327,7 +350,7 @@ validate({ name: 20 }); // false
 This applies to checking properties of all javascript objects. For example to check a string's length:
 
 ```js
-const validate = p`string & { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`string & { length: 7, ... }`; // value && typeof value.name === 'string' && value.name.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
@@ -398,8 +421,8 @@ type User = {
 
 // pass in User
 const isUser = p<User>`{
-  name: string & { length: 3..8 },
-  password: string & { length: > 5 }
+  name: string & { length: 3..8, ... },
+  password: string & { length: > 5, ... }
 }`;
 
 function doStuff(input: string | User) {

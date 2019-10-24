@@ -369,12 +369,22 @@ it("should know when to turn a value into a predicate", () => {
   expect(p`{foo}`({ foo: "hello" })).toBe(true);
 });
 
-it("should support the holds function", () => {
+it("should support the array exact matching syntax", () => {
   expect(p`[4]`([4])).toBe(true);
   expect(p`[4]`([])).toBe(false);
   expect(p`[4]`([1, 2, 3])).toBe(false);
-  expect(p`[4]`([1, 2, 3, 4])).toBe(true);
-  expect(p`[4,{name}]`([{ name: "foo" }, 1, 2, 3, 4])).toBe(true);
+  expect(p`[1,2,3,4]`([1, 2, 3, 4])).toBe(true);
+  expect(p`[4,{name}]`([{ name: "foo" }, 4])).toBe(false);
+  expect(p`[{name}, 4]`([{ name: "foo" }, 4])).toBe(true);
+});
+
+it("should support the array loose matching syntax", () => {
+  expect(p`[4]`([4])).toBe(true);
+  expect(p`[4]`([])).toBe(false);
+  expect(p`[4]`([1, 2, 3])).toBe(false);
+  expect(p`[1,2,3,4]`([1, 2, 3, 4])).toBe(true);
+  expect(p`[4, {name}]`([{ name: "foo" }, 4])).toBe(false);
+  expect(p`[{name}, 4]`([{ name: "foo" }, 4])).toBe(true);
 });
 
 it("should support Email", () => {
@@ -422,6 +432,9 @@ it("should support null and undefined", () => {
   expect(p`!(null||undefined)`(undefined)).toBe(false);
   expect(p`!(null||undefined)`("")).toBe(true);
   expect(p`!(null||undefined)`("Hi")).toBe(true);
+  expect(p`!(null|undefined)`(undefined)).toBe(false);
+  expect(p`!(null|undefined)`("")).toBe(true);
+  expect(p`!(null|undefined)`("Hi")).toBe(true);
 });
 
 it("should handle emptys", () => {
@@ -535,4 +548,24 @@ it("should be able to use a tuthy operator", () => {
   expect(p`!!`(false)).toBe(false);
   expect(p`{name: !}`({ name: 1 })).toBe(false);
   expect(p`{name: !}`({ name: 0 })).toBe(true);
+});
+
+it("should only match exact array values", () => {
+  expect(
+    p`["one", number, {name: string}]`(["one", 123, { name: "a name" }])
+  ).toBe(true);
+
+  expect(
+    p`["one", number, {name: string}]`(["one", 123, { name: "a name" }, 1234])
+  ).toBe(false);
+
+  expect(
+    p`[ {name:string}, number , * ]`([{ name: "Foo" }, 1, undefined])
+  ).toBe(true);
+});
+
+it("should match array values with greedy wildcard", () => {
+  expect(
+    p`[number, number, string, ...]`([1, 2, "3", "four", undefined, undefined])
+  ).toBe(true);
 });

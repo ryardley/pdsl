@@ -12,7 +12,8 @@ const {
   regx,
   prim,
   val,
-  extant
+  extant,
+  arrArgMatch
 } = require("./helpers");
 
 it("should obj", () => {
@@ -109,4 +110,30 @@ it("should prim", () => {
   expect(prim(Number)("10")).toBe(false);
   expect(prim(Array)([10])).toBe(true);
   expect(prim(Array)(10)).toBe(false);
+});
+
+it("should arrArgMatch", () => {
+  const isNumeric = a => typeof a === "number";
+  const isString = a => typeof a === "string";
+  expect(arrArgMatch(isNumeric)([1])).toBe(true);
+  expect(arrArgMatch(isNumeric)([1, 2])).toBe(false);
+  expect(arrArgMatch(isNumeric, isNumeric)([1, 2])).toBe(true);
+  expect(arrArgMatch(isNumeric, isNumeric)([1])).toBe(false);
+  expect(arrArgMatch(isString)([1])).toBe(false);
+  expect(arrArgMatch(isString)(["1"])).toBe(true);
+  expect(arrArgMatch(1)([1])).toBe(true);
+  expect(arrArgMatch(1)(["1"])).toBe(false);
+
+  // With wildcard
+  expect(arrArgMatch(1, "...")([1, 2, "foo"])).toBe(true);
+  expect(arrArgMatch(1, "...")([2, 2, "foo"])).toBe(false);
+  expect(arrArgMatch("...")([2, 2, "foo"])).toBe(true);
+  expect(arrArgMatch(1, "...")([1, "two", "three", "ten"])).toBe(true);
+  expect(arrArgMatch(3, "...")([1, "two", "three", "ten"])).toBe(false);
+  expect(arrArgMatch(3, 4, 5, "...")([3, 4, "two", "three", "ten"])).toBe(
+    false
+  );
+  expect(arrArgMatch(3, 4, 5, "...")([3, 4, 5, 6, "two", "three", "ten"])).toBe(
+    true
+  );
 });

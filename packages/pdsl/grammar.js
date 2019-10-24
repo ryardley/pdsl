@@ -22,7 +22,8 @@ const {
   truthy,
   Uc,
   val,
-  Xc
+  Xc,
+  arrArgMatch
 } = require("./helpers");
 
 const tokens = {
@@ -42,8 +43,8 @@ const tokens = {
   ENTRY: "\\:",
   OBJ: "\\{",
   OBJ_CLOSE: "\\}",
-  HOLDS: "\\[",
-  HOLDS_CLOSE: "\\]",
+  ARRAY: "\\[",
+  ARRAY_CLOSE: "\\]",
   ARG: "\\,",
   SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
   REST_SYMBOL: "\\.\\.\\.",
@@ -506,18 +507,18 @@ const grammar = {
     }
   }),
 
-  [tokens.HOLDS]: token => ({
+  [tokens.ARRAY]: token => ({
     type: types.VariableArityOperator,
     token,
     arity: 0,
-    runtime: holds,
+    runtime: arrArgMatch,
     prec: 100,
     toString() {
       return token + this.arity;
     }
   }),
 
-  [tokens.HOLDS_CLOSE]: token => ({
+  [tokens.ARRAY_CLOSE]: token => ({
     type: types.VariableArityOperatorClose,
     token,
     matchingToken: "[",
