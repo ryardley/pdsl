@@ -585,6 +585,16 @@ it("should match Array<type> syntax", () => {
     })
   ).toBe(true);
   expect(
+    p`{adults: Array<>6>}`({
+      adults: [7, 8, 9]
+    })
+  ).toBe(true);
+  expect(
+    p`{adults: > 6 }`({
+      adults: 7
+    })
+  ).toBe(true);
+  expect(
     p`{adults: ! number}`({
       adults: "7"
     })

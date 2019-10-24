@@ -205,7 +205,7 @@ const grammar = {
     type: types.Operator,
     token,
     arity: 1,
-    prec: 10,
+    prec: 60,
     runtime: arrTypeMatch,
     toString() {
       return "Array<";
