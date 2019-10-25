@@ -83,6 +83,70 @@ const gte = a =>
   };
 
 /**
+ * <h3>Array match</h3>
+ * Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
+ * Eg,
+ * <pre><code>
+ * // Helper functions
+ * const isNumeric = a => typeof a === 'number';
+ * const isString = a => typeof a === 'string';
+ *
+ * arrArgMatch(isNumeric, isNumeric, isNumeric)([1,2,3]); // true
+ * arrArgMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3]); // true
+ * arrArgMatch(isString, isNumeric, isNumeric, '...')([1,2,3]); // false
+ * arrArgMatch(isString, isNumeric, isNumeric, '...')(['1',2,3]); // true
+ * arrArgMatch(isNumeric, isNumeric, isNumeric, '...')([1,2,3,4]); // true
+ * arrArgMatch(1, 2)([1,3]); // false
+ * </code></pre>
+ *
+ * @param {...function|*} tests Either values, `['...', predicate]` or predicate functions used to test the contents of the array.
+ * @return {function} A function of the form <code>{array => boolean}</code>
+ */
+const arrArgMatch = (...tests) => {
+  function matchFn(arr) {
+    const hasWildcard = tests.slice(-1)[0] === "...";
+    let matches = hasWildcard || arr.length === tests.length;
+    for (let i = 0; i < tests.length; i++) {
+      const testVal = tests[i];
+      const predicate = testVal === "..." ? wildcard : val(testVal);
+      const pass = predicate(arr[i]);
+      matches = matches && pass;
+    }
+    return matches;
+  }
+  return matchFn;
+};
+
+/**
+ * <h3>Array type match</h3>
+ * Return a function that checks to see if an array contains only the values listed or if the predicate function provided returns true when run over all items in the array.
+ * Eg,
+ * <pre><code>
+ * // Helper functions
+ * const isNumeric = a => typeof a === 'number';
+ * const isString = a => typeof a === 'string';
+ *
+ * arrTypeMatch(isNumeric)([1,2,3]); // true
+ * arrTypeMatch(isNumeric)([1,2,'3']); // false
+ * arrTypeMatch(isNumeric)([]); // true
+ * </code></pre>
+ *
+ * @param {function|*} test predicate function used to test the contents of the array.
+ * @return {function} A function of the form <code>{array => boolean}</code>
+ */
+const arrTypeMatch = test => {
+  const predicate = val(test);
+  function matchFn(arr) {
+    let matches = true;
+    for (let i = 0; i < arr.length; i++) {
+      matches = matches && predicate(arr[i]);
+    }
+    return matches;
+  }
+  return matchFn;
+};
+
+/**
  * <h3>Array holds</h3>
  * Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
  * Eg,
@@ -159,6 +223,8 @@ const not = input =>
     return !val(input)(a);
   };
 
+const extant = a => a !== null && a !== undefined;
+
 /**
  * <h3>Truthy</h3>
  * A predicate that takes an input value and returns whether or not the value is truthy
@@ -177,12 +243,35 @@ const truthy = a => !!a;
  */
 const falsey = a => !a;
 
-const obj = (...entries) =>
+const obj = (...entriesWithRest) =>
   function objFn(a) {
-    return entries.reduce((acc, entry) => {
-      const [key, predicate] = Array.isArray(entry) ? entry : [entry, Boolean];
-      return acc && Boolean(a) && predicate(a[key]);
-    }, true);
+    let hasRest = false;
+    let entriesMatch = true;
+    let entryCount = 0;
+
+    // For loop is faster
+    for (let i = 0; i < entriesWithRest.length; i++) {
+      const entry = entriesWithRest[i];
+
+      // Ignore rest and note we have one
+      if (entry === "...") {
+        hasRest = hasRest || true;
+        continue;
+      }
+
+      // Extract key and predicate from the entry and run the predicate against the value
+      const [key, predicate] = Array.isArray(entry) ? entry : [entry, extant];
+      entriesMatch = entriesMatch && extant(a) && predicate(a[key]);
+
+      // We just logged an entry track it
+      entryCount++;
+    }
+
+    // If there was a rest arg we don't need to check length
+    if (hasRest) return entriesMatch;
+
+    // Check entry length
+    return entriesMatch && Object.keys(a).length === entryCount;
   };
 
 /**
@@ -260,6 +349,18 @@ function pred(input) {
   return expParser(input);
 }
 
+const strLen = input =>
+  function strLenFn(a) {
+    return typeof a === "string" && val(input)(a.length);
+  };
+
+const arrLen = input =>
+  function arrLenFn(a) {
+    return Array.isArray(a) && val(input)(a.length);
+  };
+
+const wildcard = input => true;
+
 function entry(name, predicate) {
   return [name, val(predicate)];
 }
@@ -296,6 +397,12 @@ module.exports = {
   prim,
   pred,
   deep,
+  extant,
   truthy,
-  falsey
+  falsey,
+  arrArgMatch,
+  arrTypeMatch,
+  wildcard,
+  strLen,
+  arrLen
 };

@@ -11,7 +11,11 @@ const {
   obj,
   regx,
   prim,
-  val
+  val,
+  extant,
+  arrArgMatch,
+  strLen,
+  arrLen
 } = require("./helpers");
 
 it("should obj", () => {
@@ -21,6 +25,12 @@ it("should obj", () => {
       age: 41
     })
   ).toBe(true);
+});
+
+it("should extant", () => {
+  expect(extant(false)).toBe(true);
+  expect(extant(undefined)).toBe(false);
+  expect(extant(null)).toBe(false);
 });
 
 it("should Email", () => {
@@ -102,4 +112,41 @@ it("should prim", () => {
   expect(prim(Number)("10")).toBe(false);
   expect(prim(Array)([10])).toBe(true);
   expect(prim(Array)(10)).toBe(false);
+});
+
+it("should arrArgMatch", () => {
+  const isNumeric = a => typeof a === "number";
+  const isString = a => typeof a === "string";
+  expect(arrArgMatch(isNumeric)([1])).toBe(true);
+  expect(arrArgMatch(isNumeric)([1, 2])).toBe(false);
+  expect(arrArgMatch(isNumeric, isNumeric)([1, 2])).toBe(true);
+  expect(arrArgMatch(isNumeric, isNumeric)([1])).toBe(false);
+  expect(arrArgMatch(isString)([1])).toBe(false);
+  expect(arrArgMatch(isString)(["1"])).toBe(true);
+  expect(arrArgMatch(1)([1])).toBe(true);
+  expect(arrArgMatch(1)(["1"])).toBe(false);
+
+  // With wildcard
+  expect(arrArgMatch(1, "...")([1, 2, "foo"])).toBe(true);
+  expect(arrArgMatch(1, "...")([2, 2, "foo"])).toBe(false);
+  expect(arrArgMatch("...")([2, 2, "foo"])).toBe(true);
+  expect(arrArgMatch(1, "...")([1, "two", "three", "ten"])).toBe(true);
+  expect(arrArgMatch(3, "...")([1, "two", "three", "ten"])).toBe(false);
+  expect(arrArgMatch(3, 4, 5, "...")([3, 4, "two", "three", "ten"])).toBe(
+    false
+  );
+  expect(arrArgMatch(3, 4, 5, "...")([3, 4, 5, 6, "two", "three", "ten"])).toBe(
+    true
+  );
+});
+
+it("should strLen", () => {
+  expect(strLen(10)("1234567890")).toBe(true);
+  expect(strLen(10)("12345678910")).toBe(false);
+});
+
+it("should arrLen", () => {
+  expect(arrLen(10)("1234567890")).toBe(false);
+  expect(arrLen(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])).toBe(true);
+  expect(arrLen(10)([1, 2, 3, 4, 5, 6, 7, 8, 9])).toBe(false);
 });
