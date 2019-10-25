@@ -202,7 +202,7 @@ const NotNumsAndUpCase = p`!${Nums} & !${UpCase}`;
 const Extended = /[^a-zA-Z0-9]/;
 
 const isValidUser = p`{
-  username: string[4..8] & !${NotNumsAndUpCase},
+  username: string[4..8] & ${NotNumsAndUpCase},
   password: string[>8] & ${Extended},
   age: > 17
 }`;
