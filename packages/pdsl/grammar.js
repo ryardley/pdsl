@@ -7,7 +7,6 @@ const {
   entry,
   gt,
   gte,
-  holds,
   Lc,
   lt,
   lte,
@@ -24,37 +23,15 @@ const {
   val,
   Xc,
   arrArgMatch,
-  arrTypeMatch
+  arrTypeMatch,
+  strLen,
+  arrLen
 } = require("./helpers");
 
+// In order of global greedy token parsing
 const tokens = {
-  NOT: "\\!",
-  TRUTHY: "\\!\\!",
-  FALSY_KEYWORD: "falsey", // Using literal falsey as if we use "\\!" it will be picked up all the not operators
-  AND: "\\&\\&",
-  OR: "\\|\\|",
-  AND_SHORT: "\\&",
-  OR_SHORT: "\\|",
-  BTW: "\\<\\s\\<",
-  BTWE: "\\.\\.",
-  GT: "\\>(?=(?:\\s*)?[\\.\\d])", // disambiguation checks if followed by a number
-  GTE: "\\>\\=",
-  LT: "\\<",
-  LTE: "\\<\\=",
-  ENTRY: "\\:",
-  OBJ: "\\{",
-  OBJ_CLOSE: "\\}",
-  ARRAY: "\\[",
-  ARRAY_CLOSE: "\\]",
-  ARRAY_TYPED: "Array<",
-  ARG: "\\,",
-  SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
-  REST_SYMBOL: "\\.\\.\\.",
-  NUMBER: "-?\\d+(\\.\\d+)?",
   TRUE: "true",
   FALSE: "false",
-  NULL: "null",
-  UNDEFINED: "undefined",
   EMAIL_REGX: "Email",
   EXTENDED_CHARS_REGX: "Xc",
   NUM_CHARS_REGX: "Nc",
@@ -65,23 +42,50 @@ const tokens = {
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
   EMPTY_STRING_SINGLE: "\\'\\'",
-  EXTANT_PREDICATE: "_",
-  WILDCARD_PREDICATE: "\\*",
+  STRING_LENGTH: "string\\[",
+  ARRAY_LENGTH: "array\\[",
+  PRIM_NUMBER: "Number",
+  PRIM_OBJECT: "Object",
+  ARRAY_TYPED: "Array<",
+  PRIM_ARRAY: "Array",
+  NULL: "null",
+  UNDEFINED: "undefined",
   PRIM_NUMBER_VAL: "number",
   PRIM_BOOLEAN_VAL: "boolean",
   PRIM_SYMBOL_VAL: "symbol",
   PRIM_STRING_VAL: "string",
   PRIM_ARRAY_VAL: "array",
-  PRIM_NUMBER: "Number",
-  PRIM_OBJECT: "Object",
-  PRIM_ARRAY: "Array",
   PRIM_BOOLEAN: "Boolean",
   PRIM_STRING: "String",
   PRIM_SYMBOL: "Symbol",
   PRIM_FUNCTION: "Function",
+  EXTANT_PREDICATE: "_",
+  WILDCARD_PREDICATE: "\\*",
+  TRUTHY: "\\!\\!",
+  FALSY_KEYWORD: "falsey", // Using literal falsey as if we use "\\!" it will be picked up all the not operators
+  SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
+  REST_SYMBOL: "\\.\\.\\.",
+  NUMBER: "-?\\d+(\\.\\d+)?",
   STRING_DOUBLE: `\\"[^\\"]*\\"`,
   STRING_SINGLE: `\\'[^\\']*\\'`,
   PREDICATE_LOOKUP: "@{LINK:(\\d+)}",
+  NOT: "\\!",
+  AND: "\\&\\&",
+  AND_SHORT: "\\&",
+  OR: "\\|\\|",
+  OR_SHORT: "\\|",
+  BTW: "\\<\\s\\<",
+  BTWE: "\\.\\.",
+  GTE: "\\>\\=",
+  LTE: "\\<\\=",
+  GT: "\\>(?=(?:\\s*)?[\\.\\d])", // disambiguation checks if followed by a number
+  LT: "\\<",
+  ENTRY: "\\:",
+  OBJ: "\\{",
+  OBJ_CLOSE: "\\}",
+  ARRAY: "\\[",
+  ARRAY_CLOSE: "\\]",
+  ARG: "\\,",
   PRECEDENCE: "\\(",
   PRECEDENCE_CLOSE: "\\)"
 };
@@ -199,16 +203,6 @@ const grammar = {
     token: prim(Object),
     toString() {
       return "Object";
-    }
-  }),
-  [tokens.ARRAY_TYPED]: token => ({
-    type: types.Operator,
-    token,
-    arity: 1,
-    prec: 60,
-    runtime: arrTypeMatch,
-    toString() {
-      return "Array<";
     }
   }),
   [tokens.PRIM_ARRAY]: token => ({
@@ -486,7 +480,36 @@ const grammar = {
       return token;
     }
   }),
-
+  [tokens.ARRAY_TYPED]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 60,
+    runtime: arrTypeMatch,
+    toString() {
+      return "Array<";
+    }
+  }),
+  [tokens.STRING_LENGTH]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 60,
+    runtime: strLen,
+    toString() {
+      return "string[";
+    }
+  }),
+  [tokens.ARRAY_LENGTH]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 60,
+    runtime: arrLen,
+    toString() {
+      return "array[";
+    }
+  }),
   // functions have highest precidence
   [tokens.ENTRY]: token => ({
     type: types.Operator,

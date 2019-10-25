@@ -13,7 +13,9 @@ const {
   prim,
   val,
   extant,
-  arrArgMatch
+  arrArgMatch,
+  strLen,
+  arrLen
 } = require("./helpers");
 
 it("should obj", () => {
@@ -136,4 +138,15 @@ it("should arrArgMatch", () => {
   expect(arrArgMatch(3, 4, 5, "...")([3, 4, 5, 6, "two", "three", "ten"])).toBe(
     true
   );
+});
+
+it("should strLen", () => {
+  expect(strLen(10)("1234567890")).toBe(true);
+  expect(strLen(10)("12345678910")).toBe(false);
+});
+
+it("should arrLen", () => {
+  expect(arrLen(10)("1234567890")).toBe(false);
+  expect(arrLen(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])).toBe(true);
+  expect(arrLen(10)([1, 2, 3, 4, 5, 6, 7, 8, 9])).toBe(false);
 });
