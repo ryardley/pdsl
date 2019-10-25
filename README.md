@@ -123,7 +123,7 @@ p`{ name, ... }`({
   name: "A name",
   age: 234,
   occupation: "developer"
-}); // false
+}); // true
 ```
 
 ### Number is part of range
