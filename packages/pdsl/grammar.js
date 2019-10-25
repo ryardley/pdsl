@@ -384,7 +384,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: and,
-    prec: 20,
+    prec: 60,
     toString() {
       return token;
     }
@@ -394,7 +394,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: and,
-    prec: 20,
+    prec: 60,
     toString() {
       return token;
     }
@@ -405,7 +405,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: or,
-    prec: 30,
+    prec: 60,
     toString() {
       return token;
     }
@@ -415,7 +415,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: or,
-    prec: 30,
+    prec: 60,
     toString() {
       return token;
     }
@@ -480,36 +480,7 @@ const grammar = {
       return token;
     }
   }),
-  [tokens.ARRAY_TYPED]: token => ({
-    type: types.Operator,
-    token,
-    arity: 1,
-    prec: 60,
-    runtime: arrTypeMatch,
-    toString() {
-      return "Array<";
-    }
-  }),
-  [tokens.STRING_LENGTH]: token => ({
-    type: types.Operator,
-    token,
-    arity: 1,
-    prec: 60,
-    runtime: strLen,
-    toString() {
-      return "string[";
-    }
-  }),
-  [tokens.ARRAY_LENGTH]: token => ({
-    type: types.Operator,
-    token,
-    arity: 1,
-    prec: 60,
-    runtime: arrLen,
-    toString() {
-      return "array[";
-    }
-  }),
+
   // functions have highest precidence
   [tokens.ENTRY]: token => ({
     type: types.Operator,
@@ -582,6 +553,36 @@ const grammar = {
     token,
     toString() {
       return token;
+    }
+  }),
+  [tokens.ARRAY_TYPED]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 100,
+    runtime: arrTypeMatch,
+    toString() {
+      return "Array<";
+    }
+  }),
+  [tokens.STRING_LENGTH]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 100,
+    runtime: strLen,
+    toString() {
+      return "string[";
+    }
+  }),
+  [tokens.ARRAY_LENGTH]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 100,
+    runtime: arrLen,
+    toString() {
+      return "array[";
     }
   })
 };

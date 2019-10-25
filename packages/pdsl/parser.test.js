@@ -57,7 +57,8 @@ describe("parser", () => {
     { input: "<=100", output: "100 <=" },
     { input: "!8", output: "8 !1" },
     { input: "{name: ! }", output: "name ! : {1" },
-    { input: "{name: !! }", output: "name !! : {1" }
+    { input: "{name: !! }", output: "name !! : {1" },
+    { input: "> 5 & < 10", output: "5 > 10 < &" }
   ].forEach(({ input, output, skip, only }) => {
     const itFunc = skip ? it.skip : only ? it.only : it;
 
