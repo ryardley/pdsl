@@ -23,7 +23,6 @@ function parser(input) {
   const arity = [];
   try {
     const finalOut = input
-      // .map(toNode)
       .reduce((output, node) => {
         let type;
         let msg = [];
@@ -68,13 +67,12 @@ function parser(input) {
             !(peek(stack).prec >= node.prec)
           ) {
             /* istanbul ignore next */
-            if (peek(stack).prec > node.prec) {
-              msg.push("Stack precedence is higher than node!");
+            if (peek(stack).prec >= node.prec) {
+              msg.push("Stack precedence is higher than or equal node!");
             } else {
               msg.push("Stack precedence is equal or lower than node!");
             }
             msg.push("flushing stack");
-
             output.push(stack.pop());
           }
           stack.push(node);

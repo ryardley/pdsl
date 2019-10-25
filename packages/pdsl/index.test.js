@@ -608,3 +608,9 @@ it("should support array length syntax", () => {
   expect(p`array[4]`([1, 2, 3, 4, 5])).toBe(false);
   expect(p`array[>4]`([1, 2, 3, 4, 5])).toBe(true);
 });
+
+it("should parse logic in numeric value calulations", () => {
+  expect(p`>5`(6)).toBe(true);
+  expect(p`> 5 & < 10`(6)).toBe(true);
+  expect(p`5..7 | 10..13`(6)).toBe(true);
+});
