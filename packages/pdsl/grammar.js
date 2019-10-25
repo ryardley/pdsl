@@ -23,7 +23,9 @@ const {
   val,
   Xc,
   arrArgMatch,
-  arrTypeMatch
+  arrTypeMatch,
+  strLen,
+  arrLen
 } = require("./helpers");
 
 // In order of global greedy token parsing
@@ -201,16 +203,6 @@ const grammar = {
     token: prim(Object),
     toString() {
       return "Object";
-    }
-  }),
-  [tokens.ARRAY_TYPED]: token => ({
-    type: types.Operator,
-    token,
-    arity: 1,
-    prec: 60,
-    runtime: arrTypeMatch,
-    toString() {
-      return "Array<";
     }
   }),
   [tokens.PRIM_ARRAY]: token => ({
@@ -488,7 +480,36 @@ const grammar = {
       return token;
     }
   }),
-
+  [tokens.ARRAY_TYPED]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 60,
+    runtime: arrTypeMatch,
+    toString() {
+      return "Array<";
+    }
+  }),
+  [tokens.STRING_LENGTH]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 60,
+    runtime: strLen,
+    toString() {
+      return "string[";
+    }
+  }),
+  [tokens.ARRAY_LENGTH]: token => ({
+    type: types.Operator,
+    token,
+    arity: 1,
+    prec: 60,
+    runtime: arrLen,
+    toString() {
+      return "array[";
+    }
+  }),
   // functions have highest precidence
   [tokens.ENTRY]: token => ({
     type: types.Operator,

@@ -579,24 +579,28 @@ it("should match Array<type> syntax", () => {
   expect(p`Array<{name:string|number}>`([{ name: "foo" }, { name: 3 }])).toBe(
     true
   );
-  expect(
-    p`{adults: Array<number>}`({
-      adults: [1]
-    })
-  ).toBe(true);
-  expect(
-    p`{adults: Array<>6>}`({
-      adults: [7, 8, 9]
-    })
-  ).toBe(true);
-  expect(
-    p`{adults: > 6 }`({
-      adults: 7
-    })
-  ).toBe(true);
-  expect(
-    p`{adults: ! number}`({
-      adults: "7"
-    })
-  ).toBe(true);
+  expect(p`{property: Array<number>}`({ property: [1] })).toBe(true);
+  expect(p`{property: Array<>6>}`({ property: [7, 8, 9] })).toBe(true);
+  expect(p`{property: Array<>6>}`({ property: [1, 8, 9] })).toBe(false);
+});
+
+it("should support string length syntax", () => {
+  expect(p`string[4]`("1")).toBe(false);
+  expect(p`string[4]`("1234")).toBe(true);
+  expect(p`string[4]`("12345")).toBe(false);
+  expect(p`string[>4]`("12345")).toBe(true);
+  expect(p`string[>4]`("1234")).toBe(false);
+  expect(p`string[${4}]`("1234")).toBe(true);
+  expect(p`string[4..6]`("123")).toBe(false);
+  expect(p`string[4..6]`("1234")).toBe(true);
+  expect(p`string[4..6]`("123456")).toBe(true);
+  expect(p`string[4..6]`("1234567")).toBe(false);
+  expect(p`{password: string[>10]}`({ password: "abcdefghijk" })).toBe(true);
+});
+
+it("should support array length syntax", () => {
+  expect(p`array[4]`([1])).toBe(false);
+  expect(p`array[4]`([1, 2, 3, 4])).toBe(true);
+  expect(p`array[4]`([1, 2, 3, 4, 5])).toBe(false);
+  expect(p`array[>4]`([1, 2, 3, 4, 5])).toBe(true);
 });

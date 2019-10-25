@@ -349,6 +349,16 @@ function pred(input) {
   return expParser(input);
 }
 
+const strLen = input =>
+  function strLenFn(a) {
+    return typeof a === "string" && val(input)(a.length);
+  };
+
+const arrLen = input =>
+  function arrLenFn(a) {
+    return Array.isArray(a) && val(input)(a.length);
+  };
+
 const wildcard = input => true;
 
 function entry(name, predicate) {
@@ -392,5 +402,7 @@ module.exports = {
   falsey,
   arrArgMatch,
   arrTypeMatch,
-  wildcard
+  wildcard,
+  strLen,
+  arrLen
 };
