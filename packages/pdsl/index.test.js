@@ -263,7 +263,9 @@ it("should test the toString() calls for code coverage", () => {
     < 2 |
     _ |
     ... |
-    Array< |`
+    Array< |
+    string[ |
+    array[ |`
   ).toBe(
     [
       "[0 1 .. 4 ]",
@@ -302,7 +304,9 @@ it("should test the toString() calls for code coverage", () => {
       "< 2",
       "_",
       "...",
-      "Array<"
+      "Array<",
+      "string[",
+      "array["
     ].join(" | ") + " |"
   );
 });
