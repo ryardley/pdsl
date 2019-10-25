@@ -6,7 +6,7 @@ const {
   hasToken
 } = require("./grammar");
 
-const rex = new RegExp(`(${Object.keys(grammar).join("|")})`, "g");
+const rex = new RegExp(`(${Object.values(tokens).join("|")})`, "g");
 
 const grammers = Object.entries(grammar);
 

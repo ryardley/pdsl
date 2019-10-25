@@ -6,7 +6,9 @@ const {
   isVaradicFunctionClose,
   isPredicateLookup,
   isLiteral,
-  isOperator
+  isOperator,
+  tokens,
+  grammar
 } = require("./grammar");
 
 describe("operator predicates", () => {
@@ -24,4 +26,8 @@ describe("operator predicates", () => {
       expect(p()).toBe(false);
     });
   });
+});
+
+test.only("tokens should match the grammar order", () => {
+  expect(Object.values(tokens)).toEqual(Object.keys(grammar));
 });
