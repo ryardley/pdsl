@@ -32,6 +32,14 @@ isSoftwareCreator(someone); // true | false
 
 #### UPDATE: PDSL from version 4+ is now exact matching by default
 
+To use version 4 install pdsl from the `next` dist tag:
+
+```js
+npm install pdsl@next
+```
+
+The following docs refer to pdsl 4+
+
 ## Predicate functions are just easier with PDSL
 
 Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. We need predicate functions all the time when filtering an array, validating input, determining the type of an unknown object or creating guard conditions in TypeScript.
