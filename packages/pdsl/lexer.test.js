@@ -20,6 +20,7 @@ describe("lexer", () => {
       )
     ).toEqual('{0·name·:·"Rudi"·,·age·}');
   });
+
   it("should differentiate between ! as a unary operator and as a predicate", () => {
     expect(JSON.stringify(lexer(`{ name: ! }`))).toEqual(
       JSON.stringify([

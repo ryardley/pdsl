@@ -26,6 +26,7 @@ function toNode(token) {
   }
 }
 
+// HACK: can we do this using a regex and look ahead?
 function disambiguateNotOperator(node, index, arr) {
   // Find a not operator
   if (!(isOperator(node) && hasToken(node, "!"))) {
@@ -45,11 +46,20 @@ function disambiguateNotOperator(node, index, arr) {
 
 function lexer(input) {
   rex.lastIndex = 0;
-  return input
-    .replace(/\/\/.*(\n|$)/g, "") // remove comments
-    .match(rex)
-    .map(toNode)
-    .map(disambiguateNotOperator);
+  return (
+    input
+      // remove comments
+      .replace(/\/\/.*(\n|$)/g, "")
+      // Remove closing string bracket to make
+      // string[x] and array[x] a a unary operator
+      // eg. "string[ > 7]" -> "string[ > 7"
+      .replace(/((?:string|array)\[)([^\]]*)(\])/, "$1$2")
+      // go and globally tokenise everything for parsing
+      .match(rex)
+      // convert to an object
+      .map(toNode)
+      .map(disambiguateNotOperator)
+  );
 }
 
 module.exports = { lexer };

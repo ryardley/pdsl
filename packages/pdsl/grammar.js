@@ -26,7 +26,7 @@ const {
   arrTypeMatch
 } = require("./helpers");
 
-// In order of parsing
+// In order of global greedy token parsing
 const tokens = {
   TRUE: "true",
   FALSE: "false",
@@ -40,6 +40,8 @@ const tokens = {
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
   EMPTY_STRING_SINGLE: "\\'\\'",
+  STRING_LENGTH: "string\\[",
+  ARRAY_LENGTH: "array\\[",
   PRIM_NUMBER: "Number",
   PRIM_OBJECT: "Object",
   ARRAY_TYPED: "Array<",
