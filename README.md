@@ -78,7 +78,7 @@ PDSL is quicker to type, expresses intent and is a fair bit shorter but in PDSL 
 const extant = p`_`;
 ```
 
-### Object has truthy property
+### Object has property
 
 _Vanilla JS:_
 
@@ -122,6 +122,23 @@ p`{ name, ... }`({
   age: 234,
   occupation: "developer"
 }); // true
+```
+
+### Array contains exact items
+
+```js
+p`[ number, string, *, { type: "SEVEN" } ]`([
+  7,
+  "seven",
+  NaN,
+  { type: "SEVEN }
+]); // true
+```
+
+### Typed Arrays 
+
+```js
+p`Array<number>`([1,2,3,4]);
 ```
 
 ### Number is part of range
