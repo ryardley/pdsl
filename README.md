@@ -55,7 +55,7 @@ PDSL doesnt really take much learning. Best thing to do is to look at a few exam
 _Vanilla JS:_
 
 ```js
-const notNil = input => input !== null && input !== undefined;
+const extant = input => input !== null && input !== undefined;
 ```
 
 **PDSL:**
