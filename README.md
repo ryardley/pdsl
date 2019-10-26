@@ -38,7 +38,7 @@ To use version 4 install pdsl from the `next` dist tag:
 npm install pdsl@next
 ```
 
-The following docs refer to pdsl 4+
+The following docs refer to pdsl 4+. Documentation for the `latest` version can be found [here](https://github.com/ryardley/pdsl/tree/v3.6.0) 
 
 ## Predicate functions are just easier with PDSL
 
