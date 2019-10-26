@@ -72,9 +72,7 @@ extant(null); // false
 extant(undefined); // false
 ```
 
-PDSL is quicker to type, expresses intent and is a fair bit shorter.
-
-UPDATE: In fact this is so common that from v4+ PDSL provides an extant predicate:
+PDSL is quicker to type, expresses intent and is a fair bit shorter but in PDSL we like things even shorter and this is so common in programming that PDSL now provides an extant predicate:
 
 ```js
 const extant = p`_`;
