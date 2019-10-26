@@ -262,7 +262,7 @@ const isKitchenSinc = p`
       num: 1..10,
       bar: {
         baz: ${/^foo/},
-        foo
+        foo: !!
       }
     }
   }
