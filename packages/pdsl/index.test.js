@@ -586,6 +586,11 @@ it("should match Array<type> syntax", () => {
   expect(p`{property: Array<number>}`({ property: [1] })).toBe(true);
   expect(p`{property: Array<>6>}`({ property: [7, 8, 9] })).toBe(true);
   expect(p`{property: Array<>6>}`({ property: [1, 8, 9] })).toBe(false);
+  expect(p`Array<{name}>`([{ name: "Rudi" }])).toBe(true);
+  expect(p`Array<{name}>`([{ name: undefined }])).toBe(false);
+  expect(p`Array<{name}>`({ name: undefined })).toBe(false);
+  expect(p`Array<{name}> & {length:4, ...}`([{ name: "Rudi" }])).toBe(false);
+  expect(p`Array<{name}> & {length:1, ...}`([{ name: "Rudi" }])).toBe(true);
 });
 
 it("should support string length syntax", () => {
@@ -605,8 +610,12 @@ it("should support string length syntax", () => {
 it("should support array length syntax", () => {
   expect(p`array[4]`([1])).toBe(false);
   expect(p`array[4]`([1, 2, 3, 4])).toBe(true);
-  expect(p`array[4]`([1, 2, 3, 4, 5])).toBe(false);
+  expect(p`Array<number> & array[5]`([1, 2, 3, 4, 5])).toBe(true);
   expect(p`array[>4]`([1, 2, 3, 4, 5])).toBe(true);
+  expect(p`array[5] & Array<number> & [_,_,3, ...]`([1, 2, 3, 4, 5])).toBe(
+    true
+  );
+  expect(p`array[5] & Array<number> & [_,*,3]`([1, 2, 3, 4, 5])).toBe(false);
 });
 
 it("should parse logic in numeric value calulations", () => {
