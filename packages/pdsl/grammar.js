@@ -5,6 +5,7 @@ const {
   deep,
   Email,
   entry,
+  extant,
   gt,
   gte,
   Lc,
@@ -25,7 +26,8 @@ const {
   arrArgMatch,
   arrTypeMatch,
   strLen,
-  arrLen
+  arrLen,
+  wildcard
 } = require("./helpers");
 
 // In order of global greedy token parsing
@@ -291,14 +293,14 @@ const grammar = {
   }),
   [tokens.EXTANT_PREDICATE]: token => ({
     type: types.PredicateLiteral,
-    token: a => a !== null && a !== undefined,
+    token: extant,
     toString() {
       return "_";
     }
   }),
   [tokens.WILDCARD_PREDICATE]: token => ({
     type: types.PredicateLiteral,
-    token: () => true,
+    token: wildcard,
     toString() {
       return "*";
     }
@@ -343,24 +345,31 @@ const grammar = {
       return token;
     }
   }),
-  [tokens.STRING_DOUBLE]: token => ({
-    type: types.StringLiteral,
-    token: token.match(/\"(.*)\"/)[1],
-    toString() {
-      return token;
-    }
-  }),
-  [tokens.STRING_SINGLE]: token => ({
-    type: types.StringLiteral,
-    token: token.match(/\'(.*)\'/)[1],
-    toString() {
-      return token;
-    }
-  }),
+  [tokens.STRING_DOUBLE]: token => {
+    const t = token.match(/\"(.*)\"/);
+    return {
+      type: types.StringLiteral,
+      token: t ? t[1] : "__default",
+      toString() {
+        return token;
+      }
+    };
+  },
+  [tokens.STRING_SINGLE]: token => {
+    const t = token.match(/\'(.*)\'/);
+    return {
+      type: types.StringLiteral,
+      token: t ? t[1] : "__default",
+      toString() {
+        return token;
+      }
+    };
+  },
   [tokens.PREDICATE_LOOKUP]: token => {
+    const t = token.match(/@{LINK:(\d+)}/);
     return {
       type: types.PredicateLookup,
-      token: token.match(/@{LINK:(\d+)}/)[1],
+      token: t ? t[1] : "__default",
       toString() {
         return token;
       }

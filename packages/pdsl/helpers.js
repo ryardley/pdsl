@@ -361,7 +361,7 @@ const arrLen = input =>
     return Array.isArray(a) && val(input)(a.length);
   };
 
-const wildcard = input => true;
+const wildcard = () => true;
 
 function entry(name, predicate) {
   return [name, val(predicate)];

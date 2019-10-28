@@ -1,6 +1,3 @@
-// const template = require("@babel/template").default;
-const traverse = require("@babel/traverse").default;
-
 const { generator } = require("./babel-generator");
 const { unsafe_toAst } = require("pdsl");
 
@@ -20,57 +17,34 @@ function findStringsAndAstNodeList(path) {
   return { strings, nodeList };
 }
 
-const AVAILABLE_IDENTS = [
-  "Email",
-  "btw",
-  "btwe",
-  "lt",
-  "lte",
-  "gt",
-  "gte",
-  "holds",
-  "or",
-  "and",
-  "not",
-  "obj",
-  "val",
-  "regx",
-  "entry",
-  "prim",
-  "pred",
-  "deep"
-];
-
 module.exports = function pdslPlugin({ template }) {
   return {
     name: "pdsl",
     visitor: {
+      // Find the import declaration:
       ImportDeclaration(pathImport) {
         if (pathImport.node.source.value !== "pdsl") return;
-        let imps = new Set();
+        // we are dealing with: import p from 'pdsl';
         pathImport.parentPath.traverse({
+          // Look through the document
           TaggedTemplateExpression(path) {
+            // if we find a tag called 'p' that is a tagged template literal...
             if (path.node.tag.name !== "p") return;
+            // Get the strings and function nodes
             const { strings, nodeList } = findStringsAndAstNodeList(path);
-            const ast = generator(unsafe_toAst(strings), nodeList);
-            traverse(
-              { type: "File", program: { type: "Program", body: [ast] } },
-              {
-                Identifier(pathIdentifier) {
-                  imps.add(pathIdentifier.node.name);
-                }
-              }
-            );
+
+            // Create the PDSL ast like array
+            const pdslAstLikeArray = unsafe_toAst(strings);
+
+            // Turn that into a babel AST
+            const ast = generator(pdslAstLikeArray, nodeList);
+
             path.replaceWith(ast);
           }
         });
 
         pathImport.replaceWith(
-          template.ast(
-            `const {${Array.from(imps)
-              .filter(a => AVAILABLE_IDENTS.includes(a))
-              .join(",")}} = require("pdsl/helpers");`
-          )
+          template.ast(`const helpers = require("pdsl/helpers");`)
         );
       }
     }

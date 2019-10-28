@@ -1,3 +1,5 @@
+// This generator unlike the one in PDSL actually generates babel AST
+
 const {
   isPredicateLookup,
   isVaradicFunction,
