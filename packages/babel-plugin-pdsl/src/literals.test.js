@@ -36,87 +36,144 @@ describe("booleanLiteral", () => {
 });
 
 describe("predicateLiteral", () => {
-  [
+  const predicateLiteralTests = [
     {
       name: "Email",
       input: tokens.EMAIL_REGX,
-      expected: "regx(Email)"
+      expected: "helpers.regx(Email)"
     },
     {
       name: "{}",
       input: tokens.EMPTY_OBJ,
-      expected: "deep({})"
+      expected: "helpers.deep({})"
     },
     {
       name: "[]",
       input: tokens.EMPTY_ARRAY,
-      expected: "deep([])"
+      expected: "helpers.deep([])"
     },
     {
       name: '""',
       input: tokens.EMPTY_STRING_DOUBLE,
-      expected: 'deep("")'
+      expected: 'helpers.deep("")'
     },
     {
       name: "''",
       input: tokens.EMPTY_STRING_SINGLE,
-      expected: 'deep("")'
+      expected: 'helpers.deep("")'
     },
     {
       name: "Number",
       input: tokens.PRIM_NUMBER,
-      expected: "prim(Number)"
+      expected: "helpers.prim(Number)"
     },
     {
       name: "number",
       input: tokens.PRIM_NUMBER_VAL,
-      expected: "prim(Number)"
+      expected: "helpers.prim(Number)"
     },
     {
       name: "Object",
       input: tokens.PRIM_OBJECT,
-      expected: "prim(Object)"
+      expected: "helpers.prim(Object)"
     },
     {
       name: "Array",
       input: tokens.PRIM_ARRAY,
-      expected: "prim(Array)"
+      expected: "helpers.prim(Array)"
     },
     {
       name: "null",
       input: tokens.NULL,
-      expected: "val(null)"
+      expected: "helpers.val(null)"
     },
     {
       name: "undefined",
       input: tokens.UNDEFINED,
-      expected: "val(undefined)"
+      expected: "helpers.val(undefined)"
     },
     {
       name: "Boolean",
       input: tokens.PRIM_BOOLEAN_VAL,
-      expected: "prim(Boolean)"
+      expected: "helpers.prim(Boolean)"
     },
     {
       name: "symbol",
       input: tokens.PRIM_SYMBOL_VAL,
-      expected: "prim(Symbol)"
+      expected: "helpers.prim(Symbol)"
     },
     {
       name: "string",
       input: tokens.PRIM_STRING_VAL,
-      expected: "prim(String)"
+      expected: "helpers.prim(String)"
     },
-    { name: "array", input: tokens.PRIM_ARRAY_VAL, expected: "prim(Array)" },
-    { name: "boolean", input: tokens.PRIM_BOOLEAN, expected: "prim(Boolean)" },
-    { name: "String", input: tokens.PRIM_STRING, expected: "prim(String)" },
-    { name: "Symbol", input: tokens.PRIM_SYMBOL, expected: "prim(Symbol)" },
+    {
+      name: "array",
+      input: tokens.PRIM_ARRAY_VAL,
+      expected: "helpers.prim(Array)"
+    },
+    {
+      name: "boolean",
+      input: tokens.PRIM_BOOLEAN,
+      expected: "helpers.prim(Boolean)"
+    },
+    {
+      name: "String",
+      input: tokens.PRIM_STRING,
+      expected: "helpers.prim(String)"
+    },
+    {
+      name: "Symbol",
+      input: tokens.PRIM_SYMBOL,
+      expected: "helpers.prim(Symbol)"
+    },
     {
       name: "Function",
       input: tokens.PRIM_FUNCTION,
-      expected: "prim(Function)"
+      expected: "helpers.prim(Function)"
+    },
+    {
+      name: "_",
+      input: tokens.EXTANT_PREDICATE,
+      expected: "helpers.extant"
+    },
+    {
+      name: "*",
+      input: tokens.WILDCARD_PREDICATE,
+      expected: "helpers.wildcard"
+    },
+    {
+      name: "!!",
+      input: tokens.TRUTHY,
+      expected: "helpers.truthy"
+    },
+    {
+      name: "falsey",
+      input: tokens.FALSY_KEYWORD,
+      expected: "helpers.falsey"
     }
-  ].forEach(({ name, input, expected, only }) => {
+  ];
+
+  const EXEMPTIONS = ["Xc", "Nc", "Lc", "Uc", "LUc"];
+
+  // Test to ensure we have a test here for all new predicate literals
+  Object.entries(grammar)
+    .filter(([test, creator]) => {
+      return (
+        creator('"foo"').type === "PredicateLiteral" &&
+        !EXEMPTIONS.includes(test)
+      );
+    })
+    .map(([test]) => test)
+    .forEach(test => {
+      const hasTest =
+        predicateLiteralTests.filter(t => t.input === test).length > 0;
+      it(`Have test for ${test}`, () => {
+        expect(hasTest).toBe(true);
+      });
+    });
+
+  predicateLiteralTests.forEach(({ name, input, expected, only }) => {
     const testFn = only ? test.only : test;
     testFn(name, () => {
       const node = grammar[input]();
