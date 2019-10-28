@@ -48,7 +48,7 @@ PDSL provides the developer a simple but powerful shorthand based on a combinati
 
 ## Examples
 
-PDSL doesnt really take much learning. Best thing to do is to look at a few examples.
+PDSL doesn't really take much learning. Best thing to do is to look at a few examples.
 
 ### Quick nil check
 
@@ -78,13 +78,13 @@ PDSL is quicker to type, expresses intent and is a fair bit shorter but in PDSL 
 const extant = p`_`;
 ```
 
-### Object has property
+### Object has non-nullish property
 
 _Vanilla JS:_
 
 ```js
 const hasName = input =>
-  input && (input.name !== null || input.name !== undefined);
+  input && input.name !== null && input.name !== undefined;
 ```
 
 **PDSL:**
@@ -96,6 +96,7 @@ const isObjWithName = p`{ name }`;
 ```js
 isObjWithName({ name: "A name" }); // true
 isObjWithName({ name: true }); // true
+isObjWithName({ name: 0 }); // true
 isObjWithName({ name: undefined }); // false
 isObjWithName({}); // false
 ```
@@ -131,7 +132,7 @@ p`[ number, string, *, { type: "SEVEN" } ]`([
   7,
   "seven",
   NaN,
-  { type: "SEVEN }
+  { type: "SEVEN" }
 ]); // true
 ```
 
@@ -229,10 +230,10 @@ isValidUser({ username: "12345", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
 ```
 
-The more complex things get, the more PDSL shines see the above example in vanilla JS:
+The more complex things get, the more PDSL shines. See the above example in vanilla JS:
 
 ```js
-const isValidUser = input => {
+const isValidUser = input =>
   input &&
     input.username &&
     typeof input.username === "string" &&
@@ -241,9 +242,9 @@ const isValidUser = input => {
     input.username.length >= 4 &&
     input.username.length <= 8 &&
     typeof input.password === "string" &&
-    input.password.match(/[^a-zA-Z0-9]/);
-  input.password.length > 8 && input.age > 17;
-};
+    input.password.match(/[^a-zA-Z0-9]/) &&
+    input.password.length > 8 &&
+    input.age > 17;
 ```
 
 ### Complex Example
@@ -299,7 +300,7 @@ npm install pdsl
 
 ### Primitive matching
 
-If you pass a JavaScript primative object you will get the appropriate typeof check.
+If you pass a JavaScript primitive object, you will get the appropriate typeof check.
 
 ```js
 const isNumeric = p`Number`; // typeof value === 'number'
@@ -334,7 +335,7 @@ p`array[5]`(1, 2, 3, 4); // false
 p`array[<5]`(1, 2, 3, 4); // true
 ```
 
-You can also pass in a Javascript primitive to the template string.
+You can also pass in a JavaScript primitive to the template string.
 
 ```js
 const isNumeric = p`${Number}`; // typeof value === 'number'
@@ -344,7 +345,7 @@ const isString = p`${String}`; // typeof value === 'string'
 
 ### Reference equality
 
-If you pass a value `pdsl` will match that specific value:
+If you pass a value, `pdsl` will match that specific value:
 
 ```js
 const isLiterallyTrue = p`true`; // value === true;
@@ -353,16 +354,16 @@ const isNine = p`9`; // value === 9;
 const isRupert = p`"Rupert"`; // value === "Rupert";
 ```
 
-### Truthy and Falsey
+### Truthy and Falsy
 
-You can check for truthfullness using the truthy and falsey predicates
+You can check for truthiness using the truthy and falsy predicates.
 
 ```js
 // Truthy
 p`!!`(0); // false
 p`!!`(1); // true
 
-// Falsey
+// Falsy
 p`!`(false); // true
 p`!`(null); // true
 p`!`("hello"); // false
@@ -370,7 +371,7 @@ p`!`("hello"); // false
 
 ### Empty comparisons
 
-Checking for empty things
+Checking for empty things:
 
 ```js
 const isEmptyArray = p`[]`;
@@ -402,7 +403,7 @@ validate({ name: "Hello" }); // true
 validate({ name: 20 }); // false
 ```
 
-This applies to checking properties of all javascript objects. For example to check a string's length:
+This applies to checking properties of all JavaScript objects. For example to check a string's length:
 
 ```js
 const validate = p`string & { length: 7, ... }`; // value && typeof value.name === 'string' && value.name.length === 7;
@@ -411,11 +412,11 @@ validate("Rudi"); // false
 validate("Yardley"); // true
 ```
 
-Note you can now use `string[]` syntax to check a strings length
+Note you can now use `string[]` syntax to check a string's length.
 
 ### Object predicates
 
-You can test for object propertys existance by simply providing an object with a name property.
+You can test for an object property's existence by simply providing an object with a name property.
 
 ```js
 const validate = p`{ name }`;
@@ -446,7 +447,7 @@ The property can also contain nested objects.
 const validate = p`{ 
   name, 
   payload: {
-    listening:true,
+    listening: true,
     num: > 4
   } 
 }`;
@@ -538,7 +539,7 @@ Available helpers:
 | [not](https://ryardley.github.io/pdsl/global.html#not)   | Logical NOT                                 | `!6`                   |
 | [or](https://ryardley.github.io/pdsl/global.html#or)     | Logical OR                                  | `a \| b` or `a \|\| b` |
 | [pred](https://ryardley.github.io/pdsl/global.html#pred) | Select the correct predicate based on input | `${myVal}`             |
-| [prim](https://ryardley.github.io/pdsl/global.html#prim) | Primative typeof checking                   | `Array` etc.           |
+| [prim](https://ryardley.github.io/pdsl/global.html#prim) | Primitive typeof checking                   | `Array` etc.           |
 | [regx](https://ryardley.github.io/pdsl/global.html#regx) | Regular expression predicate                | `${/^foo/}`            |
 | [val](https://ryardley.github.io/pdsl/global.html#val)   | Strict equality                             | N/A                    |
 
@@ -564,7 +565,7 @@ You should ensure it is placed before any plugins that affect module import synt
 
 ## How it works
 
-This plugin parses p-expressions and repaces them with function calls:
+This plugin parses p-expressions and replaces them with function calls:
 
 #### Input
 
@@ -632,4 +633,4 @@ We don't know what's in your head and we want to make libraries that help more p
 
 It is comprised of a [grammar](packages/pdsl/grammar.js), a [lexer](packages/pdsl/lexer.js) a [parser](packages/pdsl/parser.js) and a [code generator](packages/pdsl/generator.js). It uses a version of the [shunting yard algorhythm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) to create the basic parser storing the output in [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) but using objects in an array instead of a tree. Then parsing was added for Varadic Functions. A lot of it was by trial and error.
 
-There are better ways to do it. There are [plans to refactor to use a transducer pattern](https://github.com/ryardley/pdsl/issues/33) but there is also a plan to create a babel plugin which will [remove the need for compiler performance enhancement](https://github.com/ryardley/pdsl/issues/32). Nevertheless if you have tips and know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - we want to learn - [let us know about it here](https://github.com/ryardley/pdsl/issues/new)
+There are better ways to do it. There are [plans to refactor to use a transducer pattern](https://github.com/ryardley/pdsl/issues/33) but there is also a plan to create a babel plugin which will [remove the need for compiler performance enhancement](https://github.com/ryardley/pdsl/issues/32). Nevertheless if you have tips and know how to do it better, faster, stronger or smaller, retaining semantic flexability and with no dependencies - we want to learn - [let us know about it here](https://github.com/ryardley/pdsl/issues/new).
