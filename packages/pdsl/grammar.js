@@ -559,7 +559,7 @@ const grammar = {
     type: types.Operator,
     token,
     arity: 1,
-    prec: 100,
+    prec: 50,
     runtime: arrTypeMatch,
     toString() {
       return "Array<";
@@ -569,7 +569,7 @@ const grammar = {
     type: types.Operator,
     token,
     arity: 1,
-    prec: 100,
+    prec: 50,
     runtime: strLen,
     toString() {
       return "string[";
@@ -579,7 +579,7 @@ const grammar = {
     type: types.Operator,
     token,
     arity: 1,
-    prec: 100,
+    prec: 50,
     runtime: arrLen,
     toString() {
       return "array[";

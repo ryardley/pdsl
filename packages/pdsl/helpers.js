@@ -137,6 +137,8 @@ const arrArgMatch = (...tests) => {
 const arrTypeMatch = test => {
   const predicate = val(test);
   function matchFn(arr) {
+    if (!Array.isArray(arr)) return false;
+
     let matches = true;
     for (let i = 0; i < arr.length; i++) {
       matches = matches && predicate(arr[i]);
