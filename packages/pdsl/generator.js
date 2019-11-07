@@ -18,7 +18,7 @@ function generator(input, funcs) {
     }
 
     if (isLiteral(node)) {
-      stack.push(node.token);
+      stack.push(node.runtime);
       return stack;
     }
 

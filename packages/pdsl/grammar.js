@@ -111,196 +111,224 @@ const grammar = {
   // LITERALS
   [tokens.TRUE]: token => ({
     type: types.BooleanLiteral,
-    token: true,
+    token,
+    runtime: true,
     toString() {
       return token;
     }
   }),
   [tokens.FALSE]: token => ({
     type: types.BooleanLiteral,
-    token: false,
+    token,
+    runtime: false,
     toString() {
       return token;
     }
   }),
-  [tokens.EMAIL_REGX]: () => ({
+  [tokens.EMAIL_REGX]: token => ({
     type: types.PredicateLiteral,
-    token: regx(Email),
+    token,
+    runtime: regx(Email),
     toString() {
       return "Email";
     }
   }),
-  [tokens.EXTENDED_CHARS_REGX]: () => ({
+  [tokens.EXTENDED_CHARS_REGX]: token => ({
     type: types.PredicateLiteral,
-    token: regx(Xc),
+    token,
+    runtime: regx(Xc),
     toString() {
       return "Xc";
     }
   }),
-  [tokens.NUM_CHARS_REGX]: () => ({
+  [tokens.NUM_CHARS_REGX]: token => ({
     type: types.PredicateLiteral,
-    token: regx(Nc),
+    token,
+    runtime: regx(Nc),
     toString() {
       return "Nc";
     }
   }),
-  [tokens.LOW_CHARS_REGX]: () => ({
+  [tokens.LOW_CHARS_REGX]: token => ({
     type: types.PredicateLiteral,
-    token: regx(Lc),
+    token,
+    runtime: regx(Lc),
     toString() {
       return "Lc";
     }
   }),
-  [tokens.UP_CHARS_REGX]: () => ({
+  [tokens.UP_CHARS_REGX]: token => ({
     type: types.PredicateLiteral,
-    token: regx(Uc),
+    token,
+    runtime: regx(Uc),
     toString() {
       return "Uc";
     }
   }),
-  [tokens.LOW_UP_CHARS_REGX]: () => ({
+  [tokens.LOW_UP_CHARS_REGX]: token => ({
     type: types.PredicateLiteral,
-    token: regx(LUc),
+    token,
+    runtime: regx(LUc),
     toString() {
       return "LUc";
     }
   }),
-  [tokens.EMPTY_OBJ]: () => ({
+  [tokens.EMPTY_OBJ]: token => ({
     type: types.PredicateLiteral,
-    token: deep({}),
+    token,
+    runtime: deep({}),
     toString() {
       return "{}";
     }
   }),
-  [tokens.EMPTY_ARRAY]: () => ({
+  [tokens.EMPTY_ARRAY]: token => ({
     type: types.PredicateLiteral,
-    token: deep([]),
+    token,
+    runtime: deep([]),
     toString() {
       return "[]";
     }
   }),
-  [tokens.EMPTY_STRING_DOUBLE]: () => ({
+  [tokens.EMPTY_STRING_DOUBLE]: token => ({
     type: types.PredicateLiteral,
-    token: deep(""),
+    token,
+    runtime: deep(""),
     toString() {
       return `""`;
     }
   }),
-  [tokens.EMPTY_STRING_SINGLE]: () => ({
+  [tokens.EMPTY_STRING_SINGLE]: token => ({
     type: types.PredicateLiteral,
-    token: deep(""),
+    token,
+    runtime: deep(""),
     toString() {
       return `""`;
     }
   }),
   [tokens.PRIM_NUMBER]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Number),
+    token,
+    runtime: prim(Number),
     toString() {
       return "Number";
     }
   }),
   [tokens.PRIM_OBJECT]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Object),
+    token,
+    runtime: prim(Object),
     toString() {
       return "Object";
     }
   }),
   [tokens.PRIM_ARRAY]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Array),
+    token,
+    runtime: prim(Array),
     toString() {
       return "Array";
     }
   }),
-  [tokens.NULL]: () => ({
+  [tokens.NULL]: token => ({
     type: types.PredicateLiteral,
-    token: val(null),
+    token,
+    runtime: val(null),
     toString() {
       return "null";
     }
   }),
-  [tokens.UNDEFINED]: () => ({
+  [tokens.UNDEFINED]: token => ({
     type: types.PredicateLiteral,
-    token: val(undefined),
+    token,
+    runtime: val(undefined),
     toString() {
       return "undefined";
     }
   }),
   [tokens.PRIM_NUMBER_VAL]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Number),
+    token,
+    runtime: prim(Number),
     toString() {
       return "number";
     }
   }),
   [tokens.PRIM_BOOLEAN_VAL]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Boolean),
+    token,
+    runtime: prim(Boolean),
     toString() {
       return "boolean";
     }
   }),
   [tokens.PRIM_SYMBOL_VAL]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Symbol),
+    token,
+    runtime: prim(Symbol),
     toString() {
       return "symbol";
     }
   }),
   [tokens.PRIM_STRING_VAL]: token => ({
     type: types.PredicateLiteral,
-    token: prim(String),
+    token,
+    runtime: prim(String),
     toString() {
       return "string";
     }
   }),
   [tokens.PRIM_ARRAY_VAL]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Array),
+    token,
+    runtime: prim(Array),
     toString() {
       return "array";
     }
   }),
   [tokens.PRIM_BOOLEAN]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Boolean),
+    token,
+    runtime: prim(Boolean),
     toString() {
       return "Boolean";
     }
   }),
   [tokens.PRIM_STRING]: token => ({
     type: types.PredicateLiteral,
-    token: prim(String),
+    token,
+    runtime: prim(String),
     toString() {
       return "String";
     }
   }),
   [tokens.PRIM_SYMBOL]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Symbol),
+    token,
+    runtime: prim(Symbol),
     toString() {
       return "Symbol";
     }
   }),
   [tokens.PRIM_FUNCTION]: token => ({
     type: types.PredicateLiteral,
-    token: prim(Function),
+    token,
+    runtime: prim(Function),
     toString() {
       return "Function";
     }
   }),
   [tokens.EXTANT_PREDICATE]: token => ({
     type: types.PredicateLiteral,
-    token: extant,
+    token,
+    runtime: extant,
     toString() {
       return "_";
     }
   }),
   [tokens.WILDCARD_PREDICATE]: token => ({
     type: types.PredicateLiteral,
-    token: wildcard,
+    token,
+    runtime: wildcard,
     toString() {
       return "*";
     }
@@ -308,7 +336,8 @@ const grammar = {
   [tokens.TRUTHY]: token => {
     return {
       type: types.PredicateLiteral,
-      token: truthy,
+      token,
+      runtime: truthy,
       toString() {
         return "!!";
       }
@@ -317,7 +346,8 @@ const grammar = {
   [tokens.FALSY_KEYWORD]: token => {
     return {
       type: types.PredicateLiteral,
-      token: falsey,
+      token,
+      runtime: falsey,
       toString() {
         return "!";
       }
@@ -327,6 +357,7 @@ const grammar = {
   [tokens.SYMBOL]: token => ({
     type: types.SymbolLiteral,
     token,
+    runtime: token,
     toString() {
       return token;
     }
@@ -334,22 +365,26 @@ const grammar = {
   [tokens.REST_SYMBOL]: token => ({
     type: types.SymbolLiteral,
     token,
+    runtime: token,
     toString() {
       return token;
     }
   }),
   [tokens.NUMBER]: token => ({
     type: types.NumericLiteral,
-    token: Number(token),
+    token,
+    runtime: Number(token),
     toString() {
       return token;
     }
   }),
   [tokens.STRING_DOUBLE]: token => {
     const t = token.match(/\"(.*)\"/);
+    const val = t ? t[1] : "__default";
     return {
       type: types.StringLiteral,
-      token: t ? t[1] : "__default",
+      token: val,
+      runtime: val,
       toString() {
         return token;
       }
@@ -357,9 +392,11 @@ const grammar = {
   },
   [tokens.STRING_SINGLE]: token => {
     const t = token.match(/\'(.*)\'/);
+    const val = t ? t[1] : "__default";
     return {
       type: types.StringLiteral,
-      token: t ? t[1] : "__default",
+      token: val,
+      runtime: val,
       toString() {
         return token;
       }
@@ -367,9 +404,11 @@ const grammar = {
   },
   [tokens.PREDICATE_LOOKUP]: token => {
     const t = token.match(/@{LINK:(\d+)}/);
+    const val = t ? t[1] : "__default";
     return {
       type: types.PredicateLookup,
-      token: t ? t[1] : "__default",
+      token: val,
+      runtime: val,
       toString() {
         return token;
       }
