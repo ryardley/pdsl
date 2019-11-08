@@ -61,11 +61,11 @@ const tokens = {
   PRIM_STRING: "String",
   PRIM_SYMBOL: "Symbol",
   PRIM_FUNCTION: "Function",
-  EXTANT_PREDICATE: "_",
   WILDCARD_PREDICATE: "\\*",
   TRUTHY: "\\!\\!",
   FALSY_KEYWORD: "falsey", // Using literal falsey as if we use "\\!" it will be picked up all the not operators
   SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
+  EXTANT_PREDICATE: "_",
   REST_SYMBOL: "\\.\\.\\.",
   NUMBER: "-?\\d+(\\.\\d+)?",
   STRING_DOUBLE: `\\"[^\\"]*\\"`,
