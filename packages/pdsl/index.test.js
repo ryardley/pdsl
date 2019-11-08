@@ -623,3 +623,15 @@ it("should parse logic in numeric value calulations", () => {
   expect(p`> 5 & < 10`(6)).toBe(true);
   expect(p`5..7 | 10..13`(6)).toBe(true);
 });
+
+it("should handle nested properties starting with underscores", () => {
+  expect(
+    p`{
+  action:{
+    _typename: "Redirect" 
+  }
+}`({
+      action: { _typename: "Redirect" }
+    })
+  ).toBe(true);
+});
