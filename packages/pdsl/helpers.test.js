@@ -20,11 +20,18 @@ const {
 
 it("should obj", () => {
   expect(
-    obj(["name", a => a === "foo"], ["age", a => a === 41])({
+    obj(
+      ["name", a => a === "foo"],
+      ["age", a => a === 41]
+    )({
       name: "foo",
       age: 41
     })
   ).toBe(true);
+});
+
+it("should check email", () => {
+  expect(val(regx(Email))("contact@rudiyardley.com")).toBe(true);
 });
 
 it("should extant", () => {

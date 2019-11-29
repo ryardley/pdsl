@@ -2,7 +2,7 @@ const t = require("@babel/types");
 const { types } = require("pdsl/grammar");
 
 function booleanLiteral(pdslNode) {
-  return t.booleanLiteral(pdslNode.token);
+  return t.booleanLiteral(pdslNode.runtime());
 }
 
 function predicateLiteral(pdslNode) {
@@ -10,7 +10,7 @@ function predicateLiteral(pdslNode) {
     case "Email":
       return t.callExpression(
         t.memberExpression(t.identifier("helpers"), t.identifier("regx")),
-        [t.identifier("Email")]
+        [t.memberExpression(t.identifier("helpers"), t.identifier("Email"))]
       );
     case "{}":
       return t.callExpression(
@@ -103,18 +103,18 @@ function predicateLiteral(pdslNode) {
 }
 
 function symbolLiteral(pdslNode) {
-  const { token } = pdslNode;
-  return t.stringLiteral(token);
+  const { runtime } = pdslNode;
+  return t.stringLiteral(runtime());
 }
 
 function numericLiteral(pdslNode) {
-  const { token } = pdslNode;
-  return t.numericLiteral(token);
+  const { runtime } = pdslNode;
+  return t.numericLiteral(runtime());
 }
 
 function stringLiteral(pdslNode) {
-  const { token } = pdslNode;
-  return t.stringLiteral(token);
+  const { runtime } = pdslNode;
+  return t.stringLiteral(runtime());
 }
 
 // return the relevant babel node for the given pdslNode literal
