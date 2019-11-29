@@ -1,5 +1,6 @@
 const p = require("./index");
-const { Email, gt } = require("./helpers");
+const helpers = require("./helpers");
+const { Email, gt } = helpers();
 
 describe("value predicates", () => {
   it("should return strict equality with any value", () => {
@@ -347,6 +348,7 @@ it("should respect a wildcard on an object", () => {
 it("should handle greater than equals ", () => {
   expect(p`>=5`(6)).toBe(true);
   expect(p`>=5`(5)).toBe(true);
+  expect(p`<=5`(4)).toBe(true);
   expect(p`>=5`(4)).toBe(false);
   expect(p`{age:>=5}`({ age: 34 })).toBe(true);
 });
@@ -634,4 +636,9 @@ it("should handle nested properties starting with underscores", () => {
       action: { _typename: "Redirect" }
     })
   ).toBe(true);
+});
+
+it("should be able to pass a config object in", () => {
+  expect(p.config({})`>5`(6)).toBe(true);
+  expect(p.config({})`>5`(5)).toBe(false);
 });

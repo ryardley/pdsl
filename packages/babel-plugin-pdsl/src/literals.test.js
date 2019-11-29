@@ -10,28 +10,36 @@ const generate = require("@babel/generator").default;
 
 describe("numericLiteral", () => {
   test("3.1415", () => {
-    expect(generate(numericLiteral({ token: 3.1415 })).code).toBe("3.1415");
+    expect(generate(numericLiteral({ runtime: () => 3.1415 })).code).toBe(
+      "3.1415"
+    );
   });
 });
 describe("symbolLiteral", () => {
   test("foo", () => {
-    expect(generate(symbolLiteral({ token: "foo" })).code).toBe('"foo"');
+    expect(generate(symbolLiteral({ runtime: () => "foo" })).code).toBe(
+      '"foo"'
+    );
   });
 });
 
 describe("stringLiteral", () => {
   test("'foo'", () => {
-    expect(generate(stringLiteral({ token: "foo" })).code).toBe('"foo"');
+    expect(generate(stringLiteral({ runtime: () => "foo" })).code).toBe(
+      '"foo"'
+    );
   });
 });
 
 describe("booleanLiteral", () => {
   test("true", () => {
-    expect(generate(booleanLiteral({ token: true })).code).toBe("true");
+    expect(generate(booleanLiteral({ runtime: () => true })).code).toBe("true");
   });
 
   test("false", () => {
-    expect(generate(booleanLiteral({ token: false })).code).toBe("false");
+    expect(generate(booleanLiteral({ runtime: () => false })).code).toBe(
+      "false"
+    );
   });
 });
 
@@ -40,7 +48,7 @@ describe("predicateLiteral", () => {
     {
       name: "Email",
       input: tokens.EMAIL_REGX,
-      expected: "helpers.regx(Email)"
+      expected: "helpers.regx(helpers.Email)"
     },
     {
       name: "{}",

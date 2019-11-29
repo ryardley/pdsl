@@ -8,3 +8,4 @@ assert.strictEqual(p`{name:${a => a.length > 10}}`({name:"12345678901"}), true);
 assert.strictEqual(p`_`(1), true);
 assert.strictEqual(p`_`(null), false);
 assert.strictEqual(p`Array<number> & array[5]`([1, 2, 3, 4, 5]),true);
+assert.strictEqual(p`Email`("email@example.com"),true);

@@ -41,7 +41,7 @@ function disambiguateNotOperator(node, index, arr) {
     return node;
   }
 
-  return grammar[tokens.FALSY_KEYWORD]();
+  return grammar[tokens.FALSY_KEYWORD]("!");
 }
 
 function lexer(input) {

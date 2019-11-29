@@ -6,6 +6,9 @@ const {
   isRegEx
 } = require("./utils");
 
+// NOTE:  All return functions must have names becuase
+//        they are used for the babel plugin
+
 /**
  * <h3>Between bounds</h3>
  * Return a function that checks to see if it's input is between two numbers not including the numbers.
@@ -14,10 +17,12 @@ const {
  * @param {number} b The higher number
  * @return {function} A function of the form number => boolean
  */
-const btw = (a, b) =>
-  function btwFn(n) {
-    const [min, max] = a < b ? [a, b] : [b, a];
-    return n > min && n < max;
+const btw = () =>
+  function btw(a, b) {
+    return function btwFn(n) {
+      const [min, max] = a < b ? [a, b] : [b, a];
+      return n > min && n < max;
+    };
   };
 
 /**
@@ -28,10 +33,12 @@ const btw = (a, b) =>
  * @param {number} b The higher number
  * @return {function} A function of the form number => boolean
  */
-const btwe = (a, b) =>
-  function btweFn(n) {
-    const [min, max] = a < b ? [a, b] : [b, a];
-    return n >= min && n <= max;
+const btwe = () =>
+  function btwe(a, b) {
+    return function btweFn(n) {
+      const [min, max] = a < b ? [a, b] : [b, a];
+      return n >= min && n <= max;
+    };
   };
 
 /**
@@ -41,9 +48,11 @@ const btwe = (a, b) =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const lt = a =>
-  function ltFn(n) {
-    return n < a;
+const lt = () =>
+  function lt(a) {
+    return function ltFn(n) {
+      return n < a;
+    };
   };
 
 /**
@@ -53,9 +62,11 @@ const lt = a =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const lte = a =>
-  function lteFn(n) {
-    return n <= a;
+const lte = () =>
+  function lte(a) {
+    return function lteFn(n) {
+      return n <= a;
+    };
   };
 
 /**
@@ -65,11 +76,12 @@ const lte = a =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const gt = a =>
-  function gtFn(n) {
-    return n > a;
+const gt = () =>
+  function gt(a) {
+    return function gtFn(n) {
+      return n > a;
+    };
   };
-
 /**
  * <h3>Greater than or equal to</h3>
  * Return a function that checks to see if it's input is greater than or equal to the given number.
@@ -77,9 +89,11 @@ const gt = a =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const gte = a =>
-  function gteFn(n) {
-    return n >= a;
+const gte = () =>
+  function gte(a) {
+    return function gteFn(n) {
+      return n >= a;
+    };
   };
 
 /**
@@ -102,20 +116,21 @@ const gte = a =>
  * @param {...function|*} tests Either values, `['...', predicate]` or predicate functions used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const arrArgMatch = (...tests) => {
-  function matchFn(arr) {
-    const hasWildcard = tests.slice(-1)[0] === "...";
-    let matches = hasWildcard || arr.length === tests.length;
-    for (let i = 0; i < tests.length; i++) {
-      const testVal = tests[i];
-      const predicate = testVal === "..." ? wildcard : val(testVal);
-      const pass = predicate(arr[i]);
-      matches = matches && pass;
+const arrArgMatch = ctx =>
+  function arrArgMatch(...tests) {
+    function matchFn(arr) {
+      const hasWildcard = tests.slice(-1)[0] === "...";
+      let matches = hasWildcard || arr.length === tests.length;
+      for (let i = 0; i < tests.length; i++) {
+        const testVal = tests[i];
+        const predicate = testVal === "..." ? wildcard(ctx) : val(ctx)(testVal);
+        const pass = predicate(arr[i]);
+        matches = matches && pass;
+      }
+      return matches;
     }
-    return matches;
-  }
-  return matchFn;
-};
+    return matchFn;
+  };
 
 /**
  * <h3>Array type match</h3>
@@ -134,19 +149,20 @@ const arrArgMatch = (...tests) => {
  * @param {function|*} test predicate function used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const arrTypeMatch = test => {
-  const predicate = val(test);
-  function matchFn(arr) {
-    if (!Array.isArray(arr)) return false;
+const arrTypeMatch = ctx =>
+  function arrTypeMatch(test) {
+    const predicate = val(ctx)(test);
+    function matchFn(arr) {
+      if (!Array.isArray(arr)) return false;
 
-    let matches = true;
-    for (let i = 0; i < arr.length; i++) {
-      matches = matches && predicate(arr[i]);
+      let matches = true;
+      for (let i = 0; i < arr.length; i++) {
+        matches = matches && predicate(arr[i]);
+      }
+      return matches;
     }
-    return matches;
-  }
-  return matchFn;
-};
+    return matchFn;
+  };
 
 /**
  * <h3>Array holds</h3>
@@ -160,31 +176,33 @@ const arrTypeMatch = test => {
  * @param {...function|*} args Either values or predicate functions used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const holds = (...args) =>
-  function holdsFn(n) {
-    let i, j;
-    let fns = [];
-    let success = [];
+const holds = ctx =>
+  function holds(...args) {
+    return function holdsFn(n) {
+      let i, j;
+      let fns = [];
+      let success = [];
 
-    // prepare args as an array of predicate fns and an array to keep track of success
-    for (i = 0; i < args.length; i++) {
-      const arg = args[i];
-      fns.push(val(arg));
-      success.push(false);
-    }
+      // prepare args as an array of predicate fns and an array to keep track of success
+      for (i = 0; i < args.length; i++) {
+        const arg = args[i];
+        fns.push(val(ctx)(arg));
+        success.push(false);
+      }
 
-    // loop through array only once
-    for (i = 0; i < n.length; i++) {
-      const item = n[i];
-      for (j = 0; j < fns.length; j++) {
-        if (!success[j]) {
-          const fn = fns[j];
-          success[j] = success[j] || fn(item);
+      // loop through array only once
+      for (i = 0; i < n.length; i++) {
+        const item = n[i];
+        for (j = 0; j < fns.length; j++) {
+          if (!success[j]) {
+            const fn = fns[j];
+            success[j] = success[j] || fn(item);
+          }
         }
       }
-    }
 
-    return success.reduce((a, b) => a && b);
+      return success.reduce((a, b) => a && b);
+    };
   };
 
 /**
@@ -195,9 +213,12 @@ const holds = (...args) =>
  * @param {function} right The second predicate
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const or = (left, right) =>
-  function orFn(a) {
-    return val(left)(a) || val(right)(a);
+const or = ctx =>
+  function or(left, right) {
+    return function orFn(a) {
+      const valCtx = val(ctx);
+      return valCtx(left)(a) || valCtx(right)(a);
+    };
   };
 
 /**
@@ -208,9 +229,12 @@ const or = (left, right) =>
  * @param {function} right The second predicate
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const and = (left, right) =>
-  function andFn(a) {
-    return val(left)(a) && val(right)(a);
+const and = ctx =>
+  function and(left, right) {
+    return function andFn(a) {
+      const valCtx = val(ctx);
+      return valCtx(left)(a) && valCtx(right)(a);
+    };
   };
 
 /**
@@ -220,12 +244,17 @@ const and = (left, right) =>
  * @param {function} input The input predicate
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const not = input =>
-  function notFn(a) {
-    return !val(input)(a);
+const not = ctx =>
+  function not(input) {
+    return function notFn(a) {
+      return !val(ctx)(input)(a);
+    };
   };
 
-const extant = a => a !== null && a !== undefined;
+const extant = () =>
+  function extant(a) {
+    return a !== null && a !== undefined;
+  };
 
 /**
  * <h3>Truthy</h3>
@@ -234,7 +263,10 @@ const extant = a => a !== null && a !== undefined;
  * @param {function} input The input value
  * @return {boolean} Boolean value indicating if the input is truthy
  */
-const truthy = a => !!a;
+const truthy = () =>
+  function truthy(a) {
+    return !!a;
+  };
 
 /**
  * <h3>Falsey</h3>
@@ -243,37 +275,45 @@ const truthy = a => !!a;
  * @param {function} input The input value
  * @return {boolean} Boolean value indicating if the input is falsey
  */
-const falsey = a => !a;
+const falsey = () =>
+  function falsey(a) {
+    return !a;
+  };
 
-const obj = (...entriesWithRest) =>
-  function objFn(a) {
-    let hasRest = false;
-    let entriesMatch = true;
-    let entryCount = 0;
+const obj = ctx =>
+  function obj(...entriesWithRest) {
+    return function objFn(a) {
+      const isExtant = extant(ctx);
+      let hasRest = false;
+      let entriesMatch = true;
+      let entryCount = 0;
 
-    // For loop is faster
-    for (let i = 0; i < entriesWithRest.length; i++) {
-      const entry = entriesWithRest[i];
+      // For loop is faster
+      for (let i = 0; i < entriesWithRest.length; i++) {
+        const entry = entriesWithRest[i];
 
-      // Ignore rest and note we have one
-      if (entry === "...") {
-        hasRest = hasRest || true;
-        continue;
+        // Ignore rest and note we have one
+        if (entry === "...") {
+          hasRest = hasRest || true;
+          continue;
+        }
+
+        // Extract key and predicate from the entry and run the predicate against the value
+        const [key, predicate] = Array.isArray(entry)
+          ? entry
+          : [entry, isExtant];
+        entriesMatch = entriesMatch && isExtant(a) && predicate(a[key]);
+
+        // We just logged an entry track it
+        entryCount++;
       }
 
-      // Extract key and predicate from the entry and run the predicate against the value
-      const [key, predicate] = Array.isArray(entry) ? entry : [entry, extant];
-      entriesMatch = entriesMatch && extant(a) && predicate(a[key]);
+      // If there was a rest arg we don't need to check length
+      if (hasRest) return entriesMatch;
 
-      // We just logged an entry track it
-      entryCount++;
-    }
-
-    // If there was a rest arg we don't need to check length
-    if (hasRest) return entriesMatch;
-
-    // Check entry length
-    return entriesMatch && Object.keys(a).length === entryCount;
+      // Check entry length
+      return entriesMatch && Object.keys(a).length === entryCount;
+    };
   };
 
 /**
@@ -283,7 +323,7 @@ const obj = (...entriesWithRest) =>
  * @param {function|*} value The input value if already a fuction it will be returned
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const val = value =>
+const val = () => value =>
   typeof value === "function"
     ? value
     : function isVal(a) {
@@ -297,10 +337,11 @@ const val = value =>
  * @param {function} value The input value
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const deep = value => {
-  const st = JSON.stringify(value);
-  return a => st === JSON.stringify(a);
-};
+const deep = () =>
+  function deep(value) {
+    const st = JSON.stringify(value);
+    return a => st === JSON.stringify(a);
+  };
 
 /**
  * <h3>Regular Expression predicate</h3>
@@ -309,7 +350,11 @@ const deep = value => {
  * @param {RegExp} rx The input value
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const regx = rx => rx.test.bind(rx);
+const regx = ctx =>
+  function regx(rx) {
+    const rgx = typeof rx === "function" ? rx(ctx) : rx;
+    return rgx.test.bind(rgx);
+  };
 
 /**
  * <h3>Primative predicate</h3>
@@ -323,20 +368,21 @@ const regx = rx => rx.test.bind(rx);
  * @param {object} primative The input primative one of Array, Boolean, Number, Symbol, BigInt, String, Function, Object
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const prim = primative => {
-  if (primative.name === "Array") return a => Array.isArray(a);
+const prim = () =>
+  function prim(primative) {
+    if (primative.name === "Array") return a => Array.isArray(a);
 
-  return a => typeof a === primative.name.toLowerCase();
-};
+    return a => typeof a === primative.name.toLowerCase();
+  };
 
-function createExpressionParser(expression) {
+function createExpressionParser(ctx, expression) {
   if (isFunction(expression)) {
-    if (isPrimative(expression)) return prim;
+    if (isPrimative(expression)) return prim(ctx);
     return identity;
   }
-  if (isRegEx(expression)) return regx;
-  if (isDeepVal(expression)) return deep;
-  return val;
+  if (isRegEx(expression)) return regx(ctx);
+  if (isDeepVal(expression)) return deep(ctx);
+  return val(ctx);
 }
 
 /**
@@ -346,35 +392,54 @@ function createExpressionParser(expression) {
  * @param {*} input Anything parsable
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-function pred(input) {
-  const expParser = createExpressionParser(input);
-  return expParser(input);
-}
-
-const strLen = input =>
-  function strLenFn(a) {
-    return typeof a === "string" && val(input)(a.length);
+const pred = ctx =>
+  function pred(input) {
+    const expParser = createExpressionParser(ctx, input);
+    return expParser(input);
   };
 
-const arrLen = input =>
-  function arrLenFn(a) {
-    return Array.isArray(a) && val(input)(a.length);
+const strLen = ctx =>
+  function strLen(input) {
+    return function strLenFn(a) {
+      return typeof a === "string" && val(ctx)(input)(a.length);
+    };
   };
 
-const wildcard = () => true;
+const arrLen = ctx =>
+  function arrLen(input) {
+    return function arrLenFn(a) {
+      return Array.isArray(a) && val(ctx)(input)(a.length);
+    };
+  };
 
-function entry(name, predicate) {
-  return [name, val(predicate)];
+const wildcard = () =>
+  function wilcard() {
+    return true;
+  };
+
+const entry = ctx =>
+  function entry(name, predicate) {
+    return [name, val(ctx)(predicate)];
+  };
+
+const Email = () => /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
+const Xc = () => /(?=.*[^a-zA-Z0-9\s]).*/;
+const Nc = () => /(?=.*[0-9]).*/;
+const Lc = () => /(?=.*[a-z]).*/;
+const Uc = () => /(?=.*[A-Z]).*/;
+const LUc = () => /(?=.*[a-z])(?=.*[A-Z]).*/;
+
+function passContextToHelpers(ctx, helpers) {
+  const acc = {};
+  const keys = Object.keys(helpers);
+  for (let i = 0; i < keys.length; ++i) {
+    const key = keys[i];
+    acc[key] = helpers[key](ctx);
+  }
+  return acc;
 }
 
-const Email = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
-const Xc = /(?=.*[^a-zA-Z0-9\s]).*/;
-const Nc = /(?=.*[0-9]).*/;
-const Lc = /(?=.*[a-z]).*/;
-const Uc = /(?=.*[A-Z]).*/;
-const LUc = /(?=.*[a-z])(?=.*[A-Z]).*/;
-
-module.exports = {
+const _rawHelpers = {
   Email,
   Xc,
   Nc,
@@ -408,3 +473,12 @@ module.exports = {
   strLen,
   arrLen
 };
+
+module.exports = Object.assign(
+  // Main export is the configureHelperFunction
+  ctx => passContextToHelpers(ctx, _rawHelpers),
+  // Merge on all the helpers configured to default
+  passContextToHelpers({}, _rawHelpers),
+  // Add getter to get unconfigured helpers
+  { getRawHelpers: () => _rawHelpers }
+);

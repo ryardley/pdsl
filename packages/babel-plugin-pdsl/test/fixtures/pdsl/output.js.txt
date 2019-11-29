@@ -13,3 +13,4 @@ assert.strictEqual(helpers.val(helpers.obj(helpers.entry("name", helpers.pred(a 
 assert.strictEqual(helpers.val(helpers.extant)(1), true);
 assert.strictEqual(helpers.val(helpers.extant)(null), false);
 assert.strictEqual(helpers.val(helpers.and(helpers.arrTypeMatch(helpers.prim(Number)), helpers.arrLen(5)))([1, 2, 3, 4, 5]), true);
+assert.strictEqual(helpers.val(helpers.regx(helpers.Email))("email@example.com"), true);
