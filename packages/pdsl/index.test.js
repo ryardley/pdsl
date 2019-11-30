@@ -186,7 +186,7 @@ it("should match the examples", () => {
   expect(p`${String} && { length: ${7}, ... }`("123456")).toBe(false);
 });
 
-it("should be able to debug the ast", () => {
+it("should be able to debug the rpn", () => {
   expect(
     p.unsafe_tokens`
   {
@@ -639,6 +639,6 @@ it("should handle nested properties starting with underscores", () => {
 });
 
 it("should be able to pass a config object in", () => {
-  expect(p.config({})`>5`(6)).toBe(true);
-  expect(p.config({})`>5`(5)).toBe(false);
+  expect(p.create({})`>5`(6)).toBe(true);
+  expect(p.create({})`>5`(5)).toBe(false);
 });

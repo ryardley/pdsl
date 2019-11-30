@@ -26,7 +26,7 @@ function parser(input) {
       .reduce((output, node) => {
         let type;
         let msg = [];
-        // Operands
+
         if (isLiteral(node) || isPredicateLookup(node)) {
           type = "operand";
           // send to output
@@ -66,12 +66,6 @@ function parser(input) {
             !isPrecidenceOperator(peek(stack)) &&
             !(peek(stack).prec >= node.prec)
           ) {
-            /* istanbul ignore next */
-            if (peek(stack).prec >= node.prec) {
-              msg.push("Stack precedence is higher than or equal node!");
-            } else {
-              msg.push("Stack precedence is equal or lower than node!");
-            }
             msg.push("flushing stack");
             output.push(stack.pop());
           }

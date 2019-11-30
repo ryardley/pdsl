@@ -1,5 +1,5 @@
 const { generator } = require("./babel-generator");
-const { unsafe_toAst } = require("pdsl");
+const { unsafe_toRpnArray } = require("pdsl");
 
 // 1. Find TaggedTemplateExpression
 // 2. If the identifier is p then continue
@@ -33,11 +33,11 @@ module.exports = function pdslPlugin({ template }) {
             // Get the strings and function nodes
             const { strings, nodeList } = findStringsAndAstNodeList(path);
 
-            // Create the PDSL ast like array
-            const pdslAstLikeArray = unsafe_toAst(strings);
+            // Create the PDSL rpn array
+            const pdslRpnArray = unsafe_toRpnArray(strings);
 
             // Turn that into a babel AST
-            const ast = generator(pdslAstLikeArray, nodeList);
+            const ast = generator(pdslRpnArray, nodeList);
 
             path.replaceWith(ast);
           }

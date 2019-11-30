@@ -9,27 +9,27 @@ const obj = grammar[tokens.OBJ];
 const symbol = grammar[tokens.IDENTIFIER];
 const entry = grammar[tokens.ENTRY];
 
-function stringifyAst(ast) {
-  return ast.map(n => n.toString()).join(" ");
+function stringifyAst(rpn) {
+  return rpn.map(n => n.toString()).join(" ");
 }
 
 describe("generator", () => {
   [
-    { ast: [link("@{LINK:0}")], fns: [() => true], out: true },
-    { ast: [link("@{LINK:0}")], fns: [() => false], out: false },
-    { ast: [link("@{LINK:0}"), not("!")], fns: [() => false], out: true },
+    { rpn: [link("@{LINK:0}")], fns: [() => true], out: true },
+    { rpn: [link("@{LINK:0}")], fns: [() => false], out: false },
+    { rpn: [link("@{LINK:0}"), not("!")], fns: [() => false], out: true },
     {
-      ast: [link("@{LINK:0}"), link("@{LINK:1}"), or("||")],
+      rpn: [link("@{LINK:0}"), link("@{LINK:1}"), or("||")],
       fns: [() => false, () => true],
       out: true
     },
     {
-      ast: [link("@{LINK:0}"), link("@{LINK:1}"), and("&&")],
+      rpn: [link("@{LINK:0}"), link("@{LINK:1}"), and("&&")],
       fns: [() => false, () => true],
       out: false
     },
     {
-      ast: [
+      rpn: [
         symbol("name"),
         link("@{LINK:0}"),
         entry(":"),
@@ -43,16 +43,16 @@ describe("generator", () => {
       out: true
     },
     {
-      ast: [symbol("name"), obj("{1")],
+      rpn: [symbol("name"), obj("{1")],
       fns: [],
       inp: { name: "foo" },
       out: true
     }
-  ].forEach(({ ast, skip, only, fns, inp, out }) => {
+  ].forEach(({ rpn, skip, only, fns, inp, out }) => {
     const itFunc = skip ? it.skip : only ? it.only : it;
 
-    itFunc(stringifyAst(ast), () => {
-      expect(generator(ast, fns)(inp)).toBe(out);
+    itFunc(stringifyAst(rpn), () => {
+      expect(generator(rpn, fns)(inp)).toBe(out);
     });
   });
 });
