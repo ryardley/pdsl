@@ -6,7 +6,7 @@ const not = grammar[tokens.NOT];
 const or = grammar[tokens.OR];
 const and = grammar[tokens.AND];
 const obj = grammar[tokens.OBJ];
-const symbol = grammar[tokens.SYMBOL];
+const symbol = grammar[tokens.IDENTIFIER];
 const entry = grammar[tokens.ENTRY];
 
 function stringifyAst(ast) {

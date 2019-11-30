@@ -13,19 +13,18 @@ const output = fs.readFileSync(
   "utf-8"
 );
 
-// Does the code transpile as expected?
 pluginTester({
   plugin,
   tests: [
     {
-      title: "Encodes helper functions",
+      title: "The code transpiles as expected",
       code,
       output
     }
   ]
 });
 
-test("That the code runs as expected", () => {
+test("The code runs as expected", () => {
   expect(() => {
     eval(output);
   }).not.toThrow();

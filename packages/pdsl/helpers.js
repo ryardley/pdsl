@@ -17,7 +17,7 @@ const {
  * @param {number} b The higher number
  * @return {function} A function of the form number => boolean
  */
-const btw = () =>
+const createBtw = () =>
   function btw(a, b) {
     return function btwFn(n) {
       const [min, max] = a < b ? [a, b] : [b, a];
@@ -33,7 +33,7 @@ const btw = () =>
  * @param {number} b The higher number
  * @return {function} A function of the form number => boolean
  */
-const btwe = () =>
+const createBtwe = () =>
   function btwe(a, b) {
     return function btweFn(n) {
       const [min, max] = a < b ? [a, b] : [b, a];
@@ -48,7 +48,7 @@ const btwe = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const lt = () =>
+const createLt = () =>
   function lt(a) {
     return function ltFn(n) {
       return n < a;
@@ -62,7 +62,7 @@ const lt = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const lte = () =>
+const createLte = () =>
   function lte(a) {
     return function lteFn(n) {
       return n <= a;
@@ -76,7 +76,7 @@ const lte = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const gt = () =>
+const createGt = () =>
   function gt(a) {
     return function gtFn(n) {
       return n > a;
@@ -89,7 +89,7 @@ const gt = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const gte = () =>
+const createGte = () =>
   function gte(a) {
     return function gteFn(n) {
       return n >= a;
@@ -116,14 +116,15 @@ const gte = () =>
  * @param {...function|*} tests Either values, `['...', predicate]` or predicate functions used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const arrArgMatch = ctx =>
+const createArrArgMatch = ctx =>
   function arrArgMatch(...tests) {
     function matchFn(arr) {
       const hasWildcard = tests.slice(-1)[0] === "...";
       let matches = hasWildcard || arr.length === tests.length;
       for (let i = 0; i < tests.length; i++) {
         const testVal = tests[i];
-        const predicate = testVal === "..." ? wildcard(ctx) : val(ctx)(testVal);
+        const predicate =
+          testVal === "..." ? createWildcard(ctx) : createVal(ctx)(testVal);
         const pass = predicate(arr[i]);
         matches = matches && pass;
       }
@@ -149,9 +150,9 @@ const arrArgMatch = ctx =>
  * @param {function|*} test predicate function used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const arrTypeMatch = ctx =>
+const createArrTypeMatch = ctx =>
   function arrTypeMatch(test) {
-    const predicate = val(ctx)(test);
+    const predicate = createVal(ctx)(test);
     function matchFn(arr) {
       if (!Array.isArray(arr)) return false;
 
@@ -176,7 +177,7 @@ const arrTypeMatch = ctx =>
  * @param {...function|*} args Either values or predicate functions used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const holds = ctx =>
+const createHolds = ctx =>
   function holds(...args) {
     return function holdsFn(n) {
       let i, j;
@@ -186,7 +187,7 @@ const holds = ctx =>
       // prepare args as an array of predicate fns and an array to keep track of success
       for (i = 0; i < args.length; i++) {
         const arg = args[i];
-        fns.push(val(ctx)(arg));
+        fns.push(createVal(ctx)(arg));
         success.push(false);
       }
 
@@ -213,11 +214,11 @@ const holds = ctx =>
  * @param {function} right The second predicate
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const or = ctx =>
+const createOr = ctx =>
   function or(left, right) {
     return function orFn(a) {
-      const valCtx = val(ctx);
-      return valCtx(left)(a) || valCtx(right)(a);
+      const val = createVal(ctx);
+      return val(left)(a) || val(right)(a);
     };
   };
 
@@ -229,11 +230,11 @@ const or = ctx =>
  * @param {function} right The second predicate
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const and = ctx =>
+const createAnd = ctx =>
   function and(left, right) {
     return function andFn(a) {
-      const valCtx = val(ctx);
-      return valCtx(left)(a) && valCtx(right)(a);
+      const val = createVal(ctx);
+      return val(left)(a) && val(right)(a);
     };
   };
 
@@ -244,14 +245,14 @@ const and = ctx =>
  * @param {function} input The input predicate
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const not = ctx =>
+const createNot = ctx =>
   function not(input) {
     return function notFn(a) {
-      return !val(ctx)(input)(a);
+      return !createVal(ctx)(input)(a);
     };
   };
 
-const extant = () =>
+const createExtant = () =>
   function extant(a) {
     return a !== null && a !== undefined;
   };
@@ -263,7 +264,7 @@ const extant = () =>
  * @param {function} input The input value
  * @return {boolean} Boolean value indicating if the input is truthy
  */
-const truthy = () =>
+const createTruthy = () =>
   function truthy(a) {
     return !!a;
   };
@@ -275,15 +276,15 @@ const truthy = () =>
  * @param {function} input The input value
  * @return {boolean} Boolean value indicating if the input is falsey
  */
-const falsey = () =>
+const createFalsey = () =>
   function falsey(a) {
     return !a;
   };
 
-const obj = ctx =>
+const createObj = ctx =>
   function obj(...entriesWithRest) {
     return function objFn(a) {
-      const isExtant = extant(ctx);
+      const isExtant = createExtant(ctx);
       let hasRest = false;
       let entriesMatch = true;
       let entryCount = 0;
@@ -323,7 +324,7 @@ const obj = ctx =>
  * @param {function|*} value The input value if already a fuction it will be returned
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const val = () => value =>
+const createVal = () => value =>
   typeof value === "function"
     ? value
     : function isVal(a) {
@@ -337,7 +338,7 @@ const val = () => value =>
  * @param {function} value The input value
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const deep = () =>
+const createDeep = () =>
   function deep(value) {
     const st = JSON.stringify(value);
     return a => st === JSON.stringify(a);
@@ -350,7 +351,7 @@ const deep = () =>
  * @param {RegExp} rx The input value
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const regx = ctx =>
+const createRegx = ctx =>
   function regx(rx) {
     const rgx = typeof rx === "function" ? rx(ctx) : rx;
     return rgx.test.bind(rgx);
@@ -368,7 +369,7 @@ const regx = ctx =>
  * @param {object} primative The input primative one of Array, Boolean, Number, Symbol, BigInt, String, Function, Object
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const prim = () =>
+const createPrim = () =>
   function prim(primative) {
     if (primative.name === "Array") return a => Array.isArray(a);
 
@@ -377,12 +378,12 @@ const prim = () =>
 
 function createExpressionParser(ctx, expression) {
   if (isFunction(expression)) {
-    if (isPrimative(expression)) return prim(ctx);
+    if (isPrimative(expression)) return createPrim(ctx);
     return identity;
   }
-  if (isRegEx(expression)) return regx(ctx);
-  if (isDeepVal(expression)) return deep(ctx);
-  return val(ctx);
+  if (isRegEx(expression)) return createRegx(ctx);
+  if (isDeepVal(expression)) return createDeep(ctx);
+  return createVal(ctx);
 }
 
 /**
@@ -392,34 +393,34 @@ function createExpressionParser(ctx, expression) {
  * @param {*} input Anything parsable
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const pred = ctx =>
+const createPred = ctx =>
   function pred(input) {
     const expParser = createExpressionParser(ctx, input);
     return expParser(input);
   };
 
-const strLen = ctx =>
+const createStrLen = ctx =>
   function strLen(input) {
     return function strLenFn(a) {
-      return typeof a === "string" && val(ctx)(input)(a.length);
+      return typeof a === "string" && createVal(ctx)(input)(a.length);
     };
   };
 
-const arrLen = ctx =>
+const createArrLen = ctx =>
   function arrLen(input) {
     return function arrLenFn(a) {
-      return Array.isArray(a) && val(ctx)(input)(a.length);
+      return Array.isArray(a) && createVal(ctx)(input)(a.length);
     };
   };
 
-const wildcard = () =>
+const createWildcard = () =>
   function wilcard() {
     return true;
   };
 
-const entry = ctx =>
+const createEntry = ctx =>
   function entry(name, predicate) {
-    return [name, val(ctx)(predicate)];
+    return [name, createVal(ctx)(predicate)];
   };
 
 const Email = () => /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
@@ -447,31 +448,31 @@ const _rawHelpers = {
   Uc,
   Lc,
   LUc,
-  btw,
-  btwe,
-  lt,
-  lte,
-  gt,
-  gte,
-  holds,
-  or,
-  and,
-  not,
-  obj,
-  val,
-  regx,
-  entry,
-  prim,
-  pred,
-  deep,
-  extant,
-  truthy,
-  falsey,
-  arrArgMatch,
-  arrTypeMatch,
-  wildcard,
-  strLen,
-  arrLen
+  btw: createBtw,
+  btwe: createBtwe,
+  lt: createLt,
+  lte: createLte,
+  gt: createGt,
+  gte: createGte,
+  holds: createHolds,
+  or: createOr,
+  and: createAnd,
+  not: createNot,
+  obj: createObj,
+  val: createVal,
+  regx: createRegx,
+  entry: createEntry,
+  prim: createPrim,
+  pred: createPred,
+  deep: createDeep,
+  extant: createExtant,
+  truthy: createTruthy,
+  falsey: createFalsey,
+  arrArgMatch: createArrArgMatch,
+  arrTypeMatch: createArrTypeMatch,
+  wildcard: createWildcard,
+  strLen: createStrLen,
+  arrLen: createArrLen
 };
 
 module.exports = Object.assign(
