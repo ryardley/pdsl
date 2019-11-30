@@ -13,6 +13,7 @@ const output = fs.readFileSync(
   "utf-8"
 );
 
+// Does the code transpile as expected?
 pluginTester({
   plugin,
   tests: [
@@ -24,7 +25,7 @@ pluginTester({
   ]
 });
 
-test("It should not throw", () => {
+test("That the code runs as expected", () => {
   expect(() => {
     eval(output);
   }).not.toThrow();
