@@ -65,7 +65,7 @@ const tokens = {
   WILDCARD_PREDICATE: "\\*",
   TRUTHY: "\\!\\!",
   FALSY_KEYWORD: "falsey", // Using literal falsey as if we use "\\!" it will be picked up all the not operators
-  SYMBOL: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
+  IDENTIFIER: "[a-zA-Z_]+[a-zA-Z0-9_-]*",
   EXTANT_PREDICATE: "_",
   REST_SYMBOL: "\\.\\.\\.",
   NUMBER: "-?\\d+(\\.\\d+)?",
@@ -354,11 +354,10 @@ const grammar = {
       }
     };
   },
-  // TODO: The following should be renamed to be an "Identifier" (rookie mistake)
-  [tokens.SYMBOL]: token => ({
+  [tokens.IDENTIFIER]: token => ({
     type: types.SymbolLiteral,
     token,
-    runtime: () => token, // token will be a string as in "name" so ctx makes no sense
+    runtime: () => token,
     toString() {
       return token;
     }
@@ -559,7 +558,6 @@ const grammar = {
   [tokens.OBJ_CLOSE]: token => ({
     type: types.VariableArityOperatorClose,
     token,
-    matchingToken: "{",
     toString() {
       return token;
     }
@@ -579,7 +577,6 @@ const grammar = {
   [tokens.ARRAY_CLOSE]: token => ({
     type: types.VariableArityOperatorClose,
     token,
-    matchingToken: "[",
     toString() {
       return token;
     }

@@ -25,7 +25,7 @@ describe("lexer", () => {
     expect(JSON.stringify(lexer(`{ name: ! }`))).toEqual(
       JSON.stringify([
         grammar[tokens.OBJ]("{"),
-        grammar[tokens.SYMBOL]("name"),
+        grammar[tokens.IDENTIFIER]("name"),
         grammar[tokens.ENTRY](":"),
         grammar[tokens.FALSY]("!"),
         grammar[tokens.OBJ_CLOSE]("}")
