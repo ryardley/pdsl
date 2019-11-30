@@ -16,8 +16,8 @@ function isPrimative(expression) {
     ].indexOf(expression.name) > -1
   );
 }
-function astToString(ast) {
-  return ast.map(a => a.toString()).join("·");
+function rpnToString(rpn) {
+  return rpn.map(a => a.toString()).join("·");
 }
 
 function debug(output, stack, node, type, msg) {
@@ -26,8 +26,8 @@ function debug(output, stack, node, type, msg) {
       `token: ${node.token}`,
       `type: ${type}`,
       ...msg.map(m => ` msg:${m}`),
-      `stack: ${astToString(stack)}`,
-      `output: ${astToString(output)}`
+      `stack: ${rpnToString(stack)}`,
+      `output: ${rpnToString(output)}`
     ].join("\n")
   );
 }
@@ -45,7 +45,7 @@ const identity = a => a;
 module.exports = {
   debug,
   identity,
-  astToString,
+  rpnToString,
   isRegEx,
   isDeepVal,
   isFunction,

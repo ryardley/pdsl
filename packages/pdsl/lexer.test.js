@@ -1,17 +1,17 @@
 const { lexer } = require("./lexer");
 const { tokens, grammar } = require("./grammar");
-const { astToString } = require("./utils");
+const { rpnToString } = require("./utils");
 describe("lexer", () => {
   it("should tokenize", () => {
     expect(
-      astToString(
+      rpnToString(
         lexer("   {   name   :   @{LINK:0} && @{LINK:2} ,age:@{LINK:1}}")
       )
     ).toEqual("{0·name·:·@{LINK:0}·&&·@{LINK:2}·,·age·:·@{LINK:1}·}");
   });
   it("should strip comments", () => {
     expect(
-      astToString(
+      rpnToString(
         lexer(`{
         name: "Rudi", // foo
         // thing
