@@ -642,3 +642,115 @@ it("should be able to pass a config object in", () => {
   expect(p.create({})`>5`(6)).toBe(true);
   expect(p.create({})`>5`(5)).toBe(false);
 });
+
+describe("validation", () => {
+  it("should be able to accept whitespace", () => {
+    const expression = p`>5 ::     "Value $1 must be greater than 5!   "`;
+    expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
+    expect(expression.validate(4)).toEqual([
+      { path: "", message: "Value 4 must be greater than 5!" }
+    ]);
+  });
+
+  it("should work on object properties", () => {
+    const expression = p`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!"
+    }`;
+
+    expect(expression.validate({ name: 1234, age: "12342134" })).toEqual([
+      {
+        message: "Name is not a string!",
+        path: "name"
+      },
+      {
+        message: "Age is not a number!",
+        path: "age"
+      }
+    ]);
+  });
+
+  it("should work on arrays", () => {
+    const expression = p`[1,2,3] :: "Array is not [1,2,3]"`;
+    expect(expression.validate([1, 2, 3, 4])).toEqual([
+      { path: "", message: "Array is not [1,2,3]" }
+    ]);
+    expect(expression.validate([1, 2, 3])).toEqual([]);
+  });
+
+  it("should handle precedence and cling to whatever is before it", () => {
+    const expression = p`{
+      name: string               :: "Name must be a string"
+      & string[>7]               :: "Name must be longer than 7 characters",
+      age: (number & > 18)       :: "Age must be numeric and over 18"
+    }`;
+
+    expect(expression.validate({ name: "12345678", age: 20 })).toEqual([]);
+    expect(expression.validate({ name: "123456", age: 20 })).toEqual([
+      { path: "name", message: "Name must be longer than 7 characters" }
+    ]);
+    expect(expression.validate({ name: "12345", age: 17 })).toEqual([
+      {
+        message: "Name must be longer than 7 characters",
+        path: "name"
+      },
+      {
+        message: "Age must be numeric and over 18",
+        path: "age"
+      }
+    ]);
+
+    expect(expression.validate({ name: "12345678", age: 16 })).toEqual([
+      {
+        message: "Age must be numeric and over 18",
+        path: "age"
+      }
+    ]);
+  });
+
+  it("should skip over all errors from OR decisions", () => {
+    const expression = p`({
+      name: string               :: "Name must be a string"
+    } | {
+      age: (number & > 18)       :: "Age must be numeric and over 18"
+    }) :: "You are not verified"`;
+
+    expect(expression.validate({ name: "100" })).toEqual([]);
+    expect(expression.validate({ age: 100 })).toEqual([]);
+
+    expect(expression.validate({ foo: "bar" })).toEqual([
+      { path: "name", message: "Name must be a string" },
+      { path: "age", message: "Age must be numeric and over 18" },
+      { path: "", message: "You are not verified" }
+    ]);
+  });
+  it("should work with literal strings", () => {
+    const expression = p`"hello" :: "This should be hello"`;
+    expect(expression.validate("nope")).toEqual([
+      { path: "", message: "This should be hello" }
+    ]);
+  });
+
+  it("should work with nested objects", () => {
+    const expression = p`{
+      name: string               :: "Name must be a string",
+      age: (number & > 18)       :: "Age must be numeric and over 18",
+      school: {
+        type: "summer"           :: "Summer must be type",
+        thing: "winter"          :: "Winter must be thing"
+      }                          :: "School object problems"                         
+    }`;
+
+    expect(
+      expression.validate({
+        name: "rudi",
+        age: 123,
+        school: { type: "foo" }
+      })
+    ).toEqual([
+      { path: "school.type", message: "Summer must be type" },
+      { path: "school.thing", message: "Winter must be thing" },
+      { path: "school", message: "School object problems" }
+    ]);
+  });
+});

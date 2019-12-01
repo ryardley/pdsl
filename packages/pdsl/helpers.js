@@ -218,7 +218,13 @@ const createOr = ctx =>
   function or(left, right) {
     return function orFn(a) {
       const val = createVal(ctx);
-      return val(left)(a) || val(right)(a);
+      ctx.batchStart();
+      const result = val(left)(a) || val(right)(a);
+      if (!result) {
+        ctx.batchCommit();
+      }
+      ctx.batchPurge();
+      return result;
     };
   };
 
@@ -303,8 +309,23 @@ const createObj = ctx =>
         const [key, predicate] = Array.isArray(entry)
           ? entry
           : [entry, isExtant];
-        entriesMatch = entriesMatch && isExtant(a) && predicate(a[key]);
 
+        // Storing the object path on a global stack
+        ctx.pushObjStack(key);
+
+        let result;
+        if (ctx.abortEarly) {
+          result = isExtant(a) && predicate(a[key]);
+        } else {
+          // Ensure that the test is run no matter what the previous tests were
+          // This is important for collecting errors
+          const propExists = isExtant(a);
+          result = predicate(propExists ? a[key] : undefined);
+        }
+
+        // Popping the object path off the global stack
+        if (ctx.popObjStack() !== key) throw new Error("Object stack error");
+        entriesMatch = entriesMatch && result;
         // We just logged an entry track it
         entryCount++;
       }
@@ -440,6 +461,18 @@ function passContextToHelpers(ctx, helpers) {
   return acc;
 }
 
+const createValidation = ctx => msg =>
+  function validation(predicate) {
+    if (typeof predicate !== "function") return predicate;
+    return (...args) => {
+      const out = predicate(...args);
+      if (out === false) {
+        ctx.reportError(msg, ...args);
+      }
+      return out;
+    };
+  };
+
 const _rawHelpers = {
   Email,
   Xc,
@@ -472,7 +505,8 @@ const _rawHelpers = {
   arrTypeMatch: createArrTypeMatch,
   wildcard: createWildcard,
   strLen: createStrLen,
-  arrLen: createArrLen
+  arrLen: createArrLen,
+  validation: createValidation
 };
 
 module.exports = Object.assign(

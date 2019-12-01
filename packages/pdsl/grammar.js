@@ -27,6 +27,7 @@ const {
   truthy,
   Uc,
   val,
+  validation,
   wildcard,
   Xc
 } = getRawHelpers();
@@ -41,6 +42,7 @@ const tokens = {
   LOW_CHARS_REGX: "Lc",
   UP_CHARS_REGX: "Uc",
   LOW_UP_CHARS_REGX: "LUc",
+  VALIDATION_MSG: `::\\s*\\"((?:\\\\\\"|[^\\"])*)\\"`,
   EMPTY_OBJ: "\\{\\}",
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
@@ -531,6 +533,19 @@ const grammar = {
       return token;
     }
   }),
+  [tokens.VALIDATION_MSG]: token => {
+    const [, msg] = token.match(/::\s*\"((?:\\\"|[^\"])*)\"/);
+    return {
+      type: types.Operator,
+      token: ":e:",
+      arity: 1,
+      prec: 55, //??
+      runtime: ctx => validation(ctx)(msg.trim()),
+      toString() {
+        return ":e:" + msg.slice(0, 3) + ":";
+      }
+    };
+  },
 
   // functions have highest precidence
   [tokens.ENTRY]: token => ({
