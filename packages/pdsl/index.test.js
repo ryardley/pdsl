@@ -647,7 +647,7 @@ describe("validation", () => {
   it("should be able to use var substitution in error messages", () => {
     const expression = p`>5 :: "Value $1 must be greater than 5!"`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
-    expect(expression.validate(4)).toEqual([
+    expect(expression.validateSync(4)).toEqual([
       { path: "", message: "Value 4 must be greater than 5!" }
     ]);
   });
@@ -655,7 +655,7 @@ describe("validation", () => {
   it("should be handle when var substitution is out of bounds", () => {
     const expression = p`>5 :: "Value $7 must be greater than 5!"`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
-    expect(expression.validate(4)).toEqual([
+    expect(expression.validateSync(4)).toEqual([
       { path: "", message: "Value  must be greater than 5!" }
     ]);
   });
@@ -663,7 +663,7 @@ describe("validation", () => {
   it("should be able to accept whitespace", () => {
     const expression = p`>5 ::     "Value must be greater than 5!   "`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
-    expect(expression.validate(4)).toEqual([
+    expect(expression.validateSync(4)).toEqual([
       { path: "", message: "Value must be greater than 5!" }
     ]);
   });
@@ -674,7 +674,7 @@ describe("validation", () => {
       age: number :: "Age is not a number!"
     }`;
 
-    expect(expression.validate({ name: 1234, age: "12342134" })).toEqual([
+    expect(expression.validateSync({ name: 1234, age: "12342134" })).toEqual([
       {
         message: "Name is not a string!",
         path: "name"
@@ -688,10 +688,10 @@ describe("validation", () => {
 
   it("should work on arrays", () => {
     const expression = p`[1,2,3] :: "Array is not [1,2,3]"`;
-    expect(expression.validate([1, 2, 3, 4])).toEqual([
+    expect(expression.validateSync([1, 2, 3, 4])).toEqual([
       { path: "", message: "Array is not [1,2,3]" }
     ]);
-    expect(expression.validate([1, 2, 3])).toEqual([]);
+    expect(expression.validateSync([1, 2, 3])).toEqual([]);
   });
 
   it("should handle precedence and cling to whatever is before it", () => {
@@ -701,11 +701,11 @@ describe("validation", () => {
       age: (number & > 18)       :: "Age must be numeric and over 18"
     }`;
 
-    expect(expression.validate({ name: "12345678", age: 20 })).toEqual([]);
-    expect(expression.validate({ name: "123456", age: 20 })).toEqual([
+    expect(expression.validateSync({ name: "12345678", age: 20 })).toEqual([]);
+    expect(expression.validateSync({ name: "123456", age: 20 })).toEqual([
       { path: "name", message: "Name must be longer than 7 characters" }
     ]);
-    expect(expression.validate({ name: "12345", age: 17 })).toEqual([
+    expect(expression.validateSync({ name: "12345", age: 17 })).toEqual([
       {
         message: "Name must be longer than 7 characters",
         path: "name"
@@ -716,7 +716,7 @@ describe("validation", () => {
       }
     ]);
 
-    expect(expression.validate({ name: "12345678", age: 16 })).toEqual([
+    expect(expression.validateSync({ name: "12345678", age: 16 })).toEqual([
       {
         message: "Age must be numeric and over 18",
         path: "age"
@@ -730,15 +730,15 @@ describe("validation", () => {
     } | {
       age: (number & > 18)       :: "Age must be numeric and over 18"
     }) :: "You are not verified"`;
-    expect(expression.validate({ name: 100 })).toEqual([
+    expect(expression.validateSync({ name: 100 })).toEqual([
       { path: "name", message: "Name must be a string" },
       { path: "age", message: "Age must be numeric and over 18" },
       { path: "", message: "You are not verified" }
     ]);
-    expect(expression.validate({ name: "100" })).toEqual([]);
-    expect(expression.validate({ age: 100 })).toEqual([]);
+    expect(expression.validateSync({ name: "100" })).toEqual([]);
+    expect(expression.validateSync({ age: 100 })).toEqual([]);
 
-    expect(expression.validate({ foo: "bar" })).toEqual([
+    expect(expression.validateSync({ foo: "bar" })).toEqual([
       { path: "name", message: "Name must be a string" },
       { path: "age", message: "Age must be numeric and over 18" },
       { path: "", message: "You are not verified" }
@@ -746,7 +746,7 @@ describe("validation", () => {
   });
   it("should work with literal strings", () => {
     const expression = p`"hello" :: "This should be hello"`;
-    expect(expression.validate("nope")).toEqual([
+    expect(expression.validateSync("nope")).toEqual([
       { path: "", message: "This should be hello" }
     ]);
   });
@@ -762,7 +762,7 @@ describe("validation", () => {
     }`;
 
     expect(
-      expression.validate({
+      expression.validateSync({
         name: "rudi",
         age: 123,
         school: { type: "foo" }
@@ -772,5 +772,74 @@ describe("validation", () => {
       { path: "school.thing", message: "Winter must be thing" },
       { path: "school", message: "School object problems" }
     ]);
+  });
+
+  it("should validate asynchronously", async () => {
+    const expression = p`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!"
+    }`;
+
+    expect(await expression.validate({ name: "Fred", age: "16" })).toEqual([
+      {
+        message: "Age is not a number!",
+        path: "age"
+      }
+    ]);
+  });
+
+  it("should throw errors that can be parsed by formik", async () => {
+    const expression = p.create({ throwErrors: true })`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!",
+      thing: _ :: "Thing is not null or undefined"
+    }`;
+
+    expect(expression.unsafe_rpn()).toBe(
+      "name string :e:Nam: : age number :e:Age: : thing _ :e:Thi: : {3"
+    );
+
+    let myerror;
+
+    try {
+      await expression.validate({ name: 1234, age: "16", thing: undefined });
+    } catch (err) {
+      myerror = err;
+    }
+
+    expect(myerror.name).toBe("ValidationError");
+    expect(myerror.inner).toEqual([
+      {
+        message: "Name is not a string!",
+        path: "name"
+      },
+      {
+        message: "Age is not a number!",
+        path: "age"
+      },
+      {
+        message: "Thing is not null or undefined",
+        path: "thing"
+      }
+    ]);
+  });
+
+  it("should not have an inner property if there is only one error", async () => {
+    const expression = p.create({ throwErrors: true })`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!"
+    }`;
+
+    let myerror;
+
+    try {
+      await expression.validate({ name: 1234, age: 16 });
+    } catch (err) {
+      myerror = err;
+    }
+
+    expect(myerror.name).toBe("ValidationError");
+    expect(myerror.message).toBe("Name is not a string!");
+    expect(myerror.path).toBe("name");
   });
 });

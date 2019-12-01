@@ -6,7 +6,8 @@ const {
   isVaradicFunctionClose,
   isPredicateLookup,
   isLiteral,
-  isOperator
+  isOperator,
+  grammar
 } = require("./grammar");
 
 describe("operator predicates", () => {

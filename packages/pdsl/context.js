@@ -50,6 +50,9 @@ class Context {
     const key = this.objStack.pop();
     return key;
   }
+  getErrors() {
+    return this.errs;
+  }
 }
 
 module.exports = Context;

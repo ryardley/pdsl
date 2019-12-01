@@ -4,6 +4,7 @@ const { generator } = require("./generator");
 const { getRawHelpers } = require("./helpers");
 const { pretokenizer } = require("./pretokenizer");
 const { pred } = getRawHelpers();
+const { ValidationError } = require("./errors");
 const Context = require("./context");
 
 // Utility functions
@@ -34,19 +35,37 @@ const createPredicateCompiler = (options = {}) => (strings, ...expressions) => {
     ctx
   );
 
-  const validate = input => {
+  const validateSync = input => {
     // Setting abortEarly to false
     // enables us to collect all errors
     ctx.reset({ abortEarly: false });
 
     // Run the test
     predicate(input);
+    const errs = ctx.getErrors();
+
+    // Throw errors
+    if (ctx.throwErrors && errs.length > 0) {
+      if (errs.length > 1) {
+        throw new ValidationError("PDSL validation failed", "", errs);
+      } else {
+        const [singleError] = errs;
+        throw new ValidationError(singleError.message, singleError.path);
+      }
+    }
 
     // Return the errors
-    return ctx.errs;
+    return errs;
+  };
+
+  // Whilst async validations are not possible
+  // this is done to comply to formik's schemaValidator specification
+  const validate = async input => {
+    return validateSync(input);
   };
 
   predicate.validate = validate;
+  predicate.validateSync = validateSync;
   predicate.unsafe_rpn = () => debugRpn(strings);
 
   return predicate;

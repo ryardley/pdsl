@@ -581,7 +581,10 @@ const grammar = {
     }
   }),
   [tokens.VALIDATION_MSG]: token => {
-    const [, msg] = token.match(/::\s*\"((?:\\\"|[^\"])*)\"/) || [, ""];
+    const [, msg] = token.match(
+      /::\s*\"((?:\\\"|[^\"])*)\"/
+    ) || /* istanbul ignore next because it is tested in babel plugin */ [, ""];
+
     return {
       type: types.Operator,
       token: ":e:",

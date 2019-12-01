@@ -317,13 +317,15 @@ const createObj = ctx =>
           result = isExtant(a) && predicate(a[key]);
         } else {
           // Ensure that the test is run no matter what the previous tests were
-          // This is important for collecting errors
-          const propExists = isExtant(a);
-          result = predicate(propExists ? a[key] : undefined);
+          // This is important for collecting all errors
+          result = predicate(
+            isExtant(a) ? a[key] : /* istanbul ignore next */ undefined
+          );
         }
 
         // Popping the object path off the global stack
-        if (ctx.popObjStack() !== key) throw new Error("Object stack error");
+        ctx.popObjStack();
+
         entriesMatch = entriesMatch && result;
         // We just logged an entry track it
         entryCount++;
@@ -462,7 +464,6 @@ function passContextToHelpers(ctx, helpers) {
 
 const createValidation = ctx => msg =>
   function validation(predicate) {
-    if (typeof predicate !== "function") return predicate;
     return (...args) => {
       const out = predicate(...args);
       if (out === false) {
