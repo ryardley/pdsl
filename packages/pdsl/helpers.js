@@ -6,8 +6,7 @@ const {
   isRegEx
 } = require("./utils");
 
-// NOTE:  All return functions must have names becuase
-//        they are used for the babel plugin
+const Context = require("./context");
 
 /**
  * <h3>Between bounds</h3>
@@ -513,7 +512,7 @@ module.exports = Object.assign(
   // Main export is the configureHelperFunction
   ctx => passContextToHelpers(ctx, _rawHelpers),
   // Merge on all the helpers configured to default
-  passContextToHelpers({}, _rawHelpers),
+  passContextToHelpers(new Context(), _rawHelpers),
   // Add getter to get unconfigured helpers
   { getRawHelpers: () => _rawHelpers }
 );

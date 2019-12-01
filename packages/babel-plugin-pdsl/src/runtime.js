@@ -6,7 +6,7 @@ const t = require("@babel/types");
 // pdslNode.runtime property
 function runtimeCreator(pdslNode) {
   return (...babelNodes) => {
-    const identifier = pdslNode.runtime().name;
+    const identifier = pdslNode.runtimeIdentifier;
     return t.callExpression(
       t.memberExpression(
         t.identifier("helpers"),

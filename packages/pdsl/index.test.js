@@ -644,11 +644,27 @@ it("should be able to pass a config object in", () => {
 });
 
 describe("validation", () => {
-  it("should be able to accept whitespace", () => {
-    const expression = p`>5 ::     "Value $1 must be greater than 5!   "`;
+  it("should be able to use var substitution in error messages", () => {
+    const expression = p`>5 :: "Value $1 must be greater than 5!"`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
     expect(expression.validate(4)).toEqual([
       { path: "", message: "Value 4 must be greater than 5!" }
+    ]);
+  });
+
+  it("should be handle when var substitution is out of bounds", () => {
+    const expression = p`>5 :: "Value $7 must be greater than 5!"`;
+    expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
+    expect(expression.validate(4)).toEqual([
+      { path: "", message: "Value  must be greater than 5!" }
+    ]);
+  });
+
+  it("should be able to accept whitespace", () => {
+    const expression = p`>5 ::     "Value must be greater than 5!   "`;
+    expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
+    expect(expression.validate(4)).toEqual([
+      { path: "", message: "Value must be greater than 5!" }
     ]);
   });
 

@@ -4,6 +4,7 @@ const { generator } = require("./generator");
 const { getRawHelpers } = require("./helpers");
 const { pretokenizer } = require("./pretokenizer");
 const { pred } = getRawHelpers();
+const Context = require("./context");
 
 // Utility functions
 const flow = (...funcs) => input =>
@@ -23,53 +24,9 @@ function debugTokens(strings) {
 const cleanup = a => a.filter(Boolean);
 
 const toRpnArray = flow(pretokenizer, lexer, parser, cleanup);
-const defaultContext = { abortEarly: true };
 
 const createPredicateCompiler = (options = {}) => (strings, ...expressions) => {
-  // TODO: Extract context out to it's own class
-
-  const ctx = Object.assign({}, defaultContext, options);
-  ctx.errs = [];
-  ctx.objStack = [];
-
-  ctx.batchStart = function batchStart() {
-    ctx.isBatching = true;
-  };
-
-  ctx.batchCommit = function batchCommit() {
-    ctx.errs = ctx.errs.concat(ctx.batch);
-  };
-
-  ctx.batchPurge = function batchPurge() {
-    ctx.batch = [];
-    ctx.isBatching = false;
-  };
-
-  ctx.batchPurge();
-
-  ctx.reportError = function reportError(msg, ...argstore) {
-    const message = msg.replace(/\$(\d+)/g, (...matchArgs) => {
-      const [, argIndex] = matchArgs.slice(0, -2);
-      return argstore[Number(argIndex) - 1] || "";
-    });
-    const collection = ctx.isBatching ? ctx.batch : ctx.errs;
-
-    collection.push({
-      path: ctx.objStack.join("."),
-      message
-    });
-  };
-
-  ctx.pushObjStack = function pushObjStack(key) {
-    const out = ctx.objStack.push(key);
-
-    return out;
-  };
-
-  ctx.popObjStack = function popObjStack() {
-    const key = ctx.objStack.pop();
-    return key;
-  };
+  const ctx = new Context(options);
 
   const predicate = generator(
     toRpnArray(strings),
@@ -78,11 +35,9 @@ const createPredicateCompiler = (options = {}) => (strings, ...expressions) => {
   );
 
   const validate = input => {
-    ctx.errs = [];
-    ctx.objStack = [];
     // Setting abortEarly to false
     // enables us to collect all errors
-    ctx.abortEarly = false;
+    ctx.reset({ abortEarly: false });
 
     // Run the test
     predicate(input);

@@ -581,7 +581,7 @@ const grammar = {
     }
   }),
   [tokens.VALIDATION_MSG]: token => {
-    const [, msg] = token.match(/::\s*\"((?:\\\"|[^\"])*)\"/);
+    const [, msg] = token.match(/::\s*\"((?:\\\"|[^\"])*)\"/) || [, ""];
     return {
       type: types.Operator,
       token: ":e:",
