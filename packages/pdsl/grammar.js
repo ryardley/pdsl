@@ -1,12 +1,16 @@
 const { getRawHelpers } = require("./helpers");
 const {
   and,
+  arrArgMatch,
+  arrLen,
+  arrTypeMatch,
   btw,
   btwe,
   deep,
   Email,
   entry,
   extant,
+  falsey,
   gt,
   gte,
   Lc,
@@ -19,16 +23,12 @@ const {
   or,
   prim,
   regx,
-  falsey,
+  strLen,
   truthy,
   Uc,
   val,
-  Xc,
-  arrArgMatch,
-  arrTypeMatch,
-  strLen,
-  arrLen,
-  wildcard
+  wildcard,
+  Xc
 } = getRawHelpers();
 
 // In order of global greedy token parsing
@@ -381,11 +381,11 @@ const grammar = {
   [tokens.STRING_DOUBLE]: token => {
     const t = token.match(/\"(.*)\"/);
     /* istanbul ignore next because __deafult never matches in tests */
-    const val = t ? t[1] : "__default";
+    const value = t ? t[1] : "__default";
     return {
       type: types.StringLiteral,
-      token: val,
-      runtime: () => val,
+      token: value,
+      runtime: ctx => val(ctx)(value),
       toString() {
         return token;
       }
@@ -394,11 +394,11 @@ const grammar = {
   [tokens.STRING_SINGLE]: token => {
     const t = token.match(/\'(.*)\'/);
     /* istanbul ignore next because __deafult never matches in tests */
-    const val = t ? t[1] : "__default";
+    const value = t ? t[1] : "__default";
     return {
       type: types.StringLiteral,
-      token: val,
-      runtime: () => val,
+      token: value,
+      runtime: ctx => val(ctx)(value),
       toString() {
         return token;
       }
