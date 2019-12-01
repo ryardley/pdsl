@@ -730,7 +730,11 @@ describe("validation", () => {
     } | {
       age: (number & > 18)       :: "Age must be numeric and over 18"
     }) :: "You are not verified"`;
-
+    expect(expression.validate({ name: 100 })).toEqual([
+      { path: "name", message: "Name must be a string" },
+      { path: "age", message: "Age must be numeric and over 18" },
+      { path: "", message: "You are not verified" }
+    ]);
     expect(expression.validate({ name: "100" })).toEqual([]);
     expect(expression.validate({ age: 100 })).toEqual([]);
 
