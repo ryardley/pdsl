@@ -29,7 +29,6 @@ const createErrorReporter = (
   const result = callback();
 
   if (result === false && ctx) {
-    // TODO: This logic needs proper testing
     const errPath = ctx.errStack.join(".");
     const errAllowed =
       !ctx.blockErrors ||
@@ -274,7 +273,14 @@ const createHolds = ctx =>
 const createOr = ctx =>
   function or(left, right) {
     return function orFn(a, msg) {
-      return createErrorReporter("or", ctx, msg, [a, left, right])(() => {
+      return createErrorReporter(
+        "or",
+        ctx,
+        msg,
+        [a, left, right],
+        false, // dont block downstream
+        true // disable default
+      )(() => {
         const val = createVal(ctx);
         ctx.batchStart();
         const result = val(left)(a) || val(right)(a);
@@ -303,8 +309,8 @@ const createAnd = ctx =>
         ctx,
         msg,
         [a, left, right],
-        false,
-        true
+        false, // dont block downstream
+        true // disable default
       )(() => {
         const val = createVal(ctx);
         return val(left)(a) && val(right)(a);
@@ -538,7 +544,7 @@ const createStrLen = ctx =>
         ctx,
         msg,
         [a, input],
-        true
+        true // block downstream
       )(() => {
         return typeof a === "string" && createVal(ctx)(input)(a.length);
       });
@@ -553,7 +559,7 @@ const createArrLen = ctx =>
         ctx,
         msg,
         [a, input],
-        true
+        true // block downstream
       )(() => {
         return Array.isArray(a) && createVal(ctx)(input)(a.length);
       });
