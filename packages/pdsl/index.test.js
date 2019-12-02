@@ -884,4 +884,26 @@ describe("validation", () => {
     expect(myerror.message).toBe("Name is not a string!");
     expect(myerror.path).toBe("name");
   });
+
+  describe("schema mode", () => {
+    it("should not return a function when using schema mode", async () => {
+      const yp = p.schema();
+      const schema = yp`"Hello"`;
+
+      expect(typeof schema).toBe("object");
+    });
+    it("should pass a sanity test", async () => {
+      const yp = p.schema();
+      const schema = yp`"Hello"`;
+
+      let error;
+      try {
+        await schema.validate("Hello World");
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error.name).toBe("ValidationError");
+    });
+  });
 });

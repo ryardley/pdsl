@@ -26,22 +26,25 @@ const cleanup = a => a.filter(Boolean);
 
 const toRpnArray = flow(pretokenizer, lexer, parser, cleanup);
 
-const createPredicateCompiler = (options = {}) => (strings, ...expressions) => {
+const createPredicateCompiler = ({ schemaMode = false, ...options } = {}) => (
+  strings,
+  ...expressions
+) => {
   const ctx = new Context(options);
 
-  const predicate = generator(
+  const predicateFn = generator(
     toRpnArray(strings),
     expressions.map(pred(ctx)),
     ctx
   );
 
-  const validateSync = input => {
+  function validateSync(input) {
     // Setting abortEarly to false
     // enables us to collect all errors
     ctx.reset({ abortEarly: false, captureErrors: true });
 
     // Run the test
-    predicate(input);
+    predicateFn(input);
     const errs = ctx.getErrors();
 
     // Throw errors
@@ -56,24 +59,32 @@ const createPredicateCompiler = (options = {}) => (strings, ...expressions) => {
 
     // Return the errors
     return errs;
-  };
+  }
 
   // Whilst async validations are not possible
   // this is done to comply to formik's schemaValidator specification
-  const validate = async input => {
+  async function validate(input) {
     return validateSync(input);
-  };
+  }
 
-  predicate.validate = validate;
-  predicate.validateSync = validateSync;
-  predicate.unsafe_rpn = () => debugRpn(strings);
-
-  return predicate;
+  const returnObj = schemaMode ? {} : predicateFn;
+  returnObj.validate = validate;
+  returnObj.validateSync = validateSync;
+  returnObj.unsafe_rpn = () => debugRpn(strings);
+  return returnObj;
 };
 
 const predicateCompiler = createPredicateCompiler();
 
 predicateCompiler.create = createPredicateCompiler;
+predicateCompiler.schema = options =>
+  createPredicateCompiler({
+    ...options,
+    schemaMode: true,
+    abortEarly: false,
+    captureErrors: true,
+    throwErrors: true
+  });
 predicateCompiler.unsafe_rpn = debugRpn;
 predicateCompiler.unsafe_tokens = debugTokens;
 
