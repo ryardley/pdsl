@@ -38,7 +38,7 @@ const createPredicateCompiler = (options = {}) => (strings, ...expressions) => {
   const validateSync = input => {
     // Setting abortEarly to false
     // enables us to collect all errors
-    ctx.reset({ abortEarly: false });
+    ctx.reset({ abortEarly: false, captureErrors: true });
 
     // Run the test
     predicate(input);

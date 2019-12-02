@@ -702,8 +702,12 @@ describe("validation", () => {
     }`;
 
     expect(expression.validateSync({ name: "12345678", age: 20 })).toEqual([]);
+
     expect(expression.validateSync({ name: "123456", age: 20 })).toEqual([
-      { path: "name", message: "Name must be longer than 7 characters" }
+      {
+        message: "Name must be longer than 7 characters",
+        path: "name"
+      }
     ]);
     expect(expression.validateSync({ name: "12345", age: 17 })).toEqual([
       {
@@ -771,6 +775,21 @@ describe("validation", () => {
       { path: "school.type", message: "Summer must be type" },
       { path: "school.thing", message: "Winter must be thing" },
       { path: "school", message: "School object problems" }
+    ]);
+  });
+
+  it("should work with typed arrays", async () => {
+    const expression = p`Array<number>`;
+
+    expect(await expression.validateSync(["a", "b"])).toEqual([
+      {
+        message: 'Value "a" is not of type "Number"',
+        path: ""
+      },
+      {
+        message: 'Array ["a","b"] does not match given type',
+        path: ""
+      }
     ]);
   });
 

@@ -1,4 +1,5 @@
 const defaultConfig = { abortEarly: true };
+const { lookup } = require("./i18n");
 
 class Context {
   constructor(options = {}) {
@@ -8,10 +9,12 @@ class Context {
 
   reset(options = {}) {
     this.errs = [];
+    this.errStack = [];
     this.objStack = [];
     this.config = {};
     this.batch = [];
     this.isBatching = false;
+    this.blockErrors = "";
     Object.assign(this, options);
   }
 
@@ -29,16 +32,23 @@ class Context {
   }
 
   reportError(msg, ...argstore) {
+    if (!msg) return;
+
     const message = msg.replace(/\$(\d+)/g, (...matchArgs) => {
       const [, argIndex] = matchArgs.slice(0, -2);
-      return argstore[Number(argIndex) - 1] || "";
+      return JSON.stringify(argstore[Number(argIndex) - 1]) || "";
     });
+
     const collection = this.isBatching ? this.batch : this.errs;
 
     collection.push({
       path: this.objStack.join("."),
       message
     });
+  }
+
+  lookup(key) {
+    return lookup(key);
   }
 
   pushObjStack(key) {
@@ -50,6 +60,16 @@ class Context {
     const key = this.objStack.pop();
     return key;
   }
+  pushErrStack(key) {
+    const out = this.errStack.push(key);
+    return out;
+  }
+
+  popErrStack() {
+    const key = this.errStack.pop();
+    return key;
+  }
+
   getErrors() {
     return this.errs;
   }
