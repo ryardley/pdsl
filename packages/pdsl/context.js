@@ -32,6 +32,7 @@ class Context {
   }
 
   reportError(msg, ...argstore) {
+    /* istanbul ignore next */
     if (!msg) return;
 
     const message = msg.replace(/\$(\d+)/g, (...matchArgs) => {

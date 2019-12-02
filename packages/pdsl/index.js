@@ -76,7 +76,7 @@ const createPredicateCompiler = ({ schemaMode = false, ...options } = {}) => (
 
 const predicateCompiler = createPredicateCompiler();
 
-predicateCompiler.create = createPredicateCompiler;
+predicateCompiler.predicate = createPredicateCompiler;
 predicateCompiler.schema = options =>
   createPredicateCompiler({
     ...options,

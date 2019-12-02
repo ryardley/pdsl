@@ -639,8 +639,8 @@ it("should handle nested properties starting with underscores", () => {
 });
 
 it("should be able to pass a config object in", () => {
-  expect(p.create({})`>5`(6)).toBe(true);
-  expect(p.create({})`>5`(5)).toBe(false);
+  expect(p.predicate({})`>5`(6)).toBe(true);
+  expect(p.predicate({})`>5`(5)).toBe(false);
 });
 
 describe("validation", () => {
@@ -808,7 +808,7 @@ describe("validation", () => {
   });
 
   it("should throw errors that can be parsed by formik", async () => {
-    const expression = p.create({ throwErrors: true })`{
+    const expression = p.predicate({ throwErrors: true })`{
       name: string :: "Name is not a string!",
       age: number :: "Age is not a number!",
       thing: _ :: "Thing is not null or undefined"
@@ -867,7 +867,7 @@ describe("validation", () => {
   });
 
   it("should not have an inner property if there is only one error", async () => {
-    const expression = p.create({ throwErrors: true })`{
+    const expression = p.predicate({ throwErrors: true })`{
       name: string :: "Name is not a string!",
       age: number :: "Age is not a number!"
     }`;
@@ -892,6 +892,7 @@ describe("validation", () => {
 
       expect(typeof schema).toBe("object");
     });
+
     it("should pass a sanity test", async () => {
       const yp = p.schema();
       const schema = yp`"Hello"`;
