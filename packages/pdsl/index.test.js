@@ -656,7 +656,7 @@ describe("validation", () => {
     const expression = p`>5 :: "Value $7 must be greater than 5!"`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
     expect(expression.validateSync(4)).toEqual([
-      { path: "", message: "Value  must be greater than 5!" }
+      { path: "", message: "Value undefined must be greater than 5!" }
     ]);
   });
 
@@ -838,6 +838,29 @@ describe("validation", () => {
       },
       {
         message: "Thing is not null or undefined",
+        path: "thing"
+      }
+    ]);
+  });
+
+  it("should provide reasonable defaults", () => {
+    const expression = p`{
+      name: string,
+      age: number & > 20,
+      thing: _
+    }`;
+
+    expect(expression.validateSync({})).toEqual([
+      {
+        message: 'Value undefined is not of type "String"',
+        path: "name"
+      },
+      {
+        message: 'Value undefined is not of type "Number"',
+        path: "age"
+      },
+      {
+        message: "Value undefined is either null or undefined",
         path: "thing"
       }
     ]);

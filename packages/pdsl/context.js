@@ -36,7 +36,7 @@ class Context {
 
     const message = msg.replace(/\$(\d+)/g, (...matchArgs) => {
       const [, argIndex] = matchArgs.slice(0, -2);
-      return JSON.stringify(argstore[Number(argIndex) - 1]) || "";
+      return JSON.stringify(argstore[Number(argIndex) - 1]);
     });
 
     const collection = this.isBatching ? this.batch : this.errs;
