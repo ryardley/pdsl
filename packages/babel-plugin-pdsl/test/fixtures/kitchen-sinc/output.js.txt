@@ -1,0 +1,18 @@
+// TODO: The following should eventually be sourced and generated
+//       from the main tests within the PDSL
+const _pdslHelpers = require("pdsl/helpers");
+
+const assert = require("assert");
+
+assert.strictEqual(_pdslHelpers.val(_pdslHelpers.not(_pdslHelpers.or(_pdslHelpers.val(null), _pdslHelpers.val(undefined))))(1), true);
+assert.strictEqual(_pdslHelpers.val(_pdslHelpers.obj("name"))({
+  name: "foo"
+}), true);
+assert.strictEqual(_pdslHelpers.val(true)(true), true);
+assert.strictEqual(_pdslHelpers.val(_pdslHelpers.obj(_pdslHelpers.entry("name", _pdslHelpers.pred(a => a.length > 10))))({
+  name: "12345678901"
+}), true);
+assert.strictEqual(_pdslHelpers.val(_pdslHelpers.extant)(1), true);
+assert.strictEqual(_pdslHelpers.val(_pdslHelpers.extant)(null), false);
+assert.strictEqual(_pdslHelpers.val(_pdslHelpers.and(_pdslHelpers.arrTypeMatch(_pdslHelpers.prim(Number)), _pdslHelpers.arrLen(5)))([1, 2, 3, 4, 5]), true);
+assert.strictEqual(_pdslHelpers.val(_pdslHelpers.regx(_pdslHelpers.Email))("email@example.com"), true);

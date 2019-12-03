@@ -3,29 +3,39 @@ const plugin = require("../src");
 const path = require("path");
 const fs = require("fs");
 
-const code = fs.readFileSync(
-  path.resolve(__dirname, "./fixtures/pdsl/code.js.txt"),
-  "utf-8"
-);
+function loadFixtureSync(folder) {
+  const code = fs.readFileSync(
+    path.resolve(__dirname, `./fixtures/${folder}/code.js.txt`),
+    "utf-8"
+  );
 
-const output = fs.readFileSync(
-  path.resolve(__dirname, "./fixtures/pdsl/output.js.txt"),
-  "utf-8"
-);
+  const output = fs.readFileSync(
+    path.resolve(__dirname, `./fixtures/${folder}/output.js.txt`),
+    "utf-8"
+  );
 
+  return { code, output };
+}
+
+const tests = [
+  {
+    title: "Kitchen Sinc",
+    ...loadFixtureSync("kitchen-sinc")
+  },
+  {
+    title: "Multiple helper imports",
+    ...loadFixtureSync("multiple-helpers")
+  }
+];
 pluginTester({
   plugin,
-  tests: [
-    {
-      title: "The code transpiles as expected",
-      code,
-      output
-    }
-  ]
+  tests
 });
 
 test("The code runs as expected", () => {
-  expect(() => {
-    eval(output);
-  }).not.toThrow();
+  tests.forEach(({ output }) => {
+    expect(() => {
+      eval(output);
+    }).not.toThrow();
+  });
 });

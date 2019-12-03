@@ -39,6 +39,10 @@ function addHelpersImportPath(path, template, helpersIdentifier) {
   );
 }
 
+function getUid(path) {
+  return path.scope.generateUidIdentifier("pdslHelpers");
+}
+
 module.exports = function pdslPlugin({ template }) {
   return {
     name: "pdsl",
@@ -48,9 +52,7 @@ module.exports = function pdslPlugin({ template }) {
         if (pathImport.node.source.value !== "pdsl") return;
 
         // const helpersIdentifier = "helpers";
-        const helpersIdentifier = pathImport.scope.generateUidIdentifierBasedOnNode(
-          "helpers"
-        );
+        const helpersIdentifier = getUid(pathImport);
 
         // we are dealing with: import p from 'pdsl';
         pathImport.parentPath.traverse({
