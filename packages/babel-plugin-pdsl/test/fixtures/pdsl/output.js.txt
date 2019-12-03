@@ -1,18 +1,18 @@
 // TODO: The following should eventually be sourced and generated
 //       from the main tests within the PDSL
-const helpers = require("pdsl/helpers");
+const _ref = require("pdsl/helpers");
 
 const assert = require("assert");
 
-assert.strictEqual(helpers.val(helpers.not(helpers.or(helpers.val(null), helpers.val(undefined))))(1), true);
-assert.strictEqual(helpers.val(helpers.obj("name"))({
+assert.strictEqual(_ref.val(_ref.not(_ref.or(_ref.val(null), _ref.val(undefined))))(1), true);
+assert.strictEqual(_ref.val(_ref.obj("name"))({
   name: "foo"
 }), true);
-assert.strictEqual(helpers.val(true)(true), true);
-assert.strictEqual(helpers.val(helpers.obj(helpers.entry("name", helpers.pred(a => a.length > 10))))({
+assert.strictEqual(_ref.val(true)(true), true);
+assert.strictEqual(_ref.val(_ref.obj(_ref.entry("name", _ref.pred(a => a.length > 10))))({
   name: "12345678901"
 }), true);
-assert.strictEqual(helpers.val(helpers.extant)(1), true);
-assert.strictEqual(helpers.val(helpers.extant)(null), false);
-assert.strictEqual(helpers.val(helpers.and(helpers.arrTypeMatch(helpers.prim(Number)), helpers.arrLen(5)))([1, 2, 3, 4, 5]), true);
-assert.strictEqual(helpers.val(helpers.regx(helpers.Email))("email@example.com"), true);
+assert.strictEqual(_ref.val(_ref.extant)(1), true);
+assert.strictEqual(_ref.val(_ref.extant)(null), false);
+assert.strictEqual(_ref.val(_ref.and(_ref.arrTypeMatch(_ref.prim(Number)), _ref.arrLen(5)))([1, 2, 3, 4, 5]), true);
+assert.strictEqual(_ref.val(_ref.regx(_ref.Email))("email@example.com"), true);

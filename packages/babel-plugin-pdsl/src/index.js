@@ -17,6 +17,28 @@ function findStringsAndAstNodeList(path) {
   return { strings, nodeList };
 }
 
+function replaceTaggedTemplateLiteralWithFunctions(path, helpersIdentifier) {
+  // Get the strings and function nodes
+  const { strings, nodeList } = findStringsAndAstNodeList(path);
+
+  // Create the PDSL rpn array
+  const pdslRpnArray = unsafe_toRpnArray(strings);
+
+  // Turn that into a babel AST
+  const ast = generator(pdslRpnArray, nodeList, helpersIdentifier);
+
+  // Replace the node
+  path.replaceWith(ast);
+}
+
+// Swap out import path
+// TODO: just add the helpers import with a unique identifier
+function addHelpersImportPath(path, template, helpersIdentifier) {
+  path.replaceWith(
+    template.ast(`const ${helpersIdentifier} = require("pdsl/helpers");`)
+  );
+}
+
 module.exports = function pdslPlugin({ template }) {
   return {
     name: "pdsl",
@@ -24,28 +46,25 @@ module.exports = function pdslPlugin({ template }) {
       // Find the import declaration:
       ImportDeclaration(pathImport) {
         if (pathImport.node.source.value !== "pdsl") return;
+
+        // const helpersIdentifier = "helpers";
+        const helpersIdentifier = pathImport.scope.generateUidIdentifierBasedOnNode(
+          "helpers"
+        );
+
         // we are dealing with: import p from 'pdsl';
         pathImport.parentPath.traverse({
           // Look through the document
           TaggedTemplateExpression(path) {
-            // if we find a tag called 'p' that is a tagged template literal...
             if (path.node.tag.name !== "p") return;
-            // Get the strings and function nodes
-            const { strings, nodeList } = findStringsAndAstNodeList(path);
 
-            // Create the PDSL rpn array
-            const pdslRpnArray = unsafe_toRpnArray(strings);
-
-            // Turn that into a babel AST
-            const ast = generator(pdslRpnArray, nodeList);
-
-            path.replaceWith(ast);
+            replaceTaggedTemplateLiteralWithFunctions(
+              path,
+              helpersIdentifier.name
+            );
           }
         });
-
-        pathImport.replaceWith(
-          template.ast(`const helpers = require("pdsl/helpers");`)
-        );
+        addHelpersImportPath(pathImport, template, helpersIdentifier.name);
       }
     }
   };

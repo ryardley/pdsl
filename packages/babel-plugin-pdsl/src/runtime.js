@@ -4,12 +4,12 @@ const t = require("@babel/types");
 // to be converted to the relevant function call
 // this might be able to read the function name from the
 // pdslNode.runtime property
-function runtimeCreator(pdslNode) {
+function runtimeCreator(pdslNode, helpersIdentifier) {
   return (...babelNodes) => {
     const identifier = pdslNode.runtimeIdentifier;
     return t.callExpression(
       t.memberExpression(
-        t.identifier("helpers"),
+        t.identifier(helpersIdentifier),
         t.identifier(identifier),
         false
       ),
