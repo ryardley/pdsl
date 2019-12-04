@@ -5,7 +5,7 @@ const {
   isPrimative,
   isRegEx
 } = require("./utils");
-
+const { ValidationError } = require("./errors");
 const Context = require("./context");
 
 const createErrorReporter = (
@@ -578,12 +578,18 @@ const createEntry = ctx =>
     return [name, createVal(ctx)(predicate)];
   };
 
+const deprecate = (name, fn) => () => {
+  console.log(`${name} is deprecated and will be removed soon.`);
+  return fn();
+};
+
 const Email = () => /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
-const Xc = () => /(?=.*[^a-zA-Z0-9\s]).*/;
-const Nc = () => /(?=.*[0-9]).*/;
-const Lc = () => /(?=.*[a-z]).*/;
-const Uc = () => /(?=.*[A-Z]).*/;
-const LUc = () => /(?=.*[a-z])(?=.*[A-Z]).*/;
+
+const Xc = deprecate("Xc", () => /(?=.*[^a-zA-Z0-9\s]).*/);
+const Nc = deprecate("Nc", () => /(?=.*[0-9]).*/);
+const Lc = deprecate("Lc", () => /(?=.*[a-z]).*/);
+const Uc = deprecate("Uc", () => /(?=.*[A-Z]).*/);
+const LUc = deprecate("LUc", () => /(?=.*[a-z])(?=.*[A-Z]).*/);
 
 function passContextToHelpers(ctx, helpers) {
   const acc = {};
@@ -601,6 +607,40 @@ const createValidation = () => msg =>
       return predicate(...args, msg); // add msg as the final arg
     };
   };
+
+const createSchema = (compiler, ctx) => {
+  return (...args) => {
+    const predicateFn = compiler(ctx)(...args);
+    return {
+      validateSync(input) {
+        // Setting abortEarly to false
+        // enables us to collect all errors
+        ctx.reset({ abortEarly: false, captureErrors: true });
+
+        // Run the test
+        predicateFn(input);
+        const errs = ctx.getErrors();
+
+        // Throw errors
+        if (ctx.throwErrors && errs.length > 0) {
+          if (errs.length > 1) {
+            throw new ValidationError("Validation failed", "", errs);
+          } else {
+            const [singleError] = errs;
+            throw new ValidationError(singleError.message, singleError.path);
+          }
+        }
+
+        // Return the errors
+        return errs;
+      },
+      async validate(input) {
+        return this.validateSync(input);
+      },
+      unsafe_rpn: predicateFn.unsafe_rpn
+    };
+  };
+};
 
 const _rawHelpers = {
   Email,
@@ -638,11 +678,58 @@ const _rawHelpers = {
   validation: createValidation
 };
 
+const createRuntimeCompiler = compileTemplateLiteral => ctx => (
+  strings,
+  ...expressions
+) => {
+  const predicateFn = compileTemplateLiteral(strings, expressions, ctx);
+  return predicateFn;
+};
+
+const createPredicateRunner = () => ctx => predicateCallback => {
+  const predicateFn = predicateCallback(passContextToHelpers(ctx, _rawHelpers));
+  return predicateFn;
+};
+
+// Create the default export without depending on the compiler
+const createDefault = compileTemplateLiteral => {
+  const compiler = compileTemplateLiteral
+    ? // runtime compiling
+      createRuntimeCompiler(compileTemplateLiteral)
+    : // precompiled babel api
+      createPredicateRunner();
+
+  const returnObject = compiler(new Context());
+
+  // Attach schema() and predicate() functions
+  returnObject.schema = options => {
+    const ctx = new Context({
+      schemaMode: true,
+      abortEarly: false,
+      captureErrors: true,
+      throwErrors: true,
+      ...options
+    });
+
+    return createSchema(compiler, ctx);
+  };
+
+  returnObject.predicate = options => {
+    return compiler(new Context(options));
+  };
+
+  return returnObject;
+};
+
+// TODO:  this may need consideration once we move to a
+//        better delivery system eg. with rollup
 module.exports = Object.assign(
   // Main export is the configureHelperFunction
   ctx => passContextToHelpers(ctx, _rawHelpers),
   // Merge on all the helpers configured to default
   passContextToHelpers(new Context(), _rawHelpers),
   // Add getter to get unconfigured helpers
-  { getRawHelpers: () => _rawHelpers }
+  { getRawHelpers: () => _rawHelpers },
+  // Add createDefault function
+  { createDefault }
 );

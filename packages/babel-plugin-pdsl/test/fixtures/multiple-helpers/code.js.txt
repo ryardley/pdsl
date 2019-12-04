@@ -1,5 +1,5 @@
 import p from "pdsl";
-const _pdslHelpers = require("pdsl/helpers");
+import _pdslHelpers from "pdsl/helpers";
 const assert = require("assert");
 assert.strictEqual(p`!(null|undefined)`(1), true);
 const isNotNil = _pdslHelpers.val(

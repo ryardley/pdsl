@@ -1,0 +1,17 @@
+import _pdslHelpers from "pdsl/helpers";
+const pdsl = _pdslHelpers.createDefault();
+const assert = require("assert");
+
+// Config 1
+const p = pdsl.schema({ someConfig: true });
+const schema = p(_h => _h.val(true));
+
+assert.rejects(async () => {
+  await schema.validate(true)
+}, true);
+
+// Config 2
+const q = pdsl.predicate({ someOtherConfig: true });
+const predicate = q(_h => _h.val(true));
+
+assert.strictEqual(predicate(true), true);
