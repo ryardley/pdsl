@@ -1,7 +1,11 @@
+const _pdslHelpers = require("pdsl/helpers");
+
 // TODO: The following should eventually be sourced and generated
 //       from the main tests within the PDSL
-import _pdslHelpers from "pdsl/helpers";
-const p = _pdslHelpers.createDefault();
+const _pdslDefault = _pdslHelpers.createDefault();
+
+const p = _pdslDefault;
+
 const assert = require("assert");
 
 assert.strictEqual(p(_h => _h.val(_h.not(_h.or(_h.val(null), _h.val(undefined)))))(1), true);

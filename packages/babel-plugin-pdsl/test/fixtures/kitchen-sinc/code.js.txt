@@ -1,6 +1,6 @@
 // TODO: The following should eventually be sourced and generated
 //       from the main tests within the PDSL
-import p from "pdsl";
+const p  = require("pdsl");
 const assert = require("assert");
 
 assert.strictEqual(p`!(null|undefined)`(1), true);

@@ -17,25 +17,43 @@ function loadFixtureSync(folder) {
   return { code, output };
 }
 
+// White space is really annoying in these not sure if its
+// possible to do anythinng about it
 const tests = [
   {
     title: "Kitchen Sinc",
-    ...loadFixtureSync("kitchen-sinc")
+    ...loadFixtureSync("kitchen-sinc"),
+    runoutput: true
   },
   {
-    title: "Multiple helper imports",
-    ...loadFixtureSync("multiple-helpers")
+    title: "Import named specifier",
+    ...loadFixtureSync("import-named-specifier")
+  },
+  {
+    title: "Import default specifier",
+    ...loadFixtureSync("import-default-specifier-schema")
+  },
+  {
+    title: "Basic default schema",
+    ...loadFixtureSync("basic-default-schema")
+  },
+  {
+    title: "Basic named specifier",
+    ...loadFixtureSync("basic-named-specifier")
   }
 ];
 pluginTester({
   plugin,
-  tests
+  tests,
+  endOfLine: "preserve"
 });
 
 test("The code runs as expected", () => {
-  tests.forEach(({ output }) => {
-    expect(() => {
-      eval(output);
-    }).not.toThrow();
+  tests.forEach(({ output, runOutput }) => {
+    if (runOutput) {
+      expect(() => {
+        eval(output);
+      }).not.toThrow();
+    }
   });
 });
