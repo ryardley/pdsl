@@ -794,10 +794,10 @@ describe("validation", () => {
     ]);
   });
 
-  it("should work with typed arrays", async () => {
+  it("should work with typed arrays", () => {
     const expression = pdsl`Array<number>`;
 
-    expect(await expression.validateSync(["a", "b"])).toEqual([
+    expect(expression.validateSync(["a", "b"])).toEqual([
       {
         message: 'Value "a" is not of type "Number"',
         path: ""
@@ -805,6 +805,18 @@ describe("validation", () => {
       {
         message: 'Array ["a","b"] does not match given type',
         path: ""
+      }
+    ]);
+  });
+
+  it("should validate object shorthands", () => {
+    const expression = pdsl`{
+      name :: "Name is not provided!",
+    }`;
+    expect(expression.validateSync({ name: undefined })).toEqual([
+      {
+        message: "Name is not provided!",
+        path: "name"
       }
     ]);
   });
@@ -833,7 +845,7 @@ describe("validation", () => {
     expect(schema.unsafe_rpn()).toBe(
       "name string :e:Nam: : age number :e:Age: : thing _ :e:Thi: : {3"
     );
-    return;
+
     let myerror;
 
     try {
