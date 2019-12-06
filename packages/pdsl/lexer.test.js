@@ -27,7 +27,7 @@ describe("lexer", () => {
         grammar[tokens.OBJ]("{"),
         grammar[tokens.IDENTIFIER]("name"),
         grammar[tokens.ENTRY](":"),
-        grammar[tokens.FALSY]("!"),
+        grammar[tokens.FALSY_KEYWORD]("!"),
         grammar[tokens.OBJ_CLOSE]("}")
       ])
     );

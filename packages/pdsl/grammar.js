@@ -27,6 +27,7 @@ const {
   truthy,
   Uc,
   val,
+  validation,
   wildcard,
   Xc
 } = getRawHelpers();
@@ -41,6 +42,7 @@ const tokens = {
   LOW_CHARS_REGX: "Lc",
   UP_CHARS_REGX: "Uc",
   LOW_UP_CHARS_REGX: "LUc",
+  VALIDATION_MSG: `::\\s*\\"((?:\\\\\\"|[^\\"])*)\\"`,
   EMPTY_OBJ: "\\{\\}",
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
@@ -114,6 +116,7 @@ const grammar = {
     type: types.BooleanLiteral,
     token,
     runtime: () => true,
+    runtimeIdentifier: undefined,
     toString() {
       return token;
     }
@@ -122,6 +125,7 @@ const grammar = {
     type: types.BooleanLiteral,
     token,
     runtime: () => false,
+    runtimeIdentifier: undefined,
     toString() {
       return token;
     }
@@ -130,6 +134,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => regx(ctx)(Email),
+    runtimeIdentifier: "regx",
     toString() {
       return "Email";
     }
@@ -138,6 +143,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => regx(ctx)(Xc),
+    runtimeIdentifier: "regx",
     toString() {
       return "Xc";
     }
@@ -146,6 +152,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => regx(ctx)(Nc),
+    runtimeIdentifier: "regx",
     toString() {
       return "Nc";
     }
@@ -154,6 +161,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => regx(ctx)(Lc),
+    runtimeIdentifier: "regx",
     toString() {
       return "Lc";
     }
@@ -162,6 +170,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => regx(ctx)(Uc),
+    runtimeIdentifier: "regx",
     toString() {
       return "Uc";
     }
@@ -170,6 +179,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => regx(ctx)(LUc),
+    runtimeIdentifier: "regx",
     toString() {
       return "LUc";
     }
@@ -178,6 +188,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => deep(ctx)({}),
+    runtimeIdentifier: "deep",
     toString() {
       return "{}";
     }
@@ -186,6 +197,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => deep(ctx)([]),
+    runtimeIdentifier: "deep",
     toString() {
       return "[]";
     }
@@ -194,6 +206,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => deep(ctx)(""),
+    runtimeIdentifier: "deep",
     toString() {
       return `""`;
     }
@@ -202,6 +215,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => deep(ctx)(""),
+    runtimeIdentifier: "deep",
     toString() {
       return `""`;
     }
@@ -210,6 +224,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Number),
+    runtimeIdentifier: "prim",
     toString() {
       return "Number";
     }
@@ -218,6 +233,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Object),
+    runtimeIdentifier: "prim",
     toString() {
       return "Object";
     }
@@ -226,6 +242,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Array),
+    runtimeIdentifier: "prim",
     toString() {
       return "Array";
     }
@@ -234,6 +251,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => val(ctx)(null),
+    runtimeIdentifier: "val",
     toString() {
       return "null";
     }
@@ -242,6 +260,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => val(ctx)(undefined),
+    runtimeIdentifier: "val",
     toString() {
       return "undefined";
     }
@@ -250,6 +269,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Number),
+    runtimeIdentifier: "prim",
     toString() {
       return "number";
     }
@@ -258,6 +278,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Boolean),
+    runtimeIdentifier: "prim",
     toString() {
       return "boolean";
     }
@@ -266,6 +287,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Symbol),
+    runtimeIdentifier: "prim",
     toString() {
       return "symbol";
     }
@@ -274,6 +296,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(String),
+    runtimeIdentifier: "prim",
     toString() {
       return "string";
     }
@@ -282,6 +305,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: /* istanbul ignore next */ ctx => prim(ctx)(Array),
+    runtimeIdentifier: "prim",
     toString() {
       return "array";
     }
@@ -290,6 +314,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Boolean),
+    runtimeIdentifier: "prim",
     toString() {
       return "Boolean";
     }
@@ -298,6 +323,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(String),
+    runtimeIdentifier: "prim",
     toString() {
       return "String";
     }
@@ -306,6 +332,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Symbol),
+    runtimeIdentifier: "prim",
     toString() {
       return "Symbol";
     }
@@ -314,6 +341,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => prim(ctx)(Function),
+    runtimeIdentifier: "prim",
     toString() {
       return "Function";
     }
@@ -322,6 +350,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => extant(ctx),
+    runtimeIdentifier: "extant",
     toString() {
       return "_";
     }
@@ -330,6 +359,7 @@ const grammar = {
     type: types.PredicateLiteral,
     token,
     runtime: ctx => wildcard(ctx),
+    runtimeIdentifier: "wildcard",
     toString() {
       return "*";
     }
@@ -339,6 +369,7 @@ const grammar = {
       type: types.PredicateLiteral,
       token,
       runtime: ctx => truthy(ctx),
+      runtimeIdentifier: "truthy",
       toString() {
         return "!!";
       }
@@ -349,6 +380,7 @@ const grammar = {
       type: types.PredicateLiteral,
       token,
       runtime: ctx => falsey(ctx),
+      runtimeIdentifier: "falsey",
       toString() {
         return "!";
       }
@@ -358,6 +390,7 @@ const grammar = {
     type: types.SymbolLiteral,
     token,
     runtime: () => token,
+    runtimeIdentifier: undefined,
     toString() {
       return token;
     }
@@ -366,6 +399,7 @@ const grammar = {
     type: types.SymbolLiteral,
     token,
     runtime: () => token,
+    runtimeIdentifier: undefined,
     toString() {
       return token;
     }
@@ -374,6 +408,7 @@ const grammar = {
     type: types.NumericLiteral,
     token,
     runtime: () => Number(token),
+    runtimeIdentifier: undefined,
     toString() {
       return token;
     }
@@ -386,6 +421,7 @@ const grammar = {
       type: types.StringLiteral,
       token: value,
       runtime: ctx => val(ctx)(value),
+      runtimeIdentifier: "val",
       toString() {
         return token;
       }
@@ -399,6 +435,7 @@ const grammar = {
       type: types.StringLiteral,
       token: value,
       runtime: ctx => val(ctx)(value),
+      runtimeIdentifier: "val",
       toString() {
         return token;
       }
@@ -412,6 +449,7 @@ const grammar = {
       type: types.PredicateLookup,
       token: val,
       runtime: /* istanbul ignore next as not used */ () => val,
+      runtimeIdentifier: undefined,
       toString() {
         return token;
       }
@@ -425,6 +463,7 @@ const grammar = {
     token,
     arity: 1,
     runtime: ctx => not(ctx),
+    runtimeIdentifier: "not",
     toString() {
       return token + this.arity;
     },
@@ -435,6 +474,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: ctx => and(ctx),
+    runtimeIdentifier: "and",
     prec: 60,
     toString() {
       return token;
@@ -445,6 +485,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: ctx => and(ctx),
+    runtimeIdentifier: "and",
     prec: 60,
     toString() {
       return token;
@@ -456,6 +497,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: ctx => or(ctx),
+    runtimeIdentifier: "or",
     prec: 60,
     toString() {
       return token;
@@ -466,6 +508,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: ctx => or(ctx),
+    runtimeIdentifier: "or",
     prec: 60,
     toString() {
       return token;
@@ -476,6 +519,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: ctx => btw(ctx),
+    runtimeIdentifier: "btw",
     prec: 50,
     toString() {
       return token;
@@ -486,6 +530,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: ctx => btwe(ctx),
+    runtimeIdentifier: "btwe",
     prec: 50,
     toString() {
       return token;
@@ -496,6 +541,7 @@ const grammar = {
     token,
     arity: 1,
     runtime: ctx => gte(ctx),
+    runtimeIdentifier: "gte",
     prec: 50,
     toString() {
       return token;
@@ -506,6 +552,7 @@ const grammar = {
     token,
     arity: 1,
     runtime: ctx => lte(ctx),
+    runtimeIdentifier: "lte",
     prec: 50,
     toString() {
       return token;
@@ -516,6 +563,7 @@ const grammar = {
     token,
     arity: 1,
     runtime: ctx => gt(ctx),
+    runtimeIdentifier: "gt",
     prec: 50,
     toString() {
       return token;
@@ -526,11 +574,29 @@ const grammar = {
     token,
     arity: 1,
     runtime: ctx => lt(ctx),
+    runtimeIdentifier: "lt",
     prec: 50,
     toString() {
       return token;
     }
   }),
+  [tokens.VALIDATION_MSG]: token => {
+    const [, msg] = token.match(
+      /::\s*\"((?:\\\"|[^\"])*)\"/
+    ) || /* istanbul ignore next because it is tested in babel plugin */ [, ""];
+
+    return {
+      type: types.Operator,
+      token: ":e:",
+      arity: 1,
+      prec: 55, //??
+      runtime: ctx => validation(ctx)(msg.trim()),
+      runtimeIdentifier: "validation",
+      toString() {
+        return ":e:" + msg.slice(0, 3) + ":";
+      }
+    };
+  },
 
   // functions have highest precidence
   [tokens.ENTRY]: token => ({
@@ -538,6 +604,7 @@ const grammar = {
     token,
     arity: 2,
     runtime: ctx => entry(ctx),
+    runtimeIdentifier: "entry",
     prec: 100,
     toString() {
       return token;
@@ -549,6 +616,7 @@ const grammar = {
     token,
     arity: 0,
     runtime: ctx => obj(ctx),
+    runtimeIdentifier: "obj",
     prec: 100,
     toString() {
       return token + this.arity;
@@ -568,6 +636,7 @@ const grammar = {
     token,
     arity: 0,
     runtime: ctx => arrArgMatch(ctx),
+    runtimeIdentifier: "arrArgMatch",
     prec: 100,
     toString() {
       return token + this.arity;
@@ -610,6 +679,7 @@ const grammar = {
     arity: 1,
     prec: 50,
     runtime: ctx => arrTypeMatch(ctx),
+    runtimeIdentifier: "arrTypeMatch",
     toString() {
       return "Array<";
     }
@@ -620,6 +690,7 @@ const grammar = {
     arity: 1,
     prec: 50,
     runtime: strLen,
+    runtimeIdentifier: "strLen",
     toString() {
       return "string[";
     }
@@ -630,6 +701,7 @@ const grammar = {
     arity: 1,
     prec: 50,
     runtime: ctx => arrLen(ctx),
+    runtimeIdentifier: "arrLen",
     toString() {
       return "array[";
     }

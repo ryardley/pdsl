@@ -5,9 +5,49 @@ const {
   isPrimative,
   isRegEx
 } = require("./utils");
+const { ValidationError } = require("./errors");
+const Context = require("./context");
 
-// NOTE:  All return functions must have names becuase
-//        they are used for the babel plugin
+const createErrorReporter = (
+  key,
+  ctx,
+  msg,
+  args,
+  blockDownstream = false,
+  disableDefault = false
+) => callback => {
+  // Much of the complexity here is determining if we should show downstream errors
+  if (!ctx || !ctx.captureErrors) return callback();
+
+  ctx.pushErrStack(key);
+  const blockFurther = msg || blockDownstream;
+
+  if (blockFurther) {
+    ctx.blockErrors = ctx.errStack.join(".");
+  }
+
+  const result = callback();
+
+  if (result === false && ctx) {
+    const errPath = ctx.errStack.join(".");
+    const errAllowed =
+      !ctx.blockErrors ||
+      msg ||
+      (ctx.blockErrors.length !== errPath.length &&
+        errPath.indexOf(ctx.blockErrors) !== 0);
+
+    const message = msg || (!disableDefault && ctx.lookup(key));
+
+    if (errAllowed && message) {
+      ctx.reportError(message, ...args);
+    }
+  }
+  if (blockFurther) {
+    ctx.blockErrors = "";
+  }
+  ctx.popErrStack();
+  return result;
+};
 
 /**
  * <h3>Between bounds</h3>
@@ -17,11 +57,13 @@ const {
  * @param {number} b The higher number
  * @return {function} A function of the form number => boolean
  */
-const createBtw = () =>
+const createBtw = ctx =>
   function btw(a, b) {
-    return function btwFn(n) {
-      const [min, max] = a < b ? [a, b] : [b, a];
-      return n > min && n < max;
+    return function btwFn(n, msg) {
+      return createErrorReporter("btw", ctx, msg, [n, a, b])(() => {
+        const [min, max] = a < b ? [a, b] : [b, a];
+        return n > min && n < max;
+      });
     };
   };
 
@@ -33,11 +75,13 @@ const createBtw = () =>
  * @param {number} b The higher number
  * @return {function} A function of the form number => boolean
  */
-const createBtwe = () =>
+const createBtwe = ctx =>
   function btwe(a, b) {
-    return function btweFn(n) {
-      const [min, max] = a < b ? [a, b] : [b, a];
-      return n >= min && n <= max;
+    return function btweFn(n, msg) {
+      return createErrorReporter("btwe", ctx, msg, [n, a, b])(() => {
+        const [min, max] = a < b ? [a, b] : [b, a];
+        return n >= min && n <= max;
+      });
     };
   };
 
@@ -48,10 +92,12 @@ const createBtwe = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const createLt = () =>
+const createLt = ctx =>
   function lt(a) {
-    return function ltFn(n) {
-      return n < a;
+    return function ltFn(n, msg) {
+      return createErrorReporter("lt", ctx, msg, [n, a])(() => {
+        return n < a;
+      });
     };
   };
 
@@ -62,10 +108,12 @@ const createLt = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const createLte = () =>
+const createLte = ctx =>
   function lte(a) {
-    return function lteFn(n) {
-      return n <= a;
+    return function lteFn(n, msg) {
+      return createErrorReporter("lte", ctx, msg, [n, a])(() => {
+        return n <= a;
+      });
     };
   };
 
@@ -76,10 +124,12 @@ const createLte = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const createGt = () =>
+const createGt = ctx =>
   function gt(a) {
-    return function gtFn(n) {
-      return n > a;
+    return function gtFn(n, msg) {
+      return createErrorReporter("gt", ctx, msg, [n, a])(() => {
+        return n > a;
+      });
     };
   };
 /**
@@ -89,10 +139,12 @@ const createGt = () =>
  * @param {number} a The number to check against.
  * @return {function} A function of the form number => boolean
  */
-const createGte = () =>
+const createGte = ctx =>
   function gte(a) {
-    return function gteFn(n) {
-      return n >= a;
+    return function gteFn(n, msg) {
+      return createErrorReporter("gte", ctx, msg, [n, a])(() => {
+        return n >= a;
+      });
     };
   };
 
@@ -118,19 +170,20 @@ const createGte = () =>
  */
 const createArrArgMatch = ctx =>
   function arrArgMatch(...tests) {
-    function matchFn(arr) {
-      const hasWildcard = tests.slice(-1)[0] === "...";
-      let matches = hasWildcard || arr.length === tests.length;
-      for (let i = 0; i < tests.length; i++) {
-        const testVal = tests[i];
-        const predicate =
-          testVal === "..." ? createWildcard(ctx) : createVal(ctx)(testVal);
-        const pass = predicate(arr[i]);
-        matches = matches && pass;
-      }
-      return matches;
-    }
-    return matchFn;
+    return function matchFn(arr, msg) {
+      return createErrorReporter("arrArgMatch", ctx, msg, [arr])(() => {
+        const hasWildcard = tests.slice(-1)[0] === "...";
+        let matches = hasWildcard || arr.length === tests.length;
+        for (let i = 0; i < tests.length; i++) {
+          const testVal = tests[i];
+          const predicate =
+            testVal === "..." ? createWildcard(ctx) : createVal(ctx)(testVal);
+          const pass = predicate(arr[i]);
+          matches = matches && pass;
+        }
+        return matches;
+      });
+    };
   };
 
 /**
@@ -153,16 +206,17 @@ const createArrArgMatch = ctx =>
 const createArrTypeMatch = ctx =>
   function arrTypeMatch(test) {
     const predicate = createVal(ctx)(test);
-    function matchFn(arr) {
-      if (!Array.isArray(arr)) return false;
+    return function matchFn(arr, msg) {
+      return createErrorReporter("arrTypeMatch", ctx, msg, [arr])(() => {
+        if (!Array.isArray(arr)) return false;
 
-      let matches = true;
-      for (let i = 0; i < arr.length; i++) {
-        matches = matches && predicate(arr[i]);
-      }
-      return matches;
-    }
-    return matchFn;
+        let matches = true;
+        for (let i = 0; i < arr.length; i++) {
+          matches = matches && predicate(arr[i]);
+        }
+        return matches;
+      });
+    };
   };
 
 /**
@@ -179,30 +233,32 @@ const createArrTypeMatch = ctx =>
  */
 const createHolds = ctx =>
   function holds(...args) {
-    return function holdsFn(n) {
-      let i, j;
-      let fns = [];
-      let success = [];
+    return function holdsFn(n, msg) {
+      return createErrorReporter("holds", ctx, msg, [n, ...args])(() => {
+        let i, j;
+        let fns = [];
+        let success = [];
 
-      // prepare args as an array of predicate fns and an array to keep track of success
-      for (i = 0; i < args.length; i++) {
-        const arg = args[i];
-        fns.push(createVal(ctx)(arg));
-        success.push(false);
-      }
+        // prepare args as an array of predicate fns and an array to keep track of success
+        for (i = 0; i < args.length; i++) {
+          const arg = args[i];
+          fns.push(createVal(ctx)(arg));
+          success.push(false);
+        }
 
-      // loop through array only once
-      for (i = 0; i < n.length; i++) {
-        const item = n[i];
-        for (j = 0; j < fns.length; j++) {
-          if (!success[j]) {
-            const fn = fns[j];
-            success[j] = success[j] || fn(item);
+        // loop through array only once
+        for (i = 0; i < n.length; i++) {
+          const item = n[i];
+          for (j = 0; j < fns.length; j++) {
+            if (!success[j]) {
+              const fn = fns[j];
+              success[j] = success[j] || fn(item);
+            }
           }
         }
-      }
 
-      return success.reduce((a, b) => a && b);
+        return success.reduce((a, b) => a && b);
+      });
     };
   };
 
@@ -216,9 +272,24 @@ const createHolds = ctx =>
  */
 const createOr = ctx =>
   function or(left, right) {
-    return function orFn(a) {
-      const val = createVal(ctx);
-      return val(left)(a) || val(right)(a);
+    return function orFn(a, msg) {
+      return createErrorReporter(
+        "or",
+        ctx,
+        msg,
+        [a, left, right],
+        false, // dont block downstream
+        true // disable default
+      )(() => {
+        const val = createVal(ctx);
+        ctx.batchStart();
+        const result = val(left)(a) || val(right)(a);
+        if (!result) {
+          ctx.batchCommit();
+        }
+        ctx.batchPurge();
+        return result;
+      });
     };
   };
 
@@ -232,9 +303,18 @@ const createOr = ctx =>
  */
 const createAnd = ctx =>
   function and(left, right) {
-    return function andFn(a) {
-      const val = createVal(ctx);
-      return val(left)(a) && val(right)(a);
+    return function andFn(a, msg) {
+      return createErrorReporter(
+        "and",
+        ctx,
+        msg,
+        [a, left, right],
+        false, // dont block downstream
+        true // disable default
+      )(() => {
+        const val = createVal(ctx);
+        return val(left)(a) && val(right)(a);
+      });
     };
   };
 
@@ -247,14 +327,18 @@ const createAnd = ctx =>
  */
 const createNot = ctx =>
   function not(input) {
-    return function notFn(a) {
-      return !createVal(ctx)(input)(a);
+    return function notFn(a, msg) {
+      return createErrorReporter("not", ctx, msg, [input, a])(() => {
+        return !createVal(ctx)(input)(a);
+      });
     };
   };
 
-const createExtant = () =>
-  function extant(a) {
-    return a !== null && a !== undefined;
+const createExtant = ctx =>
+  function extant(a, msg) {
+    return createErrorReporter("extant", ctx, msg, [a])(() => {
+      return a !== null && a !== undefined;
+    });
   };
 
 /**
@@ -264,9 +348,11 @@ const createExtant = () =>
  * @param {function} input The input value
  * @return {boolean} Boolean value indicating if the input is truthy
  */
-const createTruthy = () =>
-  function truthy(a) {
-    return !!a;
+const createTruthy = ctx =>
+  function truthy(a, msg) {
+    return createErrorReporter("truthy", ctx, msg, [a])(() => {
+      return !!a;
+    });
   };
 
 /**
@@ -276,44 +362,72 @@ const createTruthy = () =>
  * @param {function} input The input value
  * @return {boolean} Boolean value indicating if the input is falsey
  */
-const createFalsey = () =>
-  function falsey(a) {
-    return !a;
+const createFalsey = ctx =>
+  function falsey(a, msg) {
+    return createErrorReporter("falsey", ctx, msg, [a])(() => {
+      return !a;
+    });
   };
 
 const createObj = ctx =>
   function obj(...entriesWithRest) {
-    return function objFn(a) {
-      const isExtant = createExtant(ctx);
-      let hasRest = false;
-      let entriesMatch = true;
-      let entryCount = 0;
+    return function objFn(a, msg) {
+      return createErrorReporter(
+        "obj",
+        ctx,
+        msg,
+        [a, entriesWithRest],
+        false,
+        true
+      )(() => {
+        const isExtant = createExtant(ctx);
+        let hasRest = false;
+        let entriesMatch = true;
+        let entryCount = 0;
 
-      // For loop is faster
-      for (let i = 0; i < entriesWithRest.length; i++) {
-        const entry = entriesWithRest[i];
+        // For loop is faster
+        for (let i = 0; i < entriesWithRest.length; i++) {
+          const entry = entriesWithRest[i];
 
-        // Ignore rest and note we have one
-        if (entry === "...") {
-          hasRest = hasRest || true;
-          continue;
+          // Ignore rest and note we have one
+          if (entry === "...") {
+            hasRest = hasRest || true;
+            continue;
+          }
+
+          // Extract key and predicate from the entry and run the predicate against the value
+          const [key, predicate] = Array.isArray(entry)
+            ? entry
+            : [entry, isExtant];
+
+          // Storing the object path on a global stack
+          ctx.pushObjStack(key);
+
+          let result;
+          if (ctx.abortEarly) {
+            result = isExtant(a) && predicate(a[key]);
+          } else {
+            // Ensure that the test is run no matter what the previous tests were
+            // This is important for collecting all errors
+            result = predicate(
+              isExtant(a) ? a[key] : /* istanbul ignore next */ undefined
+            );
+          }
+
+          // Popping the object path off the global stack
+          ctx.popObjStack();
+
+          entriesMatch = entriesMatch && result;
+          // We just logged an entry track it
+          entryCount++;
         }
 
-        // Extract key and predicate from the entry and run the predicate against the value
-        const [key, predicate] = Array.isArray(entry)
-          ? entry
-          : [entry, isExtant];
-        entriesMatch = entriesMatch && isExtant(a) && predicate(a[key]);
+        // If there was a rest arg we don't need to check length
+        if (hasRest) return entriesMatch;
 
-        // We just logged an entry track it
-        entryCount++;
-      }
-
-      // If there was a rest arg we don't need to check length
-      if (hasRest) return entriesMatch;
-
-      // Check entry length
-      return entriesMatch && Object.keys(a).length === entryCount;
+        // Check entry length
+        return entriesMatch && Object.keys(a).length === entryCount;
+      });
     };
   };
 
@@ -324,12 +438,16 @@ const createObj = ctx =>
  * @param {function|*} value The input value if already a fuction it will be returned
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const createVal = () => value =>
-  typeof value === "function"
-    ? value
-    : function isVal(a) {
-        return a === value;
-      };
+const createVal = ctx =>
+  function val(value) {
+    return typeof value === "function"
+      ? value
+      : function isVal(a, msg) {
+          return createErrorReporter("val", ctx, msg, [a, value])(() => {
+            return a === value;
+          });
+        };
+  };
 
 /**
  * <h3>Is deep equal to value</h3>
@@ -338,10 +456,14 @@ const createVal = () => value =>
  * @param {function} value The input value
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const createDeep = () =>
+const createDeep = ctx =>
   function deep(value) {
     const st = JSON.stringify(value);
-    return a => st === JSON.stringify(a);
+    return function isDeepEquals(a, msg) {
+      return createErrorReporter("deep", ctx, msg, [a, st])(() => {
+        return st === JSON.stringify(a);
+      });
+    };
   };
 
 /**
@@ -352,9 +474,13 @@ const createDeep = () =>
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
 const createRegx = ctx =>
-  function regx(rx) {
+  function regx(rx, msg) {
     const rgx = typeof rx === "function" ? rx(ctx) : rx;
-    return rgx.test.bind(rgx);
+    return function testRegx(a) {
+      return createErrorReporter("regx", ctx, msg, [a, rx])(() => {
+        return rgx.test(a);
+      });
+    };
   };
 
 /**
@@ -369,11 +495,22 @@ const createRegx = ctx =>
  * @param {object} primative The input primative one of Array, Boolean, Number, Symbol, BigInt, String, Function, Object
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
-const createPrim = () =>
+const createPrim = ctx =>
   function prim(primative) {
-    if (primative.name === "Array") return a => Array.isArray(a);
-
-    return a => typeof a === primative.name.toLowerCase();
+    if (primative.name === "Array") {
+      return function isArray(a, msg) {
+        return createErrorReporter("prim", ctx, msg, [a, primative.name])(
+          () => {
+            return Array.isArray(a);
+          }
+        );
+      };
+    }
+    return function isPrimative(a, msg) {
+      return createErrorReporter("prim", ctx, msg, [a, primative.name])(() => {
+        return typeof a === primative.name.toLowerCase();
+      });
+    };
   };
 
 function createExpressionParser(ctx, expression) {
@@ -401,34 +538,62 @@ const createPred = ctx =>
 
 const createStrLen = ctx =>
   function strLen(input) {
-    return function strLenFn(a) {
-      return typeof a === "string" && createVal(ctx)(input)(a.length);
+    return function strLenFn(a, msg) {
+      return createErrorReporter(
+        "strLen",
+        ctx,
+        msg,
+        [a, input],
+        true // block downstream
+      )(() => {
+        return typeof a === "string" && createVal(ctx)(input)(a.length);
+      });
     };
   };
 
 const createArrLen = ctx =>
   function arrLen(input) {
-    return function arrLenFn(a) {
-      return Array.isArray(a) && createVal(ctx)(input)(a.length);
+    return function arrLenFn(a, msg) {
+      return createErrorReporter(
+        "arrLen",
+        ctx,
+        msg,
+        [a, input],
+        true // block downstream
+      )(() => {
+        return Array.isArray(a) && createVal(ctx)(input)(a.length);
+      });
     };
   };
 
 const createWildcard = () =>
   function wilcard() {
+    // never going to fail so no need to do error reporting
     return true;
   };
 
 const createEntry = ctx =>
   function entry(name, predicate) {
+    // never going to fail so no need to do error reporting
     return [name, createVal(ctx)(predicate)];
   };
 
+const deprecate = (name, fn) => () => {
+  /* istanbul ignore next */
+  if (!process.env.PDSL_SUPPRESS_DEPRICATION_WARNINGS) {
+    /* istanbul ignore next */
+    console.log(`${name} is deprecated and will be removed soon.`);
+  }
+  return fn();
+};
+
 const Email = () => /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
-const Xc = () => /(?=.*[^a-zA-Z0-9\s]).*/;
-const Nc = () => /(?=.*[0-9]).*/;
-const Lc = () => /(?=.*[a-z]).*/;
-const Uc = () => /(?=.*[A-Z]).*/;
-const LUc = () => /(?=.*[a-z])(?=.*[A-Z]).*/;
+
+const Xc = deprecate("Xc", () => /(?=.*[^a-zA-Z0-9\s]).*/);
+const Nc = deprecate("Nc", () => /(?=.*[0-9]).*/);
+const Lc = deprecate("Lc", () => /(?=.*[a-z]).*/);
+const Uc = deprecate("Uc", () => /(?=.*[A-Z]).*/);
+const LUc = deprecate("LUc", () => /(?=.*[a-z])(?=.*[A-Z]).*/);
 
 function passContextToHelpers(ctx, helpers) {
   const acc = {};
@@ -439,6 +604,58 @@ function passContextToHelpers(ctx, helpers) {
   }
   return acc;
 }
+
+const createValidation = ctx => msg =>
+  function validation(predicate) {
+    if (typeof predicate === "string") {
+      // if this is a string we are looking
+      // at an entry key without a predicate.
+      // eg { name :: "Some message" }
+      // Here we need to expand out the predicate to a
+      // full entry
+      const newPredicate = createExtant(ctx);
+      return createEntry(ctx)(predicate, (...args) =>
+        newPredicate(...args, msg)
+      );
+    }
+    return (...args) => {
+      return predicate(...args, msg); // add msg as the final arg
+    };
+  };
+
+const createSchema = (compiler, ctx) => {
+  return (...args) => {
+    const predicateFn = compiler(ctx)(...args);
+    return {
+      validateSync(input) {
+        // Setting abortEarly to false
+        // enables us to collect all errors
+        ctx.reset({ abortEarly: false, captureErrors: true });
+
+        // Run the test
+        predicateFn(input);
+        const errs = ctx.getErrors();
+
+        // Throw errors
+        if (ctx.throwErrors && errs.length > 0) {
+          if (errs.length > 1) {
+            throw new ValidationError("Validation failed", "", errs);
+          } else {
+            const [singleError] = errs;
+            throw new ValidationError(singleError.message, singleError.path);
+          }
+        }
+
+        // Return the errors
+        return errs;
+      },
+      async validate(input) {
+        return this.validateSync(input);
+      },
+      unsafe_rpn: predicateFn.unsafe_rpn
+    };
+  };
+};
 
 const _rawHelpers = {
   Email,
@@ -472,14 +689,62 @@ const _rawHelpers = {
   arrTypeMatch: createArrTypeMatch,
   wildcard: createWildcard,
   strLen: createStrLen,
-  arrLen: createArrLen
+  arrLen: createArrLen,
+  validation: createValidation
 };
 
+const createRuntimeCompiler = compileTemplateLiteral => ctx => (
+  strings,
+  ...expressions
+) => {
+  const predicateFn = compileTemplateLiteral(strings, expressions, ctx);
+  return predicateFn;
+};
+
+const createPredicateRunner = () => ctx => predicateCallback => {
+  const predicateFn = predicateCallback(passContextToHelpers(ctx, _rawHelpers));
+  return predicateFn;
+};
+
+// Create the default export without depending on the compiler
+const createDefault = compileTemplateLiteral => {
+  const compiler = compileTemplateLiteral
+    ? // runtime compiling
+      createRuntimeCompiler(compileTemplateLiteral)
+    : // precompiled babel api
+      createPredicateRunner();
+
+  const returnObject = compiler(new Context());
+
+  // Attach schema() and predicate() functions
+  returnObject.schema = options => {
+    const ctx = new Context({
+      schemaMode: true,
+      abortEarly: false,
+      captureErrors: true,
+      throwErrors: true,
+      ...options
+    });
+
+    return createSchema(compiler, ctx);
+  };
+
+  returnObject.predicate = options => {
+    return compiler(new Context(options));
+  };
+
+  return returnObject;
+};
+
+// TODO:  this may need consideration once we move to a
+//        better delivery system eg. with rollup
 module.exports = Object.assign(
   // Main export is the configureHelperFunction
   ctx => passContextToHelpers(ctx, _rawHelpers),
   // Merge on all the helpers configured to default
-  passContextToHelpers({}, _rawHelpers),
+  passContextToHelpers(new Context(), _rawHelpers),
   // Add getter to get unconfigured helpers
-  { getRawHelpers: () => _rawHelpers }
+  { getRawHelpers: () => _rawHelpers },
+  // Add createDefault function
+  { createDefault }
 );

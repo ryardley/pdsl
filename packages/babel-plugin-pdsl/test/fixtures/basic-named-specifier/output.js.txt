@@ -1,0 +1,11 @@
+import _pdslHelpers from "pdsl/helpers";
+
+const _pdslDefault = _pdslHelpers.createDefault();
+
+const {
+  schema
+} = _pdslDefault;
+const p = schema({
+  someConfig: true
+});
+const theSchema = p(_h => _h.val(true));

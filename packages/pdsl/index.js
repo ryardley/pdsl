@@ -1,7 +1,7 @@
 const { parser } = require("./parser");
 const { lexer } = require("./lexer");
 const { generator } = require("./generator");
-const { getRawHelpers } = require("./helpers");
+const { getRawHelpers, createDefault } = require("./helpers");
 const { pretokenizer } = require("./pretokenizer");
 const { pred } = getRawHelpers();
 
@@ -19,22 +19,26 @@ function debugTokens(strings) {
   return flow(pretokenizer, lexer, debugRpnArray)(strings);
 }
 
-// Prepare the compiler
 const cleanup = a => a.filter(Boolean);
 
 const toRpnArray = flow(pretokenizer, lexer, parser, cleanup);
 
-const createPredicateCompiler = ctx => (strings, ...expressions) => {
-  return generator(toRpnArray(strings), expressions.map(pred(ctx)), ctx);
+const compileTemplateLiteral = (strings, expressions, ctx) => {
+  const predicateFn = generator(
+    toRpnArray(strings),
+    expressions.map(pred(ctx)),
+    ctx
+  );
+  predicateFn.unsafe_rpn = () => debugRpn(strings);
+  return predicateFn;
 };
 
-const defaultContext = {};
-const predicateCompiler = createPredicateCompiler(defaultContext);
+// Create the default export for runtime compiling
+const defaultExport = createDefault(compileTemplateLiteral);
 
-predicateCompiler.create = createPredicateCompiler;
-predicateCompiler.unsafe_rpn = debugRpn;
-predicateCompiler.unsafe_tokens = debugTokens;
+defaultExport.unsafe_rpn = debugRpn;
+defaultExport.unsafe_tokens = debugTokens;
 
-module.exports = predicateCompiler;
-module.exports.default = predicateCompiler;
+module.exports = defaultExport;
+module.exports.default = defaultExport;
 module.exports.unsafe_toRpnArray = toRpnArray;

@@ -64,7 +64,7 @@ function parser(input) {
           while (
             stack.length > 0 &&
             !isPrecidenceOperator(peek(stack)) &&
-            !(peek(stack).prec >= node.prec)
+            peek(stack).prec < node.prec
           ) {
             msg.push("flushing stack");
             output.push(stack.pop());

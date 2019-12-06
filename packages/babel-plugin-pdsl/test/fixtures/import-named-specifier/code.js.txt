@@ -1,0 +1,16 @@
+import { schema as doschema, predicate } from "pdsl";
+const assert = require("assert");
+
+// Config 1
+const p = doschema({ someConfig: true });
+const myschema = p`true`;
+
+assert.rejects(async () => {
+  await myschema.validate(true)
+}, true);
+
+// Config 2
+const q = predicate({ someOtherConfig: true });
+const mypredicate = q`true`;
+
+assert.strictEqual(mypredicate(true), true);

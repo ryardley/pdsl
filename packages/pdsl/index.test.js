@@ -639,6 +639,354 @@ it("should handle nested properties starting with underscores", () => {
 });
 
 it("should be able to pass a config object in", () => {
-  expect(p.create({})`>5`(6)).toBe(true);
-  expect(p.create({})`>5`(5)).toBe(false);
+  expect(p.predicate({})`>5`(6)).toBe(true);
+  expect(p.predicate({})`>5`(5)).toBe(false);
+});
+
+describe("validation", () => {
+  const pdsl = p.schema({
+    throwErrors: false
+  });
+
+  it("should be able to use var substitution in error messages", () => {
+    const expression = pdsl`>5 :: "Value $1 must be greater than 5!"`;
+    expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
+    expect(expression.validateSync(4)).toEqual([
+      { path: "", message: "Value 4 must be greater than 5!" }
+    ]);
+  });
+
+  it("should be handle when var substitution is out of bounds", () => {
+    const expression = pdsl`>5 :: "Value $7 must be greater than 5!"`;
+    expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
+    expect(expression.validateSync(4)).toEqual([
+      { path: "", message: "Value undefined must be greater than 5!" }
+    ]);
+  });
+
+  it("should be able to accept whitespace", () => {
+    const expression = pdsl`>5 ::     "Value must be greater than 5!   "`;
+    expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
+    expect(expression.validateSync(4)).toEqual([
+      { path: "", message: "Value must be greater than 5!" }
+    ]);
+  });
+
+  it("should work on object properties", () => {
+    const expression = pdsl`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!"
+    }`;
+
+    expect(expression.validateSync({ name: 1234, age: "12342134" })).toEqual([
+      {
+        message: "Name is not a string!",
+        path: "name"
+      },
+      {
+        message: "Age is not a number!",
+        path: "age"
+      }
+    ]);
+  });
+
+  it("should work on arrays", () => {
+    const expression = pdsl`[1,2,3] :: "Array is not [1,2,3]"`;
+    expect(expression.validateSync([1, 2, 3, 4])).toEqual([
+      { path: "", message: "Array is not [1,2,3]" }
+    ]);
+    expect(expression.validateSync([1, 2, 3])).toEqual([]);
+  });
+
+  it("should handle precedence and cling to whatever is before it", () => {
+    const expression = pdsl`{
+      name: string               :: "Name must be a string"
+      & string[>7]               :: "Name must be longer than 7 characters",
+      age: (number & > 18)       :: "Age must be numeric and over 18"
+    }`;
+
+    expect(expression.validateSync({ name: "12345678", age: 20 })).toEqual([]);
+
+    expect(expression.validateSync({ name: "123456", age: 20 })).toEqual([
+      {
+        message: "Name must be longer than 7 characters",
+        path: "name"
+      }
+    ]);
+    expect(expression.validateSync({ name: "12345", age: 17 })).toEqual([
+      {
+        message: "Name must be longer than 7 characters",
+        path: "name"
+      },
+      {
+        message: "Age must be numeric and over 18",
+        path: "age"
+      }
+    ]);
+
+    expect(expression.validateSync({ name: "12345678", age: 16 })).toEqual([
+      {
+        message: "Age must be numeric and over 18",
+        path: "age"
+      }
+    ]);
+  });
+
+  it("should skip over all errors from OR decisions", () => {
+    const expression = pdsl`({
+      name: string               :: "Name must be a string"
+    } | {
+      age: (number & > 18)       :: "Age must be numeric and over 18"
+    }) :: "You are not verified"`;
+    expect(expression.validateSync({ name: 100 })).toEqual([
+      { path: "name", message: "Name must be a string" },
+      { path: "age", message: "Age must be numeric and over 18" },
+      { path: "", message: "You are not verified" }
+    ]);
+    expect(expression.validateSync({ name: "100" })).toEqual([]);
+    expect(expression.validateSync({ age: 100 })).toEqual([]);
+
+    expect(expression.validateSync({ foo: "bar" })).toEqual([
+      { path: "name", message: "Name must be a string" },
+      { path: "age", message: "Age must be numeric and over 18" },
+      { path: "", message: "You are not verified" }
+    ]);
+  });
+
+  it("should work with literal strings", () => {
+    const expression = pdsl`"hello" :: "This should be hello"`;
+    expect(expression.unsafe_rpn()).toBe('"hello" :e:Thi:');
+    expect(expression.validateSync("nope")).toEqual([
+      { path: "", message: "This should be hello" }
+    ]);
+  });
+
+  it("should work with escaped quotes", () => {
+    // Unfortunately because of the way template strings work we
+    // have to use double backslash to escape quotes :(
+    const expression = pdsl`"hello" :: "This \\"should\\" be hello"`;
+
+    expect(expression.validateSync("nope")).toEqual([
+      { path: "", message: 'This "should" be hello' }
+    ]);
+  });
+
+  it("should work with nested objects", () => {
+    const expression = pdsl`{
+      name: string               :: "Name must be a string",
+      age: (number & > 18)       :: "Age must be numeric and over 18",
+      school: {
+        type: "summer"           :: "Summer must be type",
+        thing: "winter"          :: "Winter must be thing"
+      }                          :: "School object problems"                         
+    }`;
+
+    expect(
+      expression.validateSync({
+        name: "rudi",
+        age: 123,
+        school: { type: "foo" }
+      })
+    ).toEqual([
+      { path: "school.type", message: "Summer must be type" },
+      { path: "school.thing", message: "Winter must be thing" },
+      { path: "school", message: "School object problems" }
+    ]);
+  });
+
+  it("should work with typed arrays", () => {
+    const expression = pdsl`Array<number>`;
+
+    expect(expression.validateSync(["a", "b"])).toEqual([
+      {
+        message: 'Value "a" is not of type "Number"',
+        path: ""
+      },
+      {
+        message: 'Array ["a","b"] does not match given type',
+        path: ""
+      }
+    ]);
+  });
+
+  it("should validate object shorthands", () => {
+    const expression = pdsl`{
+      name :: "Name is not provided!",
+    }`;
+    expect(expression.validateSync({ name: undefined })).toEqual([
+      {
+        message: "Name is not provided!",
+        path: "name"
+      }
+    ]);
+  });
+
+  it("should validate asynchronously", async () => {
+    const expression = pdsl`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!"
+    }`;
+
+    expect(await expression.validate({ name: "Fred", age: "16" })).toEqual([
+      {
+        message: "Age is not a number!",
+        path: "age"
+      }
+    ]);
+  });
+
+  it("should throw errors that can be parsed by formik", async () => {
+    const schema = p.schema({ throwErrors: true })`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!",
+      thing: _ :: "Thing is not null or undefined"
+    }`;
+
+    expect(schema.unsafe_rpn()).toBe(
+      "name string :e:Nam: : age number :e:Age: : thing _ :e:Thi: : {3"
+    );
+
+    let myerror;
+
+    try {
+      await schema.validate({ name: 1234, age: "16", thing: undefined });
+    } catch (err) {
+      myerror = err;
+    }
+
+    expect(myerror.name).toBe("ValidationError");
+    expect(myerror.inner).toEqual([
+      {
+        message: "Name is not a string!",
+        path: "name"
+      },
+      {
+        message: "Age is not a number!",
+        path: "age"
+      },
+      {
+        message: "Thing is not null or undefined",
+        path: "thing"
+      }
+    ]);
+  });
+
+  it("should provide reasonable defaults", () => {
+    const expression = pdsl`{
+      name: string,
+      age: number & > 20,
+      thing: _
+    }`;
+
+    expect(expression.validateSync({})).toEqual([
+      {
+        message: 'Value undefined is not of type "String"',
+        path: "name"
+      },
+      {
+        message: 'Value undefined is not of type "Number"',
+        path: "age"
+      },
+      {
+        message: "Value undefined is either null or undefined",
+        path: "thing"
+      }
+    ]);
+  });
+
+  it("should not have an inner property if there is only one error", async () => {
+    const expression = p.schema({ throwErrors: true })`{
+      name: string :: "Name is not a string!",
+      age: number :: "Age is not a number!"
+    }`;
+
+    let myerror;
+
+    try {
+      await expression.validate({ name: 1234, age: 16 });
+    } catch (err) {
+      myerror = err;
+    }
+
+    expect(myerror.name).toBe("ValidationError");
+    expect(myerror.message).toBe("Name is not a string!");
+    expect(myerror.path).toBe("name");
+  });
+
+  describe("schema mode", () => {
+    it("should not return a function when using schema mode", async () => {
+      const schema = pdsl`"Hello"`;
+
+      expect(typeof schema).toBe("object");
+    });
+
+    it("should pass a sanity test", async () => {
+      const schema = p.schema()`{ greeting: "Hello", object: "World" }`;
+
+      let error;
+      try {
+        await schema.validate("Hello World");
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error.name).toBe("ValidationError");
+      expect(error.message).toBe("Validation failed");
+      expect(error.inner).toEqual([
+        {
+          message: 'Value undefined did not match value "Hello"',
+          path: "greeting"
+        },
+        {
+          message: 'Value undefined did not match value "World"',
+          path: "object"
+        }
+      ]);
+
+      error = undefined;
+
+      try {
+        await schema.validate({ greeting: "Hello", object: "World" });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toBeUndefined();
+    });
+  });
+});
+
+describe("precompiled babel API", () => {
+  test("default", () => {
+    const pdsl = helpers.createDefault();
+    const itWorks = pdsl(_h => _h.val("works!"));
+
+    expect(itWorks("works!")).toBe(true);
+    expect(itWorks("nope")).toBe(false);
+  });
+
+  test("predicate()", () => {
+    const pdsl = helpers.createDefault();
+    const itWorks = pdsl.predicate({})(_h => _h.val("works!"));
+
+    expect(itWorks("works!")).toBe(true);
+    expect(itWorks("nope")).toBe(false);
+  });
+
+  test("schema()", () => {
+    const pdsl = helpers.createDefault();
+    const itWorks = pdsl.schema()(_h => _h.val("works!")).validateSync;
+
+    expect(itWorks("works!")).toEqual([]);
+
+    let error;
+
+    try {
+      itWorks("nope!");
+    } catch (caught) {
+      error = caught;
+    }
+
+    expect(error.message).toEqual('Value "nope!" did not match value "works!"');
+  });
 });

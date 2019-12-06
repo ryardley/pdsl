@@ -185,7 +185,7 @@ describe("predicateLiteral", () => {
     const testFn = only ? test.only : test;
     testFn(name, () => {
       const node = grammar[input]();
-      const rpn = predicateLiteral(node);
+      const rpn = predicateLiteral(node, "helpers");
       expect(generate(rpn).code).toBe(expected);
     });
   });

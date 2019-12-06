@@ -1,0 +1,25 @@
+import _pdslHelpers from "pdsl/helpers";
+
+const _pdslDefault = _pdslHelpers.createDefault();
+
+const {
+  schema: doschema,
+  predicate
+} = _pdslDefault;
+
+const assert = require("assert"); // Config 1
+
+
+const p = doschema({
+  someConfig: true
+});
+const myschema = p(_h => _h.val(true));
+assert.rejects(async () => {
+  await myschema.validate(true);
+}, true); // Config 2
+
+const q = predicate({
+  someOtherConfig: true
+});
+const mypredicate = q(_h => _h.val(true));
+assert.strictEqual(mypredicate(true), true);

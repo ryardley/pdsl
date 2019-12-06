@@ -3,29 +3,57 @@ const plugin = require("../src");
 const path = require("path");
 const fs = require("fs");
 
-const code = fs.readFileSync(
-  path.resolve(__dirname, "./fixtures/pdsl/code.js.txt"),
-  "utf-8"
-);
+function loadFixtureSync(folder) {
+  const code = fs.readFileSync(
+    path.resolve(__dirname, `./fixtures/${folder}/code.js.txt`),
+    "utf-8"
+  );
 
-const output = fs.readFileSync(
-  path.resolve(__dirname, "./fixtures/pdsl/output.js.txt"),
-  "utf-8"
-);
+  const output = fs.readFileSync(
+    path.resolve(__dirname, `./fixtures/${folder}/output.js.txt`),
+    "utf-8"
+  );
 
+  return { code, output };
+}
+
+// White space is really annoying in these not sure if its
+// possible to do anythinng about it
+const tests = [
+  {
+    title: "Kitchen Sinc",
+    ...loadFixtureSync("kitchen-sinc"),
+    runoutput: true
+  },
+  {
+    title: "Import named specifier",
+    ...loadFixtureSync("import-named-specifier")
+  },
+  {
+    title: "Import default specifier",
+    ...loadFixtureSync("import-default-specifier-schema")
+  },
+  {
+    title: "Basic default schema",
+    ...loadFixtureSync("basic-default-schema")
+  },
+  {
+    title: "Basic named specifier",
+    ...loadFixtureSync("basic-named-specifier")
+  }
+];
 pluginTester({
   plugin,
-  tests: [
-    {
-      title: "The code transpiles as expected",
-      code,
-      output
-    }
-  ]
+  tests,
+  endOfLine: "preserve"
 });
 
 test("The code runs as expected", () => {
-  expect(() => {
-    eval(output);
-  }).not.toThrow();
+  tests.forEach(({ output, runOutput }) => {
+    if (runOutput) {
+      expect(() => {
+        eval(output);
+      }).not.toThrow();
+    }
+  });
 });

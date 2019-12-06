@@ -1,5 +1,6 @@
 const { generator } = require("./generator");
 const { grammar, tokens } = require("./grammar");
+const Context = require("./context");
 
 const link = grammar[tokens.PREDICATE_LOOKUP];
 const not = grammar[tokens.NOT];
@@ -50,9 +51,9 @@ describe("generator", () => {
     }
   ].forEach(({ rpn, skip, only, fns, inp, out }) => {
     const itFunc = skip ? it.skip : only ? it.only : it;
-
+    const ctx = new Context();
     itFunc(stringifyAst(rpn), () => {
-      expect(generator(rpn, fns)(inp)).toBe(out);
+      expect(generator(rpn, fns, ctx)(inp)).toBe(out);
     });
   });
 });
