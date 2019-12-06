@@ -35,10 +35,14 @@ class Context {
     /* istanbul ignore next */
     if (!msg) return;
 
-    const message = msg.replace(/\$(\d+)/g, (...matchArgs) => {
-      const [, argIndex] = matchArgs.slice(0, -2);
-      return JSON.stringify(argstore[Number(argIndex) - 1]);
-    });
+    const message = msg
+      // interpolate values
+      .replace(/\$(\d+)/g, (...matchArgs) => {
+        const [, argIndex] = matchArgs.slice(0, -2);
+        return JSON.stringify(argstore[Number(argIndex) - 1]);
+      })
+      // Fix up encoding issue with escaped quotes
+      .replace(/\\\"/g, '"');
 
     const collection = this.isBatching ? this.batch : this.errs;
 

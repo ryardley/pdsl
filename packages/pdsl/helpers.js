@@ -579,7 +579,11 @@ const createEntry = ctx =>
   };
 
 const deprecate = (name, fn) => () => {
-  console.log(`${name} is deprecated and will be removed soon.`);
+  /* istanbul ignore next */
+  if (!process.env.PDSL_SUPPRESS_DEPRICATION_WARNINGS) {
+    /* istanbul ignore next */
+    console.log(`${name} is deprecated and will be removed soon.`);
+  }
   return fn();
 };
 

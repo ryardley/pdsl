@@ -2,17 +2,6 @@ const p = require("./index");
 const helpers = require("./helpers");
 const { Email, gt } = helpers();
 
-// process.env.PDSL_SUPPRESS_DEPRICATION_WARNINGS = 1;
-global.console = {
-  log: jest.fn(), // console.log are ignored in tests
-
-  // Keep native behaviour for other methods, use those to print out things in your own tests, not `console.log`
-  error: console.error,
-  warn: console.warn,
-  info: console.info,
-  debug: console.debug
-};
-
 describe("value predicates", () => {
   it("should return strict equality with any value", () => {
     expect(p`${true}`(true)).toBe(true);
@@ -660,7 +649,6 @@ describe("validation", () => {
   });
 
   it("should be able to use var substitution in error messages", () => {
-    console.log({ p });
     const expression = pdsl`>5 :: "Value $1 must be greater than 5!"`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
     expect(expression.validateSync(4)).toEqual([
@@ -764,10 +752,22 @@ describe("validation", () => {
       { path: "", message: "You are not verified" }
     ]);
   });
+
   it("should work with literal strings", () => {
     const expression = pdsl`"hello" :: "This should be hello"`;
+    expect(expression.unsafe_rpn()).toBe('"hello" :e:Thi:');
     expect(expression.validateSync("nope")).toEqual([
       { path: "", message: "This should be hello" }
+    ]);
+  });
+
+  it("should work with escaped quotes", () => {
+    // Unfortunately because of the way template strings work we
+    // have to use double backslash to escape quotes :(
+    const expression = pdsl`"hello" :: "This \\"should\\" be hello"`;
+
+    expect(expression.validateSync("nope")).toEqual([
+      { path: "", message: 'This "should" be hello' }
     ]);
   });
 

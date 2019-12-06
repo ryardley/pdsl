@@ -6,7 +6,9 @@ const {
   hasToken
 } = require("./grammar");
 
-const rex = new RegExp(`(${Object.values(tokens).join("|")})`, "g");
+const rexString = `(${Object.values(tokens).join("|")})`;
+
+const rex = new RegExp(rexString, "g");
 
 const grammers = Object.entries(grammar);
 
@@ -14,7 +16,7 @@ function toNode(token) {
   for (let i = 0; i < grammers.length; i++) {
     const [test, createNode] = grammers[i];
 
-    // HACK:  remove lookahed
+    // HACK:  remove lookahead
     //        need to work out a better way to do this
     const testWithoutLookahead = test === tokens.GT ? "\\>" : test;
 
