@@ -4,13 +4,12 @@
 
 <h1 align="center">Predicate Domain Specific Language</h1>
 
+<p align="center"><a href="https://travis-ci.com/ryardley/pdsl"><img src="https://travis-ci.com/ryardley/pdsl.svg?branch=master" alt="Build Status"></a>
+<img src="https://img.shields.io/bundlephobia/minzip/pdsl.svg" alt="npm bundle size">
+<img src="https://img.shields.io/npm/v/pdsl.svg" alt="npm">
+<a href="https://codecov.io/gh/ryardley/pdsl"><img src="https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg" alt="codecov"></a></p>
 
-[![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
-![npm](https://img.shields.io/npm/v/pdsl.svg)
-[![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
-
-#### An expressive declarative toolkit for composing predicates in TypeScript or JavaScript
+<h4 align="center">The expressive declarative toolkit for composing validations and predicates in TypeScript and JavaScript</h4>
 
 ```js
 import p from "pdsl";
@@ -24,6 +23,8 @@ const isSoftwareCreator = p`{
 isSoftwareCreator(someone); // true | false
 ```
 
+### PDSL is
+
 - [x] Intuitive
 - [x] Expressive
 - [x] Lightweight - under 6k!
@@ -32,7 +33,7 @@ isSoftwareCreator(someone); // true | false
 - [x] Fast
 
 
-## Predicate functions are just easier with PDSL
+## Validating your data is easier with PDSL
 
 Creating predicate functions in JavaScript is often verbose, especially for checking the format of complex object types. We need predicate functions all the time when filtering an array, validating input, determining the type of an unknown object or creating guard conditions in TypeScript.
 
