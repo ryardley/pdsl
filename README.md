@@ -18,7 +18,7 @@ isSoftwareCreator(someone); // true | false
 
 - [x] Intuitive
 - [x] Expressive
-- [x] Lightweight - under 5k!
+- [x] Lightweight - under 6k!
 - [x] No dependencies
 - [x] Small bundle size
 - [x] Fast
