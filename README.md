@@ -1,6 +1,14 @@
-<img src="pdsl-logo.png" width="200" />
+<p align="center">
+  <img src="pdsl-logo.png" width="200" />
+</p>
 
-# Predicate Domain Specific Language
+<h1 align="center">Predicate Domain Specific Language</h1>
+
+
+[![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
+![npm](https://img.shields.io/npm/v/pdsl.svg)
+[![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
 
 #### An expressive declarative toolkit for composing predicates in TypeScript or JavaScript
 
@@ -23,12 +31,6 @@ isSoftwareCreator(someone); // true | false
 - [x] Small bundle size
 - [x] Fast
 
-<br/>
-
-[![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
-![npm](https://img.shields.io/npm/v/pdsl.svg)
-[![codecov](https://codecov.io/gh/ryardley/pdsl/branch/master/graph/badge.svg)](https://codecov.io/gh/ryardley/pdsl)
 
 ## Predicate functions are just easier with PDSL
 
