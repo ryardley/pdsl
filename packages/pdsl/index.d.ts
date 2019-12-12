@@ -17,14 +17,21 @@ type PdslSchema = {
   validate(a: any): Promise<Array<PdslError>>;
 };
 
+type schemaCreator = (
+  strings: TemplateStringArray,
+  ...expressions: any[]
+) => PdslSchema;
+
+type predicateCreatorType = typeof predicateCreator;
+
 declare function predicateCreator<T>(
   strings: TemplateStringsArray,
   ...expressions: any[]
 ): PredicateFn<T>;
 
 declare namespace predicateCreator {
-  var schema: (options?: PdslOptions) => PdslSchema;
-  var predicate: <T>(options?: PdslOptions) => PredicateFn<T>;
+  var schema: (options?: PdslOptions) => schemaCreator;
+  var predicate: (options?: PdslOptions) => predicateCreatorType;
 }
 
 export default predicateCreator;
