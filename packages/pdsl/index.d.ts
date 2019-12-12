@@ -18,7 +18,7 @@ type PdslSchema = {
 };
 
 type schemaCreator = (
-  strings: TemplateStringArray,
+  strings: TemplateStringsArray,
   ...expressions: any[]
 ) => PdslSchema;
 
