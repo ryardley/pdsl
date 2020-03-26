@@ -147,6 +147,20 @@ it("should match exactly all the way down the object tree unless you use a rest"
       }
     })
   ).toBe(true);
+
+  expect(
+    p`{| name, age, sub: [{ num: 100, foo: { strict: true }, ... }] |}`({
+      name: "Fred",
+      age: 12,
+      sub: [
+        {
+          num: 100,
+          foo: { strict: true },
+          bar: "bar"
+        }
+      ]
+    })
+  ).toBe(true);
 });
 
 it("should be able to use nested object property templates", () => {
