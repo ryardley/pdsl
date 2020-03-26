@@ -220,21 +220,21 @@ const createArrTypeMatch = ctx =>
   };
 
 /**
- * <h3>Array holds</h3>
+ * <h3>Array arrIncl</h3>
  * Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
  * Eg,
  * <pre><code>
- * holds(a => a > 3, 2)([1,2,3]); // true
- * holds(1, 2)([1,3]); // false
+ * arrIncl(a => a > 3, 2)([1,2,3]); // true
+ * arrIncl(1, 2)([1,3]); // false
  * </code></pre>
  *
  * @param {...function|*} args Either values or predicate functions used to test the contents of the array.
  * @return {function} A function of the form <code>{array => boolean}</code>
  */
-const createHolds = ctx =>
-  function holds(...args) {
+const createArrIncludes = ctx =>
+  function arrIncl(...args) {
     return function holdsFn(n, msg) {
-      return createErrorReporter("holds", ctx, msg, [n, ...args])(() => {
+      return createErrorReporter("arrIncl", ctx, msg, [n, ...args])(() => {
         let i, j;
         let fns = [];
         let success = [];
@@ -671,7 +671,7 @@ const _rawHelpers = {
   lte: createLte,
   gt: createGt,
   gte: createGte,
-  holds: createHolds,
+  arrIncl: createArrIncludes,
   or: createOr,
   and: createAnd,
   not: createNot,

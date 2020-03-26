@@ -463,6 +463,174 @@ arrArgMatch(1, 2)([1,3]); // false
     
 
     
+    <h4 class="name" id="createArrIncludes"><span class="type-signature"></span>createArrIncludes<span class="signature">(args)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <h3>Array arrIncl</h3>
+Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
+Eg,
+<pre><code>
+arrIncl(a => a > 3, 2)([1,2,3]); // true
+arrIncl(1, 2)([1,3]); // false
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+|
+
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Either values or predicate functions used to test the contents of the array.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helpers.js.html">helpers.js</a>, <a href="helpers.js.html#line234">line 234</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A function of the form <code>{array => boolean}</code>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="createArrTypeMatch"><span class="type-signature"></span>createArrTypeMatch<span class="signature">(test)</span><span class="type-signature"> &rarr; {function}</span></h4>
     
 
@@ -1614,174 +1782,6 @@ Return a function that checks to see if it's input is greater than or equal to t
         
 <div class="param-desc">
     A function of the form number => boolean
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">function</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="createHolds"><span class="type-signature"></span>createHolds<span class="signature">(args)</span><span class="type-signature"> &rarr; {function}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <h3>Array holds</h3>
-Return a function that checks to see if an array contains either any of the values listed or if any of the predicate functions provided return true when run over all items in the array.
-Eg,
-<pre><code>
-holds(a => a > 3, 2)([1,2,3]); // true
-holds(1, 2)([1,3]); // false
-</code></pre>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>args</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-|
-
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Either values or predicate functions used to test the contents of the array.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="helpers.js.html">helpers.js</a>, <a href="helpers.js.html#line234">line 234</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    A function of the form <code>{array => boolean}</code>
 </div>
 
 
@@ -3291,13 +3291,13 @@ Takes an input value to form a predicate that checks if the input strictly equal
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createAnd">createAnd</a></li><li><a href="global.html#createArrArgMatch">createArrArgMatch</a></li><li><a href="global.html#createArrTypeMatch">createArrTypeMatch</a></li><li><a href="global.html#createBtw">createBtw</a></li><li><a href="global.html#createBtwe">createBtwe</a></li><li><a href="global.html#createDeep">createDeep</a></li><li><a href="global.html#createFalsey">createFalsey</a></li><li><a href="global.html#createGt">createGt</a></li><li><a href="global.html#createGte">createGte</a></li><li><a href="global.html#createHolds">createHolds</a></li><li><a href="global.html#createLt">createLt</a></li><li><a href="global.html#createLte">createLte</a></li><li><a href="global.html#createNot">createNot</a></li><li><a href="global.html#createOr">createOr</a></li><li><a href="global.html#createPred">createPred</a></li><li><a href="global.html#createPrim">createPrim</a></li><li><a href="global.html#createRegx">createRegx</a></li><li><a href="global.html#createTruthy">createTruthy</a></li><li><a href="global.html#createVal">createVal</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createAnd">createAnd</a></li><li><a href="global.html#createArrArgMatch">createArrArgMatch</a></li><li><a href="global.html#createArrIncludes">createArrIncludes</a></li><li><a href="global.html#createArrTypeMatch">createArrTypeMatch</a></li><li><a href="global.html#createBtw">createBtw</a></li><li><a href="global.html#createBtwe">createBtwe</a></li><li><a href="global.html#createDeep">createDeep</a></li><li><a href="global.html#createFalsey">createFalsey</a></li><li><a href="global.html#createGt">createGt</a></li><li><a href="global.html#createGte">createGte</a></li><li><a href="global.html#createLt">createLt</a></li><li><a href="global.html#createLte">createLte</a></li><li><a href="global.html#createNot">createNot</a></li><li><a href="global.html#createOr">createOr</a></li><li><a href="global.html#createPred">createPred</a></li><li><a href="global.html#createPrim">createPrim</a></li><li><a href="global.html#createRegx">createRegx</a></li><li><a href="global.html#createTruthy">createTruthy</a></li><li><a href="global.html#createVal">createVal</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Dec 12 2019 20:17:27 GMT+0200 (Eastern European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Mar 26 2020 21:24:40 GMT+1100 (Australian Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

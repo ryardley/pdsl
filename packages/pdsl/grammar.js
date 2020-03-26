@@ -4,6 +4,7 @@ const {
   arrArgMatch,
   arrLen,
   arrTypeMatch,
+  arrIncl,
   btw,
   btwe,
   deep,
@@ -88,6 +89,7 @@ const tokens = {
   ENTRY: "\\:",
   OBJ: "\\{",
   OBJ_CLOSE: "\\}",
+  ARRAY_INCLUDES: "\\[\\?",
   ARRAY: "\\[",
   ARRAY_CLOSE: "\\]",
   ARG: "\\,",
@@ -628,6 +630,18 @@ const grammar = {
     token,
     toString() {
       return token;
+    }
+  }),
+
+  [tokens.ARRAY_INCLUDES]: token => ({
+    type: types.VariableArityOperator,
+    token,
+    arity: 0,
+    runtime: ctx => arrIncl(ctx),
+    runtimeIdentifier: "arrIncl",
+    prec: 100,
+    toString() {
+      return token + this.arity;
     }
   }),
 

@@ -5,7 +5,7 @@ const {
   Email,
   gt,
   gte,
-  holds,
+  arrIncl,
   lt,
   lte,
   obj,
@@ -85,15 +85,15 @@ it("should gte", () => {
   expect(gte(10)(-50)).toBe(false);
 });
 
-it("should holds", () => {
-  expect(holds(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(true);
-  expect(holds(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9])).toBe(false);
-  expect(holds(3, 10)([1, 2, 3, 10])).toBe(true);
-  expect(holds(3, 10)([1, 2, 3])).toBe(false);
-  expect(holds(3, 10)([1, 2])).toBe(false);
-  expect(holds(gt(3))([4])).toBe(true);
-  expect(holds(gt(3), 1)([1, 4])).toBe(true);
-  expect(holds(gt(3), 1)([4])).toBe(false);
+it("should arrIncl", () => {
+  expect(arrIncl(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(true);
+  expect(arrIncl(10)([1, 2, 3, 4, 5, 6, 7, 8, 9, 9])).toBe(false);
+  expect(arrIncl(3, 10)([1, 2, 3, 10])).toBe(true);
+  expect(arrIncl(3, 10)([1, 2, 3])).toBe(false);
+  expect(arrIncl(3, 10)([1, 2])).toBe(false);
+  expect(arrIncl(gt(3))([4])).toBe(true);
+  expect(arrIncl(gt(3), 1)([1, 4])).toBe(true);
+  expect(arrIncl(gt(3), 1)([4])).toBe(false);
 });
 
 it("should val", () => {
