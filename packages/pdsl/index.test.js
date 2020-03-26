@@ -549,7 +549,7 @@ it("should handle all the symbols", () => {
   expect(p`LUc`("abcdef")).toBe(false);
 });
 
-it("should be able to use a tuthy operator", () => {
+it("should be able to use a truthy operator", () => {
   expect(p`!`(true)).toBe(false);
   expect(p`!`(false)).toBe(true);
   expect(p`!!`(true)).toBe(true);
@@ -576,6 +576,13 @@ it("should match array values with greedy wildcard", () => {
   expect(
     p`[number, number, string, ...]`([1, 2, "3", "four", undefined, undefined])
   ).toBe(true);
+});
+
+it("should be able to match array includes syntax", () => {
+  expect(p`[? "four"]`([1, 2, "3", "four", undefined, undefined])).toBe(true);
+  expect(p`[? "four"]`([1, 2, "3", undefined, undefined])).toBe(false);
+  expect(p`[? "four", "3"]`([1, 2, "3", undefined, undefined])).toBe(false);
+  expect(p`[?1,"3"]`([1, 2, "3", undefined, undefined])).toBe(true);
 });
 
 it("should match Array<type> syntax", () => {

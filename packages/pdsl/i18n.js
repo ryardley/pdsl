@@ -7,7 +7,7 @@ const dict = {
   gte: "Number $1 is not greater than or equal to $2",
   arrArgMatch: "Array $1 does not match given predicate pattern",
   arrTypeMatch: "Array $1 does not match given type",
-  holds: "Array $1 does not hold specified types",
+  arrIncl: "Array $1 does not include specified types",
   or: "Value $1 does not satisfy 'or' predicate",
   and: "Value $1 does not satisfy 'and' predicate",
   not: "Value $1 does not satisfy 'not' predicate",
