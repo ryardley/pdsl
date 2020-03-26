@@ -75,6 +75,8 @@ const tokens = {
   STRING_DOUBLE: `\\"[^\\"]*\\"`,
   STRING_SINGLE: `\\'[^\\']*\\'`,
   PREDICATE_LOOKUP: "@{LINK:(\\d+)}",
+  OBJ_EXACT: "\\{\\|",
+  OBJ_EXACT_CLOSE: "\\|\\}",
   NOT: "\\!",
   AND: "\\&\\&",
   AND_SHORT: "\\&",
@@ -608,6 +610,26 @@ const grammar = {
     runtime: ctx => entry(ctx),
     runtimeIdentifier: "entry",
     prec: 100,
+    toString() {
+      return token;
+    }
+  }),
+
+  [tokens.OBJ_EXACT]: token => ({
+    type: types.VariableArityOperator,
+    token,
+    arity: 0,
+    runtime: ctx => obj(ctx, true),
+    runtimeIdentifier: "obj",
+    prec: 100,
+    toString() {
+      return token + this.arity;
+    }
+  }),
+
+  [tokens.OBJ_EXACT_CLOSE]: token => ({
+    type: types.VariableArityOperatorClose,
+    token,
     toString() {
       return token;
     }

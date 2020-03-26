@@ -369,7 +369,7 @@ const createFalsey = ctx =>
     });
   };
 
-const createObj = ctx =>
+const createObj = (ctx, isExactMatching = false) =>
   function obj(...entriesWithRest) {
     return function objFn(a, msg) {
       return createErrorReporter(
@@ -381,17 +381,21 @@ const createObj = ctx =>
         true
       )(() => {
         const isExtant = createExtant(ctx);
-        let hasRest = false;
+
+        const isDeepParentExactMatch = ctx
+          .getObjExactStack()
+          .reduce((acc, item) => acc || item, false);
+
+        let isLooseMatching = !(isExactMatching || isDeepParentExactMatch);
         let entriesMatch = true;
         let entryCount = 0;
 
-        // For loop is faster
         for (let i = 0; i < entriesWithRest.length; i++) {
           const entry = entriesWithRest[i];
 
           // Ignore rest and note we have one
           if (entry === "...") {
-            hasRest = hasRest || true;
+            isLooseMatching = isLooseMatching || true;
             continue;
           }
 
@@ -400,8 +404,8 @@ const createObj = ctx =>
             ? entry
             : [entry, isExtant];
 
-          // Storing the object path on a global stack
-          ctx.pushObjStack(key);
+          // Storing the object key on a global stack for errors reporting
+          ctx.pushObjStack(key, isExactMatching);
 
           let result;
           if (ctx.abortEarly) {
@@ -423,7 +427,7 @@ const createObj = ctx =>
         }
 
         // If there was a rest arg we don't need to check length
-        if (hasRest) return entriesMatch;
+        if (isLooseMatching) return entriesMatch;
 
         // Check entry length
         return entriesMatch && Object.keys(a).length === entryCount;

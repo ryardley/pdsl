@@ -1,6 +1,9 @@
 const defaultConfig = { abortEarly: true };
 const { lookup } = require("./i18n");
 
+// TODO: Get this to compose state helper objects to
+//      handle the objet stack and exact matching depth analysis
+
 class Context {
   constructor(options = {}) {
     this.reset();
@@ -10,7 +13,8 @@ class Context {
   reset(options = {}) {
     this.errs = [];
     this.errStack = [];
-    this.objStack = [];
+    this.objStack = []; // store our nested object path keys
+    this.objExactStack = []; // store nested exact matching objects
     this.config = {};
     this.batch = [];
     this.isBatching = false;
@@ -56,15 +60,22 @@ class Context {
     return lookup(key);
   }
 
-  pushObjStack(key) {
+  pushObjStack(key, isExactMatching) {
+    this.objExactStack.push(isExactMatching);
     const out = this.objStack.push(key);
     return out;
   }
 
   popObjStack() {
+    this.objExactStack.pop();
     const key = this.objStack.pop();
     return key;
   }
+
+  getObjExactStack() {
+    return this.objExactStack;
+  }
+
   pushErrStack(key) {
     const out = this.errStack.push(key);
     return out;
