@@ -19,4 +19,6 @@ assert.strictEqual(p(_h => _h.val(_h.obj(_h.entry("name", _h.pred(a => a.length 
 assert.strictEqual(p(_h => _h.val(_h.extant))(1), true);
 assert.strictEqual(p(_h => _h.val(_h.extant))(null), false);
 assert.strictEqual(p(_h => _h.val(_h.and(_h.arrTypeMatch(_h.prim(Number)), _h.arrLen(5))))([1, 2, 3, 4, 5]), true);
+assert.strictEqual(p(_h => _h.val(_h.arrIncl(2, 4)))([1, 2, 3, 4, 5]), true);
+assert.strictEqual(p(_h => _h.val(_h.arrIncl(10)))([1, 2, 3, 4, 5]), false);
 assert.strictEqual(p(_h => _h.val(_h.regx(_h.Email)))("email@example.com"), true);
