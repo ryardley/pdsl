@@ -642,12 +642,7 @@ const createSchema = (compiler, ctx) => {
 
         // Throw errors
         if (ctx.throwErrors && errs.length > 0) {
-          if (errs.length > 0) {
-            throw new ValidationError("Validation failed", "", errs);
-          } else {
-            const [singleError] = errs;
-            throw new ValidationError(singleError.message, singleError.path);
-          }
+          throw new ValidationError("Validation failed", "", errs);
         }
 
         // Return the errors
