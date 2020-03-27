@@ -68,9 +68,11 @@ We now have a new validation syntax!
 import { schema as p } from "pdsl";
 
 const schema = p`{
-  name: string          <- "Name must be a string" 
-    & string[>7]        <- "Name must be longer than 7 characters",
-  age: (number & > 18)  <- "Age must be numeric and over 18"
+  name: 
+    string          <- "Name must be a string" 
+    & string[>7]    <- "Name must be longer than 7 characters",
+  age: 
+    (number & > 18) <- "Age must be numeric and over 18"
 }`;
 
 try {
