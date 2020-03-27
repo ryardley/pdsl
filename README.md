@@ -443,10 +443,17 @@ validate({ name: 20 }); // false
 This applies to checking properties of all JavaScript objects. For example to check a string's length:
 
 ```js
-const validate = p`string & { length: 7 }`; // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`string & { length: 7 }`; // value && typeof value === 'string' && value.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
+```
+
+Note PDSL also provides a shorthand for checking string length:
+
+```js
+p`string[7]`("Robert"); // false
+p`string[7]`("Yardley"); // false
 ```
 
 Note you can now use `string[]` syntax to check a string's length.
@@ -600,7 +607,7 @@ function doStuff(input: string | User) {
 
 ## Validation with Formik
 
-TBC.
+TBC
 
 ## Helpers
 
