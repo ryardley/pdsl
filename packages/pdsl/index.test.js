@@ -834,9 +834,8 @@ describe("validation", () => {
       expect(
         p`{
           path: "name", 
-          name: "ValidationError", 
           message: "Name must be longer than 7 characters"
-        }`(err)
+        }`(err.inner[0])
       ).toBe(true);
     }
 
@@ -846,9 +845,8 @@ describe("validation", () => {
       expect(
         p`{
           path: "name", 
-          name: "ValidationError", 
           message: "Name must be a string"
-        }`(err)
+        }`(err.inner[0])
       ).toBe(true);
     }
   });
@@ -1030,8 +1028,8 @@ describe("validation", () => {
     }
 
     expect(myerror.name).toBe("ValidationError");
-    expect(myerror.message).toBe("Name is not a string!");
-    expect(myerror.path).toBe("name");
+    expect(myerror.inner[0].message).toBe("Name is not a string!");
+    expect(myerror.inner[0].path).toBe("name");
   });
 
   describe("schema mode", () => {
@@ -1111,6 +1109,8 @@ describe("precompiled babel API", () => {
       error = caught;
     }
 
-    expect(error.message).toEqual('Value "nope!" did not match value "works!"');
+    expect(error.inner[0].message).toEqual(
+      'Value "nope!" did not match value "works!"'
+    );
   });
 });
