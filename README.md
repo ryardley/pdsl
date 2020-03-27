@@ -43,14 +43,14 @@ PDSL provides the developer a simple but powerful shorthand based on a combinati
 New in version 5.2+ objects no longer have exact matching turned on by default. If you wish to continue using exact matching you can use the [exact matching syntax](#objects-with-exact-matching-syntax):
 
 ```ts
-p`{ message: "PDSL is awesome!" }`({
-  message: "PDSL is awesome!",
-  subject: "PDSL"
+p`{ msg: "PDSL is awesome!" }`({
+  msg: "PDSL is awesome!",
+  extra: true
 }); // true - because exact matching is turned off by default
 
-p`{| message: "PDSL is awesome!" |}`({
-  message: "PDSL is awesome!",
-  subject: "PDSL"
+p`{| msg: "PDSL is awesome!" |}`({
+  msg: "PDSL is awesome!",
+  extra: true
 }); // false - because exact matching is specified
 ```
 
