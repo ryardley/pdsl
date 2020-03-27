@@ -659,6 +659,12 @@ it("should be able to match array includes syntax", () => {
   expect(p`[? "four"]`([1, 2, "3", undefined, undefined])).toBe(false);
   expect(p`[? "four", "3"]`([1, 2, "3", undefined, undefined])).toBe(false);
   expect(p`[?1,"3"]`([1, 2, "3", undefined, undefined])).toBe(true);
+  expect(p`[? 5]`([1, 2, 3, 4, 5])).toBe(true);
+  expect(p`[? 5]`([1, 2, 3, 4])).toBe(false);
+  expect(p`[? 5 | "5"]`([1, 2, 3, 4, "5"])).toBe(true);
+  expect(p`[? 5 | "5"]`([1, 2, 3, 4, 50])).toBe(false);
+  expect(p`[? > 5]`([1, 2, 3, 4, 50])).toBe(true);
+  expect(p`[? > 5]`([1, 2, 3, 4])).toBe(false);
 });
 
 it("should match Array<type> syntax", () => {
