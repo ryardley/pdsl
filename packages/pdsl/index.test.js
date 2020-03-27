@@ -1032,6 +1032,30 @@ describe("validation", () => {
     expect(myerror.inner[0].path).toBe("name");
   });
 
+  it("should parse expressions with multiple string length", () => {
+    const schema = p.schema()`{
+    email: 
+      _         <- "Required" 
+      & Email   <- "Invalid email address",
+
+    firstName: 
+      _             <- "Required" 
+      & string[>2]  <- "Must be longer than 2 characters"
+      & string[<20] <- "Nice try nobody has a first name that long",
+
+    lastName: 
+      _             <- "Required" 
+      & string[>2]  <- "Must be longer than 2 characters"
+      & string[<20] <- "Nice try nobody has a last name that long"
+  }`;
+
+    schema.validateSync({
+      email: "contact@example.com",
+      firstName: "Foo",
+      lastName: "Barr"
+    });
+  });
+
   describe("schema mode", () => {
     it("should not return a function when using schema mode", async () => {
       const schema = pdsl`"Hello"`;
@@ -1074,6 +1098,31 @@ describe("validation", () => {
       }
 
       expect(error).toBeUndefined();
+    });
+
+    it("should match a typical object validation schema", async () => {
+      const schema = p.schema()`{
+        email: Email <- "Invalid email address",
+        firstName: string <- "Invalid firstName",
+        lastName: string <- "Invalid lastName"
+      }`;
+
+      let error;
+      try {
+        await schema.validate({
+          email: "foo",
+          firstName: "Rudi",
+          lastName: "Yardley"
+        });
+      } catch (err) {
+        error = err;
+      }
+      expect(error.inner).toEqual([
+        {
+          message: "Invalid email address",
+          path: "email"
+        }
+      ]);
     });
   });
 });
