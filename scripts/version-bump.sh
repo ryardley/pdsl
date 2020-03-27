@@ -5,7 +5,7 @@ version_bump() {
   # patch, minor or major
   local semver_type=$1
   exit_unless_valid_semver "$semver_type"
-  $(yarn bin)/lerna version "$semver_type"
+  $(yarn bin)/lerna version "$semver_type" --ignore-changes 'examples/*'
 }
 
 exit_unless_valid_semver() {
