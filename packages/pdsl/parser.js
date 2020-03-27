@@ -21,6 +21,7 @@ const peek = a => a[a.length - 1];
 function parser(input) {
   const stack = [];
   const arity = [];
+  const varadics = [];
   try {
     const finalOut = input
       .reduce((output, node) => {
@@ -37,6 +38,7 @@ function parser(input) {
           type = "varadic";
           stack.push(node);
           arity.push(1);
+          varadics.push(node);
         }
 
         if (isArgumentSeparator(node)) {
@@ -49,10 +51,10 @@ function parser(input) {
 
         if (isVaradicFunctionClose(node)) {
           type = "varadic-close";
-          while (stack.length > 0 && !isVaradicFunction(peek(stack))) {
+          while (stack.length > 0 && !isVaradicFunction(peek(stack), node)) {
             output.push(stack.pop());
           }
-
+          varadics.pop();
           const fn = stack.pop();
 
           fn.arity = arity.pop();
@@ -93,8 +95,13 @@ function parser(input) {
       }, [])
       .concat(stack.reverse());
 
+    if (varadics.length > 0) {
+      throw new Error("Mismatched varadic function");
+    }
     return finalOut;
   } catch (e) {
+    // TODO: How can we get meaningful errors that highlight where the error occured?
+    // Pass character location to tokenisation
     throw new Error(
       `Malformed Input! pdsl could not parse the tokenized input stream : ${input.join(
         " "

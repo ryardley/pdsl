@@ -622,6 +622,7 @@ const grammar = {
     runtime: ctx => obj(ctx, true),
     runtimeIdentifier: "obj",
     prec: 100,
+    closingToken: "|}",
     toString() {
       return token + this.arity;
     }
@@ -642,6 +643,7 @@ const grammar = {
     runtime: ctx => obj(ctx),
     runtimeIdentifier: "obj",
     prec: 100,
+    closingToken: "}",
     toString() {
       return token + this.arity;
     }
@@ -662,6 +664,7 @@ const grammar = {
     runtime: ctx => arrIncl(ctx),
     runtimeIdentifier: "arrIncl",
     prec: 100,
+    closingToken: "]",
     toString() {
       return token + this.arity;
     }
@@ -674,6 +677,7 @@ const grammar = {
     runtime: ctx => arrArgMatch(ctx),
     runtimeIdentifier: "arrArgMatch",
     prec: 100,
+    closingToken: "]",
     toString() {
       return token + this.arity;
     }
@@ -771,9 +775,14 @@ function isVaradicFunctionClose(node) {
   return node.type === types.VariableArityOperatorClose;
 }
 
-function isVaradicFunction(node) {
+function isVaradicFunction(node, closingNode) {
   if (!node) return false;
-  return node.type === types.VariableArityOperator;
+
+  const isVaradicStart = node.type === types.VariableArityOperator;
+
+  if (!closingNode) return isVaradicStart;
+
+  return isVaradicStart && node.closingToken === closingNode.token;
 }
 
 function isBooleanable(node) {

@@ -163,6 +163,20 @@ it("should match exactly all the way down the object tree unless you use a rest"
   ).toBe(true);
 });
 
+it("should throw when mismatching strict object syntax", () => {
+  expect(() => {
+    p`{| name }`;
+  }).toThrow();
+
+  expect(() => {
+    p`{| name: [ "foo" |} `;
+  }).toThrow();
+
+  expect(() => {
+    p`{| name `;
+  }).toThrow();
+});
+
 it("should be able to use nested object property templates", () => {
   expect(
     p`{ meta: { remote }, ...}`({ type: "shared.foo", meta: { remote: true } })
@@ -326,7 +340,8 @@ it("should test the toString() calls for code coverage", () => {
     ... |
     Array< |
     string[ |
-    array[ |`
+    array[ |
+    [? |`
   ).toBe(
     [
       "[0 1 .. 4 ]",
@@ -367,7 +382,8 @@ it("should test the toString() calls for code coverage", () => {
       "...",
       "Array<",
       "string[",
-      "array["
+      "array[",
+      "[?0"
     ].join(" | ") + " |"
   );
 });
