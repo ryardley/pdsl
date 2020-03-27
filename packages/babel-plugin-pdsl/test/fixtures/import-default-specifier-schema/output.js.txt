@@ -7,7 +7,7 @@ const pdsl = _pdslDefault;
 const assert = require("assert"); // Config 1
 
 
-const p = pdsl.schema({
+const p = pdsl.configureSchema({
   someConfig: true
 });
 const schema = p(_h => _h.val(true));

@@ -1,3 +1,2 @@
-import pdsl from "pdsl";
-const p = pdsl.schema({ someConfig: true });
+import {schema as p} from "pdsl";
 const schema = p`true`;

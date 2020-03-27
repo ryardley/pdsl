@@ -1,9 +1,7 @@
 import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import pdsl from "pdsl";
+import { schema as p } from "pdsl";
 import { Debug } from "./Debug";
-
-const p = pdsl.schema();
 
 const SignUp = () => (
   <div>

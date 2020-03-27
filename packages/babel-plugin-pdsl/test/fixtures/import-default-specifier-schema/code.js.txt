@@ -2,7 +2,7 @@ import pdsl from "pdsl";
 const assert = require("assert");
 
 // Config 1
-const p = pdsl.schema({ someConfig: true });
+const p = pdsl.configureSchema({ someConfig: true });
 const schema = p`true`;
 
 assert.rejects(async () => {

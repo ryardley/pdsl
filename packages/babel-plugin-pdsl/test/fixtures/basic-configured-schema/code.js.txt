@@ -1,0 +1,3 @@
+import pdsl from "pdsl";
+const p = pdsl.configureSchema({ someConfig: true });
+const schema = p`true`;

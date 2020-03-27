@@ -1,4 +1,4 @@
-import { schema as doschema, predicate } from "pdsl";
+import { configureSchema as doschema, predicate } from "pdsl";
 const assert = require("assert");
 
 // Config 1

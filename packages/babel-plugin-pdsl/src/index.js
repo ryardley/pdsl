@@ -105,6 +105,7 @@ function findVariableReferencesAsTemplateExpressionFromPath(path) {
     path => path.type === "VariableDeclarator"
   );
   const varBindings = varDeclarator.scope.bindings[varDeclarator.node.id.name];
+
   return varBindings.referencePaths
     .map(p => p.parentPath)
     .filter(pat => {
@@ -126,7 +127,7 @@ function handleDefaultSpecifier(rootPath, specifierName, config) {
     if (refPath.container.type === "MemberExpression") {
       if (
         refPath.container.property.name === "predicate" ||
-        refPath.container.property.name === "schema"
+        refPath.container.property.name === "configureSchema"
       ) {
         return findVariableReferencesAsTemplateExpressionFromPath(refPath);
       }
@@ -141,6 +142,11 @@ function handleNamedSpecifier(rootPath, specifierName, config) {
   const bindings = rootPath.scope.bindings[specifierName];
 
   flatMap(bindings.referencePaths, refPath => {
+    // pickup when called directly: pdsl`{name}`
+    if (refPath.container.type === "TaggedTemplateExpression") {
+      const defaultImportTaggedTemplateLiteral = refPath.parentPath;
+      return defaultImportTaggedTemplateLiteral;
+    }
     return findVariableReferencesAsTemplateExpressionFromPath(refPath);
   }).forEach(ttl => {
     replaceTaggedTemplateLiteralWithFunctions(ttl, config);
