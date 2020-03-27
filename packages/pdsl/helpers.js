@@ -478,9 +478,9 @@ const createDeep = ctx =>
  * @return {function} A function of the form <code>{any => boolean}</code>
  */
 const createRegx = ctx =>
-  function regx(rx, msg) {
+  function regx(rx) {
     const rgx = typeof rx === "function" ? rx(ctx) : rx;
-    return function testRegx(a) {
+    return function testRegx(a, msg) {
       return createErrorReporter("regx", ctx, msg, [a, rx])(() => {
         return rgx.test(a);
       });
@@ -582,22 +582,13 @@ const createEntry = ctx =>
     return [name, createVal(ctx)(predicate)];
   };
 
-const deprecate = (name, fn) => () => {
-  /* istanbul ignore next */
-  if (!process.env.PDSL_SUPPRESS_DEPRICATION_WARNINGS) {
-    /* istanbul ignore next */
-    console.log(`${name} is deprecated and will be removed soon.`);
-  }
-  return fn();
-};
-
 const Email = () => /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]+)$/;
 
-const Xc = deprecate("Xc", () => /(?=.*[^a-zA-Z0-9\s]).*/);
-const Nc = deprecate("Nc", () => /(?=.*[0-9]).*/);
-const Lc = deprecate("Lc", () => /(?=.*[a-z]).*/);
-const Uc = deprecate("Uc", () => /(?=.*[A-Z]).*/);
-const LUc = deprecate("LUc", () => /(?=.*[a-z])(?=.*[A-Z]).*/);
+const Xc = () => /(?=.*[^a-zA-Z0-9\s]).*/;
+const Nc = () => /(?=.*[0-9]).*/;
+const Lc = () => /(?=.*[a-z]).*/;
+const Uc = () => /(?=.*[A-Z]).*/;
+const LUc = () => /(?=.*[a-z])(?=.*[A-Z]).*/;
 
 function passContextToHelpers(ctx, helpers) {
   const acc = {};
@@ -614,7 +605,7 @@ const createValidation = ctx => msg =>
     if (typeof predicate === "string") {
       // if this is a string we are looking
       // at an entry key without a predicate.
-      // eg { name :: "Some message" }
+      // eg { name <- "Some message" }
       // Here we need to expand out the predicate to a
       // full entry
       const newPredicate = createExtant(ctx);

@@ -21,6 +21,6 @@
     "lerna": "^3.16.4"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*", "examples/*"
   ]
 }

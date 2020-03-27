@@ -1,0 +1,19 @@
+{
+  "name": "formik",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Rudi Yardley",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build"
+  },
+  "dependencies": {
+    "formik": "^2.1.4",
+    "next": "^9.3.2",
+    "pdsl": "^5.2.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
