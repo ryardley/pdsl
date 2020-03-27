@@ -4,6 +4,7 @@ function ValidationError(message, path, inner, fileName, lineNumber) {
   instance.name = "ValidationError";
   instance.path = path;
   instance.inner = inner;
+  instance.message = message;
   Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
   return instance;
 }

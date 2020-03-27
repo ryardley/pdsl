@@ -38,6 +38,8 @@ PDSL provides the developer a simple but powerful shorthand based on a combinati
 
 ## UPDATE: Version 5 Breaking Changes
 
+### Exact matching off by default
+
 New in version 5.2+ objects no longer have exact matching turned on by default. If you wish to continue using exact matching you can use the [exact matching syntax](#objects-with-exact-matching-syntax):
 
 ```ts
@@ -52,10 +54,42 @@ p`{| message: "PDSL is awesome!" |}`({
 }); // false - because exact matching is specified
 ```
 
-Also new we have an [array includes](#array-includes) function:
+### New validation syntax
+
+We now have a new validation syntax!
 
 ```js
-p`[? > 50 ]`([1, 2, 100, 12]); // true because 100 is greater than 50
+import { schema } from "pdsl";
+
+const p = schema();
+
+const { validateSync: validUser } = p`{
+  name: string          <- "Name must be a string" 
+    & string[>7]        <- "Name must be longer than 7 characters",
+  age: (number & > 18)  <- "Age must be numeric and over 18"
+}`;
+
+try {
+  validUser({ name: "Rick" });
+} catch (err) {
+  expect(
+    p`{
+      message: "Name must be longer than 7 characters"
+    }`(err)
+  ).toBe(true);
+}
+```
+
+### New array includes syntax
+
+Also new we have an [array includes](#array-includes) function:
+
+```
+[? <predicate> ]
+```
+
+```js
+p`[? >50 ]`([1, 2, 100, 12]); // true because 100 is greater than 50
 ```
 
 ## Examples
