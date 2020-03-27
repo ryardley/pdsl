@@ -36,6 +36,62 @@ Creating predicate functions in JavaScript is often verbose, especially for chec
 
 PDSL provides the developer a simple but powerful shorthand based on a combination of template strings and helper functions for defining predicate functions that makes it easy to understand intent. With `pdsl` we can easily visualize the expected input's structure and intent using it's intuitive predicate composition language.
 
+## UPDATE: Version 5 Breaking Changes
+
+### Exact matching off by default
+
+New in version 5.2+ objects no longer have exact matching turned on by default. If you wish to continue using exact matching you can use the [exact matching syntax](#objects-with-exact-matching-syntax):
+
+```ts
+p`{ message: "PDSL is awesome!" }`({
+  message: "PDSL is awesome!",
+  subject: "PDSL"
+}); // true - because exact matching is turned off by default
+
+p`{| message: "PDSL is awesome!" |}`({
+  message: "PDSL is awesome!",
+  subject: "PDSL"
+}); // false - because exact matching is specified
+```
+
+### New validation syntax
+
+We now have a new validation syntax!
+
+```js
+import { schema } from "pdsl";
+
+const p = schema();
+
+const { validateSync: validUser } = p`{
+  name: string          <- "Name must be a string" 
+    & string[>7]        <- "Name must be longer than 7 characters",
+  age: (number & > 18)  <- "Age must be numeric and over 18"
+}`;
+
+try {
+  validUser({ name: "Rick" });
+} catch (err) {
+  expect(
+    p`{
+      message: "Name must be longer than 7 characters"
+    }`(err)
+  ).toBe(true);
+}
+```
+
+### New array includes syntax
+
+Also new we have an [array includes](#array-includes) function:
+
+```
+[? <predicate> ]
+```
+
+```js
+p`[? >50 ]`([1, 2, 100, 12]); // true because 100 is greater than 50
+```
+
 ## Examples
 
 PDSL doesn't really take much learning. Best thing to do is to look at a few examples.
@@ -97,24 +153,6 @@ This would be the same as using:
 const isObjWithName = p`{ name: _ }`;
 ```
 
-#### Exact matching syntax
-
-PDSL is exact matching by default which means the following:
-
-```js
-p`{ name }`({ name: "A name", age: 234 }); // false
-```
-
-However you can add a rest parameter to fix this:
-
-```js
-p`{ name, ... }`({
-  name: "A name",
-  age: 234,
-  occupation: "developer"
-}); // true
-```
-
 ### Array contains exact items
 
 ```js
@@ -126,10 +164,10 @@ p`[ number, string, *, { type: "SEVEN" } ]`([
 ]); // true
 ```
 
-### Typed Arrays 
+### Typed Arrays
 
 ```js
-p`Array<number>`([1,2,3,4]);
+p`Array<number>`([1, 2, 3, 4]);
 ```
 
 ### Number is part of range
@@ -225,16 +263,16 @@ The more complex things get, the more PDSL shines. See the above example in vani
 ```js
 const isValidUser = input =>
   input &&
-    input.username &&
-    typeof input.username === "string" &&
-    !input.username.match(/[^0-9]/) &&
-    !input.username.match(/[^A-Z]/) &&
-    input.username.length >= 4 &&
-    input.username.length <= 8 &&
-    typeof input.password === "string" &&
-    input.password.match(/[^a-zA-Z0-9]/) &&
-    input.password.length > 8 &&
-    input.age > 17;
+  input.username &&
+  typeof input.username === "string" &&
+  !input.username.match(/[^0-9]/) &&
+  !input.username.match(/[^A-Z]/) &&
+  input.username.length >= 4 &&
+  input.username.length <= 8 &&
+  typeof input.password === "string" &&
+  input.password.match(/[^a-zA-Z0-9]/) &&
+  input.password.length > 8 &&
+  input.age > 17;
 ```
 
 ### Complex Example
@@ -333,6 +371,15 @@ const isBoolean = p`${Boolean}`; // typeof value === 'boolean'
 const isString = p`${String}`; // typeof value === 'string'
 ```
 
+### Array includes
+
+You can check if an array includes an item by using the array includes syntax:
+
+```js
+p`[? 5]`([1, 2, 3, 4, 5]); // true
+p`[? 5]`([1, 2, 3, 4]); // false
+```
+
 ### Reference equality
 
 If you pass a value, `pdsl` will match that specific value:
@@ -396,10 +443,17 @@ validate({ name: 20 }); // false
 This applies to checking properties of all JavaScript objects. For example to check a string's length:
 
 ```js
-const validate = p`string & { length: 7, ... }`; // value && typeof value.name === 'string' && value.name.length === 7;
+const validate = p`string & { length: 7 }`; // value && typeof value === 'string' && value.length === 7;
 
 validate("Rudi"); // false
 validate("Yardley"); // true
+```
+
+Note PDSL also provides a shorthand for checking string length:
+
+```js
+p`string[7]`("Robert"); // false
+p`string[7]`("Yardley"); // false
 ```
 
 Note you can now use `string[]` syntax to check a string's length.
@@ -443,6 +497,61 @@ const validate = p`{
 }`;
 
 validate({ name: "Hello", payload: { listening: true, num: 5 } }); // true
+```
+
+#### Objects with exact matching syntax
+
+PDSL is loose matches objects by default which means the following:
+
+```js
+p`{ name }`({ name: "A name", age: 234 }); // true
+```
+
+However you can specify exact matching by using `{|` and `|}` to represent your object:
+
+```js
+p`{| name |}`({ name: "A name", age: 234 }); // false
+p`{| name |}`({ name: "A name" }); // true
+```
+
+All nested normal objects will become exact matching too within the exact matching tokens:
+
+```js
+p`{|
+    name,
+    age,
+    sub: {
+      num: 100
+    }
+  |}`({
+  name: "Fred",
+  age: 12,
+  sub: {
+    num: 100,
+    foo: "foo"
+  }
+}); // false
+```
+
+If once you have enabled exact matching on an object you wish to have a loosely matched sub object you can use the rest operator to apply loose matching on that and that object only:
+
+```js
+p`{|
+    name,
+    age,
+    sub: {
+      num: 100,
+      ...
+    }
+  |}`({
+  name: "Fred",
+  age: 12,
+  sub: {
+    num: 100,
+    foo: "foo",
+    bar: "bar"
+  }
+}); // true
 ```
 
 ### Regular expression predicates
@@ -495,6 +604,10 @@ function doStuff(input: string | User) {
   }
 }
 ```
+
+## Validation with Formik
+
+TBC
 
 ## Helpers
 
@@ -576,7 +689,14 @@ import { val, not, or, obj, entry, pred } from "pdsl/helpers";
 const notNil = val(not(or(val(null), val(undefined))));
 const hasName = val(obj("name"));
 const isTrue = val(true);
-const hasNameWithFn = val(obj(entry("name", pred(a => a.length > 10))));
+const hasNameWithFn = val(
+  obj(
+    entry(
+      "name",
+      pred(a => a.length > 10)
+    )
+  )
+);
 ```
 
 ## Roadmap
@@ -587,8 +707,9 @@ Help organise our priorities by [telling us what is the most important to you](h
 - [x] PDSL Compiler
 - [x] Comprehensive Test cases
 - [x] Babel Plugin to remove compiler perf overhead
-- [x] Exact matching by default
-- [ ] Validation errors
+- [x] ~~Exact matching by default~~ Reverted in v5
+- [x] Validation errors
+- [x] Exact matching syntax
 - [ ] Syntax Highlighting / VSCode Autocomplete / Prettier formatting
 
 ## Disclaimer

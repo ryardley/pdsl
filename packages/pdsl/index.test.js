@@ -659,6 +659,12 @@ it("should be able to match array includes syntax", () => {
   expect(p`[? "four"]`([1, 2, "3", undefined, undefined])).toBe(false);
   expect(p`[? "four", "3"]`([1, 2, "3", undefined, undefined])).toBe(false);
   expect(p`[?1,"3"]`([1, 2, "3", undefined, undefined])).toBe(true);
+  expect(p`[? 5]`([1, 2, 3, 4, 5])).toBe(true);
+  expect(p`[? 5]`([1, 2, 3, 4])).toBe(false);
+  expect(p`[? 5 | "5"]`([1, 2, 3, 4, "5"])).toBe(true);
+  expect(p`[? 5 | "5"]`([1, 2, 3, 4, 50])).toBe(false);
+  expect(p`[? > 5]`([1, 2, 3, 4, 50])).toBe(true);
+  expect(p`[? > 5]`([1, 2, 3, 4])).toBe(false);
 });
 
 it("should match Array<type> syntax", () => {
@@ -732,7 +738,7 @@ describe("validation", () => {
   });
 
   it("should be able to use var substitution in error messages", () => {
-    const expression = pdsl`>5 :: "Value $1 must be greater than 5!"`;
+    const expression = pdsl`>5 <- "Value $1 must be greater than 5!"`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
     expect(expression.validateSync(4)).toEqual([
       { path: "", message: "Value 4 must be greater than 5!" }
@@ -740,7 +746,7 @@ describe("validation", () => {
   });
 
   it("should be handle when var substitution is out of bounds", () => {
-    const expression = pdsl`>5 :: "Value $7 must be greater than 5!"`;
+    const expression = pdsl`>5 <- "Value $7 must be greater than 5!"`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
     expect(expression.validateSync(4)).toEqual([
       { path: "", message: "Value undefined must be greater than 5!" }
@@ -748,7 +754,7 @@ describe("validation", () => {
   });
 
   it("should be able to accept whitespace", () => {
-    const expression = pdsl`>5 ::     "Value must be greater than 5!   "`;
+    const expression = pdsl`>5 <-     "Value must be greater than 5!   "`;
     expect(expression.unsafe_rpn()).toBe("5 > :e:Val:");
     expect(expression.validateSync(4)).toEqual([
       { path: "", message: "Value must be greater than 5!" }
@@ -757,8 +763,8 @@ describe("validation", () => {
 
   it("should work on object properties", () => {
     const expression = pdsl`{
-      name: string :: "Name is not a string!",
-      age: number :: "Age is not a number!"
+      name: string <- "Name is not a string!",
+      age: number <- "Age is not a number!"
     }`;
 
     expect(expression.validateSync({ name: 1234, age: "12342134" })).toEqual([
@@ -774,7 +780,7 @@ describe("validation", () => {
   });
 
   it("should work on arrays", () => {
-    const expression = pdsl`[1,2,3] :: "Array is not [1,2,3]"`;
+    const expression = pdsl`[1,2,3] <- "Array is not [1,2,3]"`;
     expect(expression.validateSync([1, 2, 3, 4])).toEqual([
       { path: "", message: "Array is not [1,2,3]" }
     ]);
@@ -783,9 +789,9 @@ describe("validation", () => {
 
   it("should handle precedence and cling to whatever is before it", () => {
     const expression = pdsl`{
-      name: string               :: "Name must be a string"
-      & string[>7]               :: "Name must be longer than 7 characters",
-      age: (number & > 18)       :: "Age must be numeric and over 18"
+      name: string               <- "Name must be a string"
+      & string[>7]               <- "Name must be longer than 7 characters",
+      age: (number & > 18)       <- "Age must be numeric and over 18"
     }`;
 
     expect(expression.validateSync({ name: "12345678", age: 20 })).toEqual([]);
@@ -815,12 +821,44 @@ describe("validation", () => {
     ]);
   });
 
+  it("should throw the right errors", () => {
+    const expression = p.schema()`{
+      name: string               <- "Name must be a string"
+      & string[>7]               <- "Name must be longer than 7 characters",
+      age: (number & > 18)       <- "Age must be numeric and over 18"
+    }`.validateSync;
+
+    try {
+      expression({ name: "Foo", age: 20 });
+    } catch (err) {
+      expect(
+        p`{
+          path: "name", 
+          name: "ValidationError", 
+          message: "Name must be longer than 7 characters"
+        }`(err)
+      ).toBe(true);
+    }
+
+    try {
+      expression({ name: 123, age: 20 });
+    } catch (err) {
+      expect(
+        p`{
+          path: "name", 
+          name: "ValidationError", 
+          message: "Name must be a string"
+        }`(err)
+      ).toBe(true);
+    }
+  });
+
   it("should skip over all errors from OR decisions", () => {
     const expression = pdsl`({
-      name: string               :: "Name must be a string"
+      name: string               <- "Name must be a string"
     } | {
-      age: (number & > 18)       :: "Age must be numeric and over 18"
-    }) :: "You are not verified"`;
+      age: (number & > 18)       <- "Age must be numeric and over 18"
+    }) <- "You are not verified"`;
     expect(expression.validateSync({ name: 100 })).toEqual([
       { path: "name", message: "Name must be a string" },
       { path: "age", message: "Age must be numeric and over 18" },
@@ -837,7 +875,7 @@ describe("validation", () => {
   });
 
   it("should work with literal strings", () => {
-    const expression = pdsl`"hello" :: "This should be hello"`;
+    const expression = pdsl`"hello" <- "This should be hello"`;
     expect(expression.unsafe_rpn()).toBe('"hello" :e:Thi:');
     expect(expression.validateSync("nope")).toEqual([
       { path: "", message: "This should be hello" }
@@ -847,7 +885,7 @@ describe("validation", () => {
   it("should work with escaped quotes", () => {
     // Unfortunately because of the way template strings work we
     // have to use double backslash to escape quotes :(
-    const expression = pdsl`"hello" :: "This \\"should\\" be hello"`;
+    const expression = pdsl`"hello" <- "This \\"should\\" be hello"`;
 
     expect(expression.validateSync("nope")).toEqual([
       { path: "", message: 'This "should" be hello' }
@@ -856,12 +894,12 @@ describe("validation", () => {
 
   it("should work with nested objects", () => {
     const expression = pdsl`{
-      name: string               :: "Name must be a string",
-      age: (number & > 18)       :: "Age must be numeric and over 18",
+      name: string               <- "Name must be a string",
+      age: (number & > 18)       <- "Age must be numeric and over 18",
       school: {
-        type: "summer"           :: "Summer must be type",
-        thing: "winter"          :: "Winter must be thing"
-      }                          :: "School object problems"                         
+        type: "summer"           <- "Summer must be type",
+        thing: "winter"          <- "Winter must be thing"
+      }                          <- "School object problems"                         
     }`;
 
     expect(
@@ -894,7 +932,7 @@ describe("validation", () => {
 
   it("should validate object shorthands", () => {
     const expression = pdsl`{
-      name :: "Name is not provided!",
+      name <- "Name is not provided!",
     }`;
     expect(expression.validateSync({ name: undefined })).toEqual([
       {
@@ -906,8 +944,8 @@ describe("validation", () => {
 
   it("should validate asynchronously", async () => {
     const expression = pdsl`{
-      name: string :: "Name is not a string!",
-      age: number :: "Age is not a number!"
+      name: string <- "Name is not a string!",
+      age: number <- "Age is not a number!"
     }`;
 
     expect(await expression.validate({ name: "Fred", age: "16" })).toEqual([
@@ -920,9 +958,9 @@ describe("validation", () => {
 
   it("should throw errors that can be parsed by formik", async () => {
     const schema = p.schema({ throwErrors: true })`{
-      name: string :: "Name is not a string!",
-      age: number :: "Age is not a number!",
-      thing: _ :: "Thing is not null or undefined"
+      name: string <- "Name is not a string!",
+      age: number <- "Age is not a number!",
+      thing: _ <- "Thing is not null or undefined"
     }`;
 
     expect(schema.unsafe_rpn()).toBe(
@@ -979,8 +1017,8 @@ describe("validation", () => {
 
   it("should not have an inner property if there is only one error", async () => {
     const expression = p.schema({ throwErrors: true })`{
-      name: string :: "Name is not a string!",
-      age: number :: "Age is not a number!"
+      name: string <- "Name is not a string!",
+      age: number <- "Age is not a number!"
     }`;
 
     let myerror;
@@ -1005,6 +1043,9 @@ describe("validation", () => {
 
     it("should pass a sanity test", async () => {
       const schema = p.schema()`{ greeting: "Hello", object: "World" }`;
+
+      expect(schema.validate).not.toBeUndefined();
+      expect(schema.validateSync).not.toBeUndefined();
 
       let error;
       try {

@@ -43,7 +43,7 @@ const tokens = {
   LOW_CHARS_REGX: "Lc",
   UP_CHARS_REGX: "Uc",
   LOW_UP_CHARS_REGX: "LUc",
-  VALIDATION_MSG: `::\\s*\\"((?:\\\\\\"|[^\\"])*)\\"`,
+  VALIDATION_MSG: `<-\\s*\\"((?:\\\\\\"|[^\\"])*)\\"`,
   EMPTY_OBJ: "\\{\\}",
   EMPTY_ARRAY: "\\[\\]",
   EMPTY_STRING_DOUBLE: `\\"\\"`,
@@ -586,7 +586,7 @@ const grammar = {
   }),
   [tokens.VALIDATION_MSG]: token => {
     const [, msg] = token.match(
-      /::\s*\"((?:\\\"|[^\"])*)\"/
+      /<-\s*\"((?:\\\"|[^\"])*)\"/
     ) || /* istanbul ignore next because it is tested in babel plugin */ [, ""];
 
     return {
