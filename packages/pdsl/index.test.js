@@ -91,16 +91,90 @@ it("should use the extant predicate as the default object checking behaviour", (
   expect(p`{ name }`({ name: null })).toBe(false);
 });
 
-it("should use exact matching", () => {
-  expect(p`{ name }`({ name: "Fred" })).toBe(true);
-  expect(p`{ name }`({ name: "Fred", age: 12 })).toBe(false);
+it("should be loose matching by default", () => {
+  expect(p`{ name }`({ name: "Fred", age: 12 })).toBe(true);
+  expect(p`{ name }`({ name: "Fred", age: 12 })).toBe(true);
   expect(p`{ name, age }`({ name: "Fred", age: 12 })).toBe(true);
 });
 
-it("should use a rest symbol to allow loose matching", () => {
-  expect(p`{ name }`({ name: "Fred", age: 12 })).toBe(false);
-  expect(p`{ name, ... }`({ name: "Fred", age: 12 })).toBe(true);
-  expect(p`{ name, age, ... }`({ name: "Fred", age: 12 })).toBe(true);
+it("should use exact matching", () => {
+  expect(p`{| name |}`({ name: "Fred" })).toBe(true);
+  expect(p`{| name |}`({ name: "Fred", age: 12 })).toBe(false);
+  expect(p`{| name, age |}`({ name: "Fred", age: 12 })).toBe(true);
+});
+
+it("should match exactly all the way down the object tree unless you use a rest", () => {
+  expect(
+    p`{| name, age, sub: { num: 100 } |}`({
+      name: "Fred",
+      age: 12,
+      sub: { num: 100 }
+    })
+  ).toBe(true);
+  expect(
+    p`{| name, age, sub: { num: 100 } |}`({
+      name: "Fred",
+      age: 12,
+      sub: { num: 100, foo: "foo" }
+    })
+  ).toBe(false);
+  expect(
+    p`{| name, age, sub: { num: 100, ... } |}`({
+      name: "Fred",
+      age: 12,
+      sub: { num: 100, foo: "foo" }
+    })
+  ).toBe(true);
+  expect(
+    p`{| name, age, sub: { num: 100, foo: { strict: true }, ... } |}`({
+      name: "Fred",
+      age: 12,
+      sub: {
+        num: 100,
+        foo: { strict: true, other: "stuff" },
+        bar: "bar"
+      }
+    })
+  ).toBe(false);
+  expect(
+    p`{| name, age, sub: { num: 100, foo: { strict: true }, ... } |}`({
+      name: "Fred",
+      age: 12,
+      sub: {
+        num: 100,
+        foo: { strict: true },
+        bar: "bar"
+      }
+    })
+  ).toBe(true);
+
+  expect(
+    p`{| name, age, sub: [{ num: 100, foo: { strict: true }, ... }] |}`({
+      name: "Fred",
+      age: 12,
+      sub: [
+        {
+          num: 100,
+          foo: { strict: true },
+          bar: "bar"
+        }
+      ]
+    })
+  ).toBe(true);
+});
+
+it("should throw when mismatching strict object syntax", () => {
+  expect(() => {
+    p`{| name }`;
+  }).toThrow();
+
+  expect(() => {
+    p`{| name: [ "foo" |} `;
+  }).toThrow();
+
+  expect(() => {
+    p`{| name `;
+  }).toThrow();
 });
 
 it("should be able to use nested object property templates", () => {
@@ -266,7 +340,8 @@ it("should test the toString() calls for code coverage", () => {
     ... |
     Array< |
     string[ |
-    array[ |`
+    array[ |
+    [? |`
   ).toBe(
     [
       "[0 1 .. 4 ]",
@@ -307,7 +382,8 @@ it("should test the toString() calls for code coverage", () => {
       "...",
       "Array<",
       "string[",
-      "array["
+      "array[",
+      "[?0"
     ].join(" | ") + " |"
   );
 });
@@ -339,10 +415,10 @@ it("should handle a wildcard", () => {
 });
 
 it("should respect a wildcard on an object", () => {
-  expect(p`{name: *}`({ name: undefined })).toBe(true);
-  expect(p`{name: *}`({ name: null })).toBe(true);
-  expect(p`{name: *}`({ name: false })).toBe(true);
-  expect(p`{name: *}`({})).toBe(false);
+  expect(p`{|name: *|}`({ name: undefined })).toBe(true);
+  expect(p`{|name: *|}`({ name: null })).toBe(true);
+  expect(p`{|name: *|}`({ name: false })).toBe(true);
+  expect(p`{|name: *|}`({})).toBe(false);
 });
 
 it("should handle greater than equals ", () => {
