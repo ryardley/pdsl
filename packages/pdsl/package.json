@@ -1,6 +1,6 @@
 {
   "name": "pdsl",
-  "version": "5.2.2",
+  "version": "5.2.3",
   "description": "Predicate DSL",
   "main": "index.js",
   "types": "index.d.ts",

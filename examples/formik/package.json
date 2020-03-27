@@ -1,7 +1,7 @@
 {
   "name": "formik",
   "private": true,
-  "version": "1.0.0",
+  "version": "5.2.3",
   "main": "index.js",
   "author": "Rudi Yardley",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "dependencies": {
     "formik": "^2.1.4",
     "next": "^9.3.2",
-    "pdsl": "^5.2.2",
+    "pdsl": "^5.2.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   }
