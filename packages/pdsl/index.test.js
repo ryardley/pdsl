@@ -733,7 +733,7 @@ it("should be able to pass a config object in", () => {
 });
 
 describe("validation", () => {
-  const pdsl = p.schema({
+  const pdsl = p.configureSchema({
     throwErrors: false
   });
 
@@ -822,7 +822,7 @@ describe("validation", () => {
   });
 
   it("should throw the right errors", () => {
-    const expression = p.schema()`{
+    const expression = p.schema`{
       name: string               <- "Name must be a string"
       & string[>7]               <- "Name must be longer than 7 characters",
       age: (number & > 18)       <- "Age must be numeric and over 18"
@@ -955,7 +955,7 @@ describe("validation", () => {
   });
 
   it("should throw errors that can be parsed by formik", async () => {
-    const schema = p.schema({ throwErrors: true })`{
+    const schema = p.configureSchema({ throwErrors: true })`{
       name: string <- "Name is not a string!",
       age: number <- "Age is not a number!",
       thing: _ <- "Thing is not null or undefined"
@@ -1014,7 +1014,7 @@ describe("validation", () => {
   });
 
   it("should not have an inner property if there is only one error", async () => {
-    const expression = p.schema({ throwErrors: true })`{
+    const expression = p.configureSchema({ throwErrors: true })`{
       name: string <- "Name is not a string!",
       age: number <- "Age is not a number!"
     }`;
@@ -1033,7 +1033,7 @@ describe("validation", () => {
   });
 
   it("should parse expressions with multiple string length", () => {
-    const schema = p.schema()`{
+    const schema = p.schema`{
     email: 
       _         <- "Required" 
       & Email   <- "Invalid email address",
@@ -1064,7 +1064,7 @@ describe("validation", () => {
     });
 
     it("should pass a sanity test", async () => {
-      const schema = p.schema()`{ greeting: "Hello", object: "World" }`;
+      const schema = p.schema`{ greeting: "Hello", object: "World" }`;
 
       expect(schema.validate).not.toBeUndefined();
       expect(schema.validateSync).not.toBeUndefined();
@@ -1101,7 +1101,7 @@ describe("validation", () => {
     });
 
     it("should match a typical object validation schema", async () => {
-      const schema = p.schema()`{
+      const schema = p.schema`{
         email: Email <- "Invalid email address",
         firstName: string <- "Invalid firstName",
         lastName: string <- "Invalid lastName"
@@ -1146,7 +1146,7 @@ describe("precompiled babel API", () => {
 
   test("schema()", () => {
     const pdsl = helpers.createDefault();
-    const itWorks = pdsl.schema()(_h => _h.val("works!")).validateSync;
+    const itWorks = pdsl.schema(_h => _h.val("works!")).validateSync;
 
     expect(itWorks("works!")).toEqual([]);
 

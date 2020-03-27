@@ -59,23 +59,22 @@ p`{| msg: "PDSL is awesome!" |}`({
 We now have a new validation syntax!
 
 ```js
-import { schema } from "pdsl";
+import { schema as p } from "pdsl";
 
-const p = schema();
-
-const { validateSync: validUser } = p`{
+const schema = p`{
   name: string          <- "Name must be a string" 
     & string[>7]        <- "Name must be longer than 7 characters",
   age: (number & > 18)  <- "Age must be numeric and over 18"
 }`;
 
 try {
-  validUser({ name: "Rick" });
+  // This should act like a simple yup schema
+  schema.validateSync({ name: "Rick" });
 } catch (err) {
   expect(
     p`{
       message: "Name must be longer than 7 characters"
-    }`(err)
+    }`(err.inner[0])
   ).toBe(true);
 }
 ```

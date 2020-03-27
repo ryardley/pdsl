@@ -38,6 +38,10 @@ const tests = [
     ...loadFixtureSync("basic-default-schema")
   },
   {
+    title: "Basic configured schema",
+    ...loadFixtureSync("basic-configured-schema")
+  },
+  {
     title: "Basic named specifier",
     ...loadFixtureSync("basic-named-specifier")
   }

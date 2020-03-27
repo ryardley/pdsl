@@ -707,7 +707,7 @@ const createDefault = compileTemplateLiteral => {
   const returnObject = compiler(new Context());
 
   // Attach schema() and predicate() functions
-  returnObject.schema = options => {
+  returnObject.configureSchema = options => {
     const ctx = new Context({
       schemaMode: true,
       abortEarly: false,
@@ -718,6 +718,8 @@ const createDefault = compileTemplateLiteral => {
 
     return createSchema(compiler, ctx);
   };
+
+  returnObject.schema = returnObject.configureSchema();
 
   returnObject.predicate = options => {
     return compiler(new Context(options));
