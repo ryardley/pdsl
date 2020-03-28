@@ -40,24 +40,33 @@ PDSL provides the developer a simple but powerful shorthand based on a combinati
 
 ## UPDATE: Version 5 Breaking Changes
 
-### Exact matching off by default
+### Exact matching on objects is now off by default
 
 New in version 5.2+ objects no longer have exact matching turned on by default. If you wish to continue using exact matching you can use the [exact matching syntax](#objects-with-exact-matching-syntax):
 
-```ts
-p`{ 
-  msg: "PDSL is awesome!" 
-}`({
-  msg: "PDSL is awesome!",
-  extra: true
-}); // true - because exact matching is turned off by default
+```js
+p`{ name: "foo" }`({name: "foo", age: 20}); // true
+```
 
+Exact object matching mode can be turned on by using objects with pipes `|`:
+
+```js
+p`{| name: "foo" |}`({name: "foo", age: 20}); // false
+```
+
+Once you turn exact matching on in an object tree you can only turn it off by using the rest operator:
+
+```js
 p`{| 
-  msg: "PDSL is awesome!" 
-|}`({
-  msg: "PDSL is awesome!",
-  extra: true
-}); // false - because exact matching is specified
+  name: "foo",
+  exact: {
+    hello:"hello"
+  }
+  loose: {
+    hello: "hello",
+    ...
+  },
+|}`
 ```
 
 ### New validation syntax
@@ -69,7 +78,7 @@ import { schema as p } from "pdsl";
 
 const schema = p`{
   name: 
-    string <- "Name must be a string" 
+    string       <- "Name must be a string" 
     & string[>7] <- "Name must be longer than 7 characters",
   age: 
     (number & > 18) <- "Age must be numeric and over 18"
@@ -90,6 +99,43 @@ Also new we have an [array includes](#array-includes) function:
 
 ```js
 p`[? >50 ]`([1, 2, 100, 12]); // true because 100 is greater than 50
+```
+
+### Formik compatability
+
+We now have formik compatability!
+
+```ts
+import {schema as p} from 'pdsl';
+
+export default () => (
+  <Formik
+    initialValues={{
+      email: "",
+      firstName: "",
+      lastName: ""
+    }}
+    validationSchema={p`{
+      email: 
+        _         <- "Required" 
+        & Email   <- "Invalid email address",
+      firstName: 
+        _             <- "Required" 
+        & string[>2]  <- "Must be longer than 2 characters"
+        & string[<20] <- "Nice try nobody has a first name that long",
+      lastName: 
+        _             <- "Required" 
+        & string[>2]  <- "Must be longer than 2 characters"
+        & string[<20] <- "Nice try nobody has a last name that long"
+    }`}
+    onSubmit={values => {
+      // submit values
+    }}
+    render={({ errors, touched }) => (
+      // render form
+    )}
+  />
+)
 ```
 
 ## Examples
