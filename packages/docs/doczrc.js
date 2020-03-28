@@ -10,7 +10,7 @@ export default {
     "Integrations",
     "Examples",
     "Helpers",
-    "Faq",
+    "F.A.Q.",
     "Disclaimer"
   ]
 };
