@@ -4,7 +4,7 @@ name: Welcome to PDSL
 ---
 
 <div style="display:flex; align-items:center; justify-content: center;flex-direction:column;height:75vh">
-  <img src="/public/pdsl-logo.png" width="200" />
+  <img alt="Welcome to PDSL"  src="public/pdsl-logo.png" width="200" />
   <h4>The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</h4>
 </div>
 
