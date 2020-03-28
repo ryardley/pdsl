@@ -1,4 +1,5 @@
 export default {
+  dest: "../../docs",
   public: "./public",
   ignore: ["README.md"],
   showDarkModeSwitch: false,
