@@ -1032,28 +1032,28 @@ describe("validation", () => {
     expect(myerror.inner[0].path).toBe("name");
   });
 
-  it("should parse expressions with multiple string length", () => {
-    const schema = p.schema`{
-    email: 
-      _         <- "Required" 
-      & Email   <- "Invalid email address",
+  it("should parse expressions with multiple string length calls", () => {
+    expect(
+      p`{
+      email: 
+        _         <- "Required" 
+        & Email   <- "Invalid email address",
 
-    firstName: 
-      _             <- "Required" 
-      & string[>2]  <- "Must be longer than 2 characters"
-      & string[<20] <- "Nice try nobody has a first name that long",
+      firstName: 
+        _             <- "Required" 
+        & string[>2]  <- "Must be longer than 2 characters"
+        & string[<20] <- "Nice try nobody has a first name that long",
 
-    lastName: 
-      _             <- "Required" 
-      & string[>2]  <- "Must be longer than 2 characters"
-      & string[<20] <- "Nice try nobody has a last name that long"
-  }`;
-
-    schema.validateSync({
-      email: "contact@example.com",
-      firstName: "Foo",
-      lastName: "Barr"
-    });
+      lastName: 
+        _             <- "Required" 
+        & string[>2]  <- "Must be longer than 2 characters"
+        & string[<20] <- "Nice try nobody has a last name that long"
+    }`({
+        email: "contact@example.com",
+        firstName: "Foo",
+        lastName: "Barr"
+      })
+    ).toBe(true);
   });
 
   describe("schema mode", () => {
@@ -1061,6 +1061,32 @@ describe("validation", () => {
       const schema = pdsl`"Hello"`;
 
       expect(typeof schema).toBe("object");
+    });
+
+    it("should be able to compose other p expressions", () => {
+      const pp = p.schema;
+
+      const validEmail = p`_ <- "Required" & Email <- "Invalid email address"`;
+
+      const schema = pp`{ email: ${validEmail} }`;
+
+      expect(() => {
+        schema.validateSync({ email: "foo@bar.com" });
+      }).not.toThrow();
+    });
+
+    it("should be able to compose other schemas", () => {
+      const pp = p.schema;
+
+      const validEmail = pp`_ <- "Required" & Email <- "Invalid email address"`;
+
+      const schema = pp`{ 
+        email: ${validEmail}
+      }`;
+
+      expect(() => {
+        schema.validateSync({ email: "foo@bar.com" });
+      }).not.toThrow();
     });
 
     it("should pass a sanity test", async () => {
@@ -1077,7 +1103,8 @@ describe("validation", () => {
       }
 
       expect(error.name).toBe("ValidationError");
-      expect(error.message).toBe("Validation failed");
+      expect(error.message).toBe('Value undefined did not match value "Hello"');
+      expect(error.path).toBe("greeting");
       expect(error.inner).toEqual([
         {
           message: 'Value undefined did not match value "Hello"',

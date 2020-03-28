@@ -3,6 +3,7 @@ const {
   isDeepVal,
   isFunction,
   isPrimative,
+  isPDSLSchema,
   isRegEx
 } = require("./utils");
 const { ValidationError } = require("./errors");
@@ -518,12 +519,23 @@ const createPrim = ctx =>
   };
 
 function createExpressionParser(ctx, expression) {
+  // Composing functions
   if (isFunction(expression)) {
     if (isPrimative(expression)) return createPrim(ctx);
     return identity;
   }
+
+  // Allow composing schemas
+  if (isPDSLSchema(expression)) {
+    return expression => expression.unsafe_predicate;
+  }
+
+  // Composing regex
   if (isRegEx(expression)) return createRegx(ctx);
+
+  // {} [] etc.
   if (isDeepVal(expression)) return createDeep(ctx);
+
   return createVal(ctx);
 }
 
@@ -622,6 +634,7 @@ const createSchema = (compiler, ctx) => {
   return (...args) => {
     const predicateFn = compiler(ctx)(...args);
     return {
+      unsafe_predicate: predicateFn,
       validateSync(input) {
         // Setting abortEarly to false
         // enables us to collect all errors
@@ -633,7 +646,7 @@ const createSchema = (compiler, ctx) => {
 
         // Throw errors
         if (ctx.throwErrors && errs.length > 0) {
-          throw new ValidationError("Validation failed", "", errs);
+          throw new ValidationError(errs[0].message, errs[0].path, errs);
         }
 
         // Return the errors

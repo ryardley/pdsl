@@ -2,6 +2,10 @@ function isRegEx(expression) {
   return expression instanceof RegExp;
 }
 
+function isPDSLSchema(expression) {
+  return expression && typeof expression.unsafe_predicate === "function";
+}
+
 function isPrimative(expression) {
   return (
     [
@@ -49,7 +53,8 @@ module.exports = {
   isRegEx,
   isDeepVal,
   isFunction,
-  isPrimative
+  isPrimative,
+  isPDSLSchema
 };
 
 // 3.5.11
