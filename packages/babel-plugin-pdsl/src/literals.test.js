@@ -5,7 +5,7 @@ const {
   numericLiteral,
   stringLiteral
 } = require("./literals");
-const { grammar, tokens } = require("pdsl/index/grammar");
+const { grammar, tokens } = require("pdsl/lib/grammar");
 const generate = require("@babel/generator").default;
 
 describe("numericLiteral", () => {
