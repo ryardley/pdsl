@@ -30,9 +30,12 @@ export default theme(
         primary: "rgb(228,0,99)",
         sidebar: {
           navLinkActive: "rgb(228,0,99)"
+        },
+        mainContainer: {
+          fontSize: "120%"
         }
       },
-      fontSizes: [...defaultTheme.fontSizes.map(size => size * 1.2)],
+
       showDarkModeSwitch: false
     })
   )

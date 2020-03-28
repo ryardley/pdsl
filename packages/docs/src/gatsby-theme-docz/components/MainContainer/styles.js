@@ -1,15 +1,16 @@
-import { media } from '~theme/breakpoints'
+import { media } from "~theme/breakpoints";
 
 export const container = {
-  backgroundColor: 'background',
-  position: 'relative',
+  backgroundColor: "background",
+  position: "relative",
+  fontSize: "120%",
   maxWidth: 960,
   py: 5,
   px: 4,
-  variant: 'styles.Container',
+  variant: "styles.Container",
   [media.tablet]: {
     py: 4,
     px: 4,
-    pt: 5,
-  },
-}
+    pt: 5
+  }
+};
