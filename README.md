@@ -1,12 +1,13 @@
+<br/><br/><br/>
 <p align="center">
   <img src="pdsl-logo.png" width="200" />
 </p>
 
 <h1 align="center">Predicate Domain Specific Language</h1>
-<p align="center">
+<h4 align="center">
   <a href="https://ryardley.github.io/pdsl">Read the docs!</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</p>
-
+</h4>
+<br/><br/><br/>
 
 [![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
