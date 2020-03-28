@@ -30,8 +30,9 @@ declare function predicateCreator<T>(
 ): PredicateFn<T>;
 
 declare namespace predicateCreator {
-  var schema: (options?: PdslOptions) => schemaCreator;
+  var schema: schemaCreator;
   var predicate: (options?: PdslOptions) => predicateCreatorType;
+  var createSchema: (options?: PdslOptions) => schemaCreator;
 }
 
 export default predicateCreator;
