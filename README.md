@@ -4,7 +4,7 @@
 
 <h1 align="center">Predicate Domain Specific Language</h1>
 <p align="center">
-  <a href="https://ryardley.github.io/pdsl">Read the docs!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+  <a href="https://ryardley.github.io/pdsl">Read the docs!</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </p>
 
 
