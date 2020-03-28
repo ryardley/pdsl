@@ -5,7 +5,7 @@ const {
   isVaradicFunction,
   isOperator,
   isLiteral
-} = require("pdsl/grammar");
+} = require("pdsl/index/grammar");
 
 const { literal } = require("./literals");
 const { runtimeCreator } = require("./runtime");

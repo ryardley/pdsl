@@ -1,5 +1,5 @@
 const p = require("./index");
-const helpers = require("./helpers");
+const helpers = require("../helpers");
 const { Email, gt } = helpers();
 
 describe("value predicates", () => {
