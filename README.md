@@ -69,22 +69,15 @@ import { schema as p } from "pdsl";
 
 const schema = p`{
   name: 
-    string          <- "Name must be a string" 
-    & string[>7]    <- "Name must be longer than 7 characters",
+    string <- "Name must be a string" 
+    & string[>7] <- "Name must be longer than 7 characters",
   age: 
     (number & > 18) <- "Age must be numeric and over 18"
 }`;
 
-try {
-  // This should act like a simple yup schema
-  schema.validateSync({ name: "Rick" });
-} catch (err) {
-  expect(
-    p`{
-      message: "Name must be longer than 7 characters"
-    }`(err.inner[0])
-  ).toBe(true);
-}
+schema.validate({ name: "Rick" }).catch((err) => {
+  console.log(err.message); // "Name must be longer than 7 characters"
+}); 
 ```
 
 ### New array includes syntax
