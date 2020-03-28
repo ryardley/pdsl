@@ -3,9 +3,9 @@ route: /
 name: Welcome to PDSL
 ---
 
-<div style="display:flex; align-items:center; justify-content: center;flex-direction:column;height:75vh">
-  <img alt="Welcome to PDSL"  src="public/pdsl-logo.png" width="200" />
-  <h4>The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</h4>
+<div style="display:flex;position:relative; align-items:center; justify-content: center;flex-direction:column;height:75vh">
+  <img alt="Welcome to PDSL"  src="public/pdsl-logo.png" width="200" style="transform:translateX(20px);"/>
+  
 </div>
 
 ---
@@ -13,15 +13,12 @@ name: Welcome to PDSL
 <br/><br/>
 
 <h1>Welcome to PDSL</h1>
+<p>The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</p>
 
 ```js
 import p from "pdsl";
 
-const isSoftwareCreator = p`{
-  name: string,
-  age: > 16,
-  occupation: "Engineer" | "Designer" | "Project Manager"
-}`;
+const isSoftwareCreator = p`{ name: string, age: > 16, occupation: "Engineer" | "Designer" | "Project Manager" }`;
 
 isSoftwareCreator(someone); // true | false
 ```
