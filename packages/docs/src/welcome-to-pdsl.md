@@ -18,7 +18,11 @@ name: Welcome to PDSL
 ```js
 import p from "pdsl";
 
-const isSoftwareCreator = p`{ name: string, age: > 16, occupation: "Engineer" | "Designer" | "Project Manager" }`;
+const isSoftwareCreator = p`{ 
+  name: string, 
+  age: > 16, 
+  occupation: "Engineer" | "Designer" | "Project Manager" 
+}`;
 
 isSoftwareCreator(someone); // true | false
 ```
