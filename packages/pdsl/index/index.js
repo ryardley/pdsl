@@ -1,7 +1,7 @@
 const { parser } = require("./parser");
 const { lexer } = require("./lexer");
 const { generator } = require("./generator");
-const { getRawHelpers, createDefault } = require("./helpers");
+const { getRawHelpers, createDefault } = require("../helpers");
 const { pretokenizer } = require("./pretokenizer");
 const { pred } = getRawHelpers();
 

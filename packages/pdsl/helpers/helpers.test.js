@@ -16,7 +16,7 @@ const {
   arrArgMatch,
   strLen,
   arrLen
-} = require("./helpers");
+} = require(".");
 
 it("should obj", () => {
   expect(
