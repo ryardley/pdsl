@@ -9,7 +9,7 @@ const {
   isPrimative,
   isPDSLSchema,
   isRegEx
-} = require("../index/utils");
+} = require("../lib/utils");
 
 function createExpressionParser(ctx, expression) {
   // Composing functions

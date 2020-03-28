@@ -1,5 +1,5 @@
-const { ValidationError } = require("../index/errors");
-const Context = require("../index/context");
+const { ValidationError } = require("../lib/errors");
+const Context = require("../lib/context");
 
 const helpers = require("./helpers");
 

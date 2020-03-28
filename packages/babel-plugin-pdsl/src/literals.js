@@ -1,5 +1,5 @@
 const t = require("@babel/types");
-const { types } = require("pdsl/index/grammar");
+const { types } = require("pdsl/lib/grammar");
 
 function booleanLiteral(pdslNode) {
   return t.booleanLiteral(pdslNode.runtime());
