@@ -3,7 +3,9 @@
 </p>
 
 <h1 align="center">Predicate Domain Specific Language</h1>
-
+<p align="center">
+  <a href="https://ryardley.github.io/pdsl">Read the docs!</a>
+</p>
 [![Build Status](https://travis-ci.com/ryardley/pdsl.svg?branch=master)](https://travis-ci.com/ryardley/pdsl)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/pdsl.svg)
 ![npm](https://img.shields.io/npm/v/pdsl.svg)
@@ -32,6 +34,6 @@ isSoftwareCreator(someone); // true | false
 
 <br/>
 
-## Read the docs!
+## Documentation
 
 [PDSL Documentation](https://ryardley.github.io/pdsl)
