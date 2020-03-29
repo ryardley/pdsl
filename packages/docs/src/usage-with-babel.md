@@ -1,6 +1,7 @@
 ---
 menu: Integrations
 name: Precompiling with Babel
+route: /precompiling-with-babel
 ---
 
 # Precompiling with Babel

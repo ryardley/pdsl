@@ -1,6 +1,7 @@
 ---
 name: Kitchen Sink
 menu: Examples
+route: /kitchen-sink
 ---
 
 # Kitchen sink

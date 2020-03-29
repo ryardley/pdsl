@@ -1,5 +1,6 @@
 ---
 name: F.A.Q.
+route: /faq
 ---
 
 # FAQ
