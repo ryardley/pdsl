@@ -55,6 +55,7 @@ export const Sidebar = React.forwardRef((props, ref) => {
               </NavLink>
             );
           })}
+        <br />
       </Box>
     </>
   );
