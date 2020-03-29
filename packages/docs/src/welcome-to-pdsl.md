@@ -58,7 +58,7 @@ npm install pdsl
 
 ### Exact matching on objects is now off by default
 
-New in version 5.2+ objects no longer have exact matching turned on by default. If you wish to continue using exact matching you can use the [exact matching syntax](#objects-with-exact-matching-syntax):
+New in version 5.2+ objects no longer have exact matching turned on by default. If you wish to continue using exact matching you can use the [exact matching syntax](/objects#exact-matching-syntax):
 
 ```js
 p`{ name: "foo" }`({ name: "foo", age: 20 }); // true
@@ -107,7 +107,7 @@ schema.validate({ name: "Rick" }).catch(err => {
 
 ### New array includes syntax
 
-Also new we have an [array includes](#array-includes) function:
+Also new we have an [array includes](/arrays#array-includes) function:
 
 ```
 [? <predicate> ]
