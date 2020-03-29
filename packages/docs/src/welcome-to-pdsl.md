@@ -1,7 +1,6 @@
 ---
 route: /
 name: Welcome to PDSL
-route: /home
 ---
 
 <div style="display:flex;position:relative; align-items:center; justify-content: center;flex-direction:column;height:75vh">
