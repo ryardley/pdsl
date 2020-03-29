@@ -80,6 +80,10 @@ it("should have an extant predicate", () => {
   expect(p`_`(false)).toBe(true);
   expect(p`_`(null)).toBe(false);
   expect(p`_`(undefined)).toBe(false);
+  expect(p`_`(NaN)).toBe(true);
+  expect(p`!`(null)).toBe(true);
+  expect(p`!!`(undefined)).toBe(false);
+  expect(p`!`(NaN)).toBe(true);
   expect(p`{ name : _ }`({ name: false })).toBe(true);
   expect(p`{ name : _ }`({ name: undefined })).toBe(false);
   expect(p`{ name : _ }`({ name: null })).toBe(false);
@@ -623,6 +627,18 @@ it("should handle all the symbols", () => {
   expect(p`LUc`("ABCDEF")).toBe(false);
   expect(p`LUc`("AbCDEF")).toBe(true);
   expect(p`LUc`("abcdef")).toBe(false);
+});
+
+it("should handle strings with weird characters", () => {
+  expect(
+    p`"This string contains \`backticks\`"`("This string contains `backticks`")
+  ).toBe(true);
+
+  expect(
+    p`"This string contains 'single quotes'"`(
+      "This string contains 'single quotes'"
+    )
+  ).toBe(true);
 });
 
 it("should be able to use a truthy operator", () => {

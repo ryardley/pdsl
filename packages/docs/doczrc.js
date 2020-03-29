@@ -4,7 +4,7 @@ export default {
   showDarkModeSwitch: false,
   menu: [
     "Welcome to PDSL",
-    "Usage",
+    "Guide",
     "Integrations",
     "Examples",
     "Helpers",

@@ -1,5 +1,5 @@
 ---
-menu: Usage
+menu: Guide
 ---
 
 # Primitive matching

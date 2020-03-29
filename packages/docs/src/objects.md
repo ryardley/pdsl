@@ -1,26 +1,28 @@
 ---
-menu: Usage
+menu: Guide
 ---
 
 # Objects
 
-## Object properties
+## Empty Objects
 
-You can test for an object's properties using the object syntax:
+Checking for empty objects:
 
 ```js
-const validate = p`{ name: string }`; // value && typeof value.name === 'string';
-
-validate({ name: "Hello" }); // true
-validate({ name: 20 }); // false
+p`{}`({}); // true
+p`{}`(undefined); // false
+p`{}`({ name: "John" }); // false
 ```
 
-As a shorthand you can test for an object property's existence by simply providing an object with a name property.
+## Object properties
+
+Test for an object property's existence by simply providing an object with a property name.
 
 ```js
-const validate = p`{ name }`;
-validate({ name: "Rudi" }); // true
-validate({}); // false
+p`{ name }`({ name: "Rudi" }); // true
+p`{ age }`({ age: 0 }); // true
+p`{ color }`({ color: undefined }); // false
+p`{ type }`({ type: null }); // false
 ```
 
 This is the same as using `!(null | undefined)` which is also the same as using the shorthand: `_`.
@@ -32,21 +34,12 @@ p`{ name: _ }`;
 p`{ name: !(null|undefined) }`;
 ```
 
-You can use literal strings as property checks.
+You can pass expressions to test agains the object's value:
 
 ```js
-const validate = p`{ name: "Rudi" }`;
-validate({ name: "Rudi" }); // true
-validate({ name: "Fred" }); // false
-```
-
-Or even provide a list of possible strings using the `|` operator
-
-```js
-const validate = p`{ name: "Rudi" | "Fred" }`;
-validate({ name: "Rudi" }); // true
-validate({ name: "Fred" }); // true
-validate({ name: "Mary" }); // true
+p`{ name: "Goodbye" | "Hello" }`({ name: "Hello" }); // true
+p`{ name: >19 & <25 }`({ name: 20 }); // true
+p`{ name: 19..25 }`({ name: 20 }); // true
 ```
 
 The property can also contain nested objects.
@@ -56,7 +49,7 @@ const validate = p`{
   name, 
   payload: {
     listening: true,
-    num: > 4
+    num: >4
   } 
 }`;
 
@@ -103,9 +96,9 @@ p`{|
 }); // false
 ```
 
-## Rest operator
+## Loose matching operator
 
-Once you turn exact matching on in an object tree you can only turn it off by using the rest operator:
+Once you turn exact matching on in an object tree you can only turn it off by using the `...` loose matching operator:
 
 ```js
 p`{| 
@@ -117,5 +110,15 @@ p`{|
     hello: "hello",
     ...
   },
-|}`;
+|}`({
+  name: "foo",
+  exact: {
+    hello: "hello"
+  },
+  loose: {
+    hello: "hello",
+    extra: true,
+    other: 10
+  }
+});
 ```
