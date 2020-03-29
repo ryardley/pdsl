@@ -1,6 +1,5 @@
 ---
-name: Composition
-menu: Examples
+menu: Guide
 ---
 
 # Composition
