@@ -1,3 +1,7 @@
+---
+route: /helpers
+---
+
 # Helpers (experimental)
 
 NOTE: This should be considered unsafe API for the time being as it may change.

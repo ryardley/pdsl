@@ -1,6 +1,7 @@
 ---
 menu: Integrations
 name: Usage with TypeScript
+route: /typescript
 ---
 
 # Usage with TypeScript

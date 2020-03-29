@@ -1,5 +1,6 @@
 ---
 menu: Guide
+route: /interpolations
 ---
 
 # Interpolations

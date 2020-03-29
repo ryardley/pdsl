@@ -1,5 +1,6 @@
 ---
 menu: Guide
+route: /null-undefined
 ---
 
 # Null checking

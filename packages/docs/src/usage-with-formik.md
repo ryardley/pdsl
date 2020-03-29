@@ -1,6 +1,7 @@
 ---
 menu: Integrations
 name: Formik form validation
+route: /formik-validation
 ---
 
 # Formik form validation
