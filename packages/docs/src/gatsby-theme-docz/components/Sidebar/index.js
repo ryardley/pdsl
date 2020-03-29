@@ -29,7 +29,7 @@ export const Sidebar = React.forwardRef((props, ref) => {
       </Box>
       <Box ref={ref} sx={styles.wrapper(props)} data-testid="sidebar">
         <a href="/">
-          <img alt="PDSL" src="/pdsl/public/pdsl-logo.png" height="50" />
+          <img alt="PDSL" src="/public/pdsl-logo.png" height="50" />
         </a>
         <br />
         <br />
