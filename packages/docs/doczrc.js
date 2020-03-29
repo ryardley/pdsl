@@ -1,6 +1,5 @@
 export default {
   public: "./public",
-  base: "/pdsl",
   ignore: ["README.md"],
   showDarkModeSwitch: false,
   menu: [
