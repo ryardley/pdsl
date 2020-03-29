@@ -1,5 +1,4 @@
 export default {
-  dest: "../../docs",
   public: "./public",
   base: "/pdsl",
   ignore: ["README.md"],
