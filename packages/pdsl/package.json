@@ -4,7 +4,10 @@
   "description": "Predicate DSL",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "author": "Rudi Yardley",
+  "author": {
+    "name": "Rudi Yardley",
+    "url": "https://medium.com/@ryardley"
+  },
   "license": "MIT",
   "repository": "github:ryardley/pdsl",
   "scripts": {
@@ -12,17 +15,27 @@
     "docs": "jsdoc --destination ../../docs helpers.js",
     "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( npm dist-tag add pdsl@$pkg_version latest ) || exit 0"
   },
+  "homepage": "https://pdsl.dev",
+  "bugs": {
+    "url": "https://github.com/ryardley/pdsl/issues"
+  },
   "keywords": [
-    "pdsl",
+    "functional",
     "predicate",
+    "predicates",
+    "pred",
+    "type",
+    "runtime",
+    "predicate compiler",
     "validation",
     "object validation",
+    "input validation",
     "expression",
     "predicate expression",
     "boolean expression",
     "boolean functions",
     "form validation",
-    "predicate domain specific language"
+    "pdsl"
   ],
   "devDependencies": {
     "codecov": "^3.5.0",
