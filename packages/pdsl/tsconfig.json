@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": ".",
+    "target": "es5",
+    "module": "esnext",
+    "allowJs": false,
+    "declaration": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true
+  },
+  "include": ["./src"],
+  "exclude": ["**/*.js"]
+}

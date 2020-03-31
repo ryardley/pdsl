@@ -1,3 +1,5 @@
 module.exports = {
-  setupFilesAfterEnv: ["<rootDir>/testsetup.js"]
+  preset: "ts-jest",
+  testEnvironment: "node",
+  testPathIgnorePatterns: ["/node_modules/", "\\.js$"]
 };
