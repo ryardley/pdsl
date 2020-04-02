@@ -97,7 +97,7 @@ const createRuntimeCompiler = (
   return predicateFn;
 };
 
-const createPredicateRunner = (): Compiler<BabelEngine> => ctx => (
+const createBabelCompiler = (): Compiler<BabelEngine> => ctx => (
   predicateCallback: BabelPredicateCallback
 ) => {
   const predicateFn = predicateCallback(passContextToHelpers(ctx, Helpers));
@@ -124,7 +124,7 @@ export function createDefault(engine: any): CreateDefaultReturnType<any> {
   const compiler =
     typeof engine !== "undefined"
       ? createRuntimeCompiler(engine)
-      : createPredicateRunner();
+      : createBabelCompiler();
 
   const predicateEngine = compiler(new Context());
 
