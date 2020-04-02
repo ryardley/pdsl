@@ -69,35 +69,36 @@ function passContextToHelpers(ctx: Context, helpers: typeof Helpers) {
     validation: helpers.validation(ctx)
   };
 }
-type ConfiguredHelpers = ReturnType<typeof passContextToHelpers>;
 
 type PredicateFn<T = any> = (input?: any) => input is T;
 
-type PredicateCb<T = any> = (a: ConfiguredHelpers) => PredicateFn<T>;
+type BabelPredicateCallback<T = any> = (
+  a: ReturnType<typeof passContextToHelpers>
+) => PredicateFn<T>;
 
-type PredicateFactory = (...args: any[]) => PredicateFn;
+type Engine<T = any> = RuntimeEngine<T> | BabelEngine<T>;
 
-type TemplateStringFactory = (
+type RuntimeEngine<T = any> = (
   strings: TemplateStringsArray,
   ...expressions: any[]
-) => PredicateFn;
+) => PredicateFn<T>;
 
-type CallbackFactory = (cb: PredicateCb) => PredicateFn;
+type BabelEngine<T = any> = (cb: BabelPredicateCallback<T>) => PredicateFn<T>;
 
-type Compiler<P extends PredicateFactory> = (ctx: Context) => P;
+type Compiler<P extends Engine> = (ctx: Context) => P;
 
 const createRuntimeCompiler = (
-  predicateFactory: PredicateFactory
-): Compiler<TemplateStringFactory> => (ctx: Context) => (
+  engine: RuntimeEngine
+): Compiler<RuntimeEngine> => (ctx: Context) => (
   strings: TemplateStringsArray,
   ...expressions: any[]
 ) => {
-  const predicateFn = predicateFactory(strings, expressions, ctx);
+  const predicateFn = engine(strings, expressions, ctx);
   return predicateFn;
 };
 
-const createPredicateRunner = (): Compiler<CallbackFactory> => ctx => (
-  predicateCallback: PredicateCb
+const createPredicateRunner = (): Compiler<BabelEngine> => ctx => (
+  predicateCallback: BabelPredicateCallback
 ) => {
   const predicateFn = predicateCallback(passContextToHelpers(ctx, Helpers));
   return predicateFn;
@@ -107,27 +108,25 @@ type Schema = ReturnType<typeof createSchema>;
 
 type ConfigureSchema = (options?: any) => Schema;
 
-type CreateDefaultReturnType<P extends PredicateFactory> = P & {
+type CreateDefaultReturnType<P extends Engine> = P & {
   configureSchema: ConfigureSchema;
   schema: Schema;
   predicate: (options: any) => P;
 };
 
-export function createDefault(
-  predicateFactory: TemplateStringFactory
-): CreateDefaultReturnType<TemplateStringFactory>;
-export function createDefault(
-  predicateFactory: void
-): CreateDefaultReturnType<CallbackFactory>;
-export function createDefault(
-  predicateFactory: any
-): CreateDefaultReturnType<any> {
+export function createDefault<T = any>(
+  engine: RuntimeEngine<T>
+): CreateDefaultReturnType<RuntimeEngine<T>>;
+export function createDefault<T = any>(
+  engine: void
+): CreateDefaultReturnType<BabelEngine<T>>;
+export function createDefault(engine: any): CreateDefaultReturnType<any> {
   const compiler =
-    typeof predicateFactory !== "undefined"
-      ? createRuntimeCompiler(predicateFactory)
+    typeof engine !== "undefined"
+      ? createRuntimeCompiler(engine)
       : createPredicateRunner();
 
-  const defaultObject = compiler(new Context());
+  const predicateEngine = compiler(new Context());
 
   const configureSchema = (options?) => {
     const ctx = new Context({
@@ -147,7 +146,7 @@ export function createDefault(
 
   const schema = configureSchema();
 
-  return Object.assign(defaultObject, {
+  return Object.assign(predicateEngine, {
     configureSchema,
     schema,
     predicate
