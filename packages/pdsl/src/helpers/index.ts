@@ -73,23 +73,7 @@ type ConfiguredHelpers = ReturnType<typeof passContextToHelpers>;
 
 type PredicateFn<T = any> = (input?: any) => input is T;
 
-// type CompileTemplateLiteral = (
-//   strings: TemplateStringsArray,
-//   expressions: any[],
-//   ctx: Context
-// ) => PredicateFn;
-
-type CompileTemplateLiteral = PredicateFactory;
-
 type PredicateCb<T = any> = (a: ConfiguredHelpers) => PredicateFn<T>;
-
-// p`{ name }`
-// type PDSLFn = (
-//   strings: TemplateStringsArray,
-//   ...expressions: any[]
-// ) => PredicateFn;
-
-// type PredicateRunner = (predicateCb: PredicateCb) => PredicateFn;
 
 type PredicateFactory = (...args: any[]) => PredicateFn;
 
@@ -102,19 +86,13 @@ type CallbackFactory = (cb: PredicateCb) => PredicateFn;
 
 type Compiler<P extends PredicateFactory> = (ctx: Context) => P;
 
-// type PDSLDefaultObject<T> = (PDSLFn<T> | PredicateRunner<T>) & {
-//   configureSchema?: any;
-//   schema?: any;
-//   predicate?: any;
-// };
-
 const createRuntimeCompiler = (
-  compileTemplateLiteral: CompileTemplateLiteral
+  predicateFactory: PredicateFactory
 ): Compiler<TemplateStringFactory> => (ctx: Context) => (
   strings: TemplateStringsArray,
   ...expressions: any[]
 ) => {
-  const predicateFn = compileTemplateLiteral(strings, expressions, ctx);
+  const predicateFn = predicateFactory(strings, expressions, ctx);
   return predicateFn;
 };
 
@@ -135,19 +113,18 @@ type CreateDefaultReturnType<P extends PredicateFactory> = P & {
   predicate: (options: any) => P;
 };
 
-// Create the default export without depending on the compiler
 export function createDefault(
-  compileTemplateLiteral: TemplateStringFactory
+  predicateFactory: TemplateStringFactory
 ): CreateDefaultReturnType<TemplateStringFactory>;
 export function createDefault(
-  compileTemplateLiteral: void
+  predicateFactory: void
 ): CreateDefaultReturnType<CallbackFactory>;
 export function createDefault(
-  compileTemplateLiteral: any
+  predicateFactory: any
 ): CreateDefaultReturnType<any> {
   const compiler =
-    typeof compileTemplateLiteral !== "undefined"
-      ? createRuntimeCompiler(compileTemplateLiteral)
+    typeof predicateFactory !== "undefined"
+      ? createRuntimeCompiler(predicateFactory)
       : createPredicateRunner();
 
   const defaultObject = compiler(new Context());
