@@ -7,7 +7,7 @@ route: /types
 
 If you pass a JavaScript primitive object, you will get the appropriate typeof check.
 
-```js
+```javascript
 const isNumeric = p`Number`; // typeof value === 'number'
 const isBoolean = p`Boolean`; // typeof value === 'boolean'
 const isString = p`String`; // typeof value === 'string'
@@ -20,7 +20,7 @@ const isFunction = p`Function`; // typeof value === 'function'
 
 For consistency with typesystems such as TypeScript and Flow you can use lower case for the following:
 
-```js
+```javascript
 const isNumeric = p`number`; // typeof value === 'number'
 const isBoolean = p`boolean`; // typeof value === 'boolean'
 const isString = p`string`; // typeof value === 'string'
@@ -42,7 +42,7 @@ p`array[<5]`(1, 2, 3, 4); // true
 
 You can also pass in a JavaScript primitive to the template string.
 
-```js
+```javascript
 const isNumeric = p`${Number}`; // typeof value === 'number'
 const isBoolean = p`${Boolean}`; // typeof value === 'boolean'
 const isString = p`${String}`; // typeof value === 'string'

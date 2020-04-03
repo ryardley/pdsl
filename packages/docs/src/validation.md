@@ -9,8 +9,8 @@ PDSL supports the creation of yup style validation schemas.
 
 To use this feature you export the `schema` named export from the pdsl package.
 
-```js
-import { schema } from "pdsl";
+```javascript
+import { schema as p } from "pdsl";
 ```
 
 You can then create a normal p-expression but include validation messages to the right of your predicates starting with an arrow and followed by a message in double quotes.
@@ -22,9 +22,7 @@ You can then create a normal p-expression but include validation messages to the
 You can then call the async `validate` or the synchronous `validateSync` methods on the object returned.
 
 ```js
-import { schema as p } from "pdsl";
-
-p`{ 
+p.schema`{ 
   name: string <- "Hey name has to be a string!"
 }`
   .validate({ name: 100 })
@@ -35,7 +33,7 @@ p`{
 
 You can use this technique to create form validators and then plug them into libraries like formik:
 
-```js
+```javascript
 import {schema as p} from "pdsl"
 
 () => (

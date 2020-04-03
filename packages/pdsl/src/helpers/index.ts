@@ -6,28 +6,30 @@ import Helpers from "./helpers";
 export const createSchema = (compiler: any, ctx: Context) => {
   return (...args: any[]) => {
     const predicateFn = compiler(ctx)(...args);
+    function validateSync(input: any) {
+      // Setting abortEarly to false
+      // enables us to collect all errors
+      ctx.reset({ abortEarly: false, captureErrors: true });
+
+      // Run the test
+      predicateFn(input);
+      const errs = ctx.getErrors();
+
+      // Throw errors
+      if (ctx.throwErrors && errs.length > 0) {
+        throw new ValidationError(errs[0].message, errs[0].path, errs);
+      }
+
+      // Return the errors
+      return errs;
+    }
+    async function validate(input: any) {
+      return validateSync(input);
+    }
     return {
       unsafe_predicate: predicateFn,
-      validateSync(input: any) {
-        // Setting abortEarly to false
-        // enables us to collect all errors
-        ctx.reset({ abortEarly: false, captureErrors: true });
-
-        // Run the test
-        predicateFn(input);
-        const errs = ctx.getErrors();
-
-        // Throw errors
-        if (ctx.throwErrors && errs.length > 0) {
-          throw new ValidationError(errs[0].message, errs[0].path, errs);
-        }
-
-        // Return the errors
-        return errs;
-      },
-      async validate(input: any) {
-        return this.validateSync(input);
-      },
+      validateSync,
+      validate,
       unsafe_rpn: predicateFn.unsafe_rpn
     };
   };

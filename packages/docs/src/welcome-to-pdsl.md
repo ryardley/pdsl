@@ -16,15 +16,17 @@ name: Welcome to PDSL
 <p>The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</p>
 
 ```js
-import p from "pdsl";
-
 const isSoftwareCreator = p`{ 
   name: string, 
   age: > 16, 
   occupation: "Engineer" | "Designer" | "Project Manager" 
 }`;
 
-isSoftwareCreator(someone); // true | false
+isSoftwareCreator({
+  name: "Jane Kenith",
+  age: 22,
+  occupation: "Engineer"
+}); // true
 ```
 
 **Predicate functions are just easier with PDSL**
@@ -54,6 +56,16 @@ yarn add pdsl
 npm install pdsl
 ```
 
+Then import the default package into your JavaScript or TypeScript file:
+
+```javascript
+import p from "pdsl";
+
+p`{ name: string }`({ name: "Jane" });
+```
+
+If you have Babel in your build pipeline we recommend to use the [babel plugin](/precompiling-with-babel).
+
 ## New in Version 5
 
 ### Exact matching on objects is now off by default
@@ -77,12 +89,22 @@ p`{|
   name: "foo",
   exact: {
     hello:"hello"
-  }
+  },
   loose: {
     hello: "hello",
     ...
+  }
+|}`({
+  name: "foo",
+  exact: {
+    hello: "hello"
   },
-|}`;
+  loose: {
+    hello: "hello",
+    extra: true,
+    another: []
+  }
+}); // true
 ```
 
 ### New validation syntax
@@ -90,9 +112,7 @@ p`{|
 We now have a new validation syntax!
 
 ```js
-import { schema as p } from "pdsl";
-
-const schema = p`{
+const { validate } = p.schema`{
   name: 
     string       <- "Name must be a string" 
     & string[>7] <- "Name must be longer than 7 characters",
@@ -100,7 +120,7 @@ const schema = p`{
     (number & > 18) <- "Age must be numeric and over 18"
 }`;
 
-schema.validate({ name: "Rick" }).catch(err => {
+validate({ name: "Rick" }).catch(err => {
   console.log(err.message); // "Name must be longer than 7 characters"
 });
 ```

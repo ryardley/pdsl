@@ -60,7 +60,7 @@ p`"Doctor" | "Lawyer" | "Dentist" | "Teacher"`("Doctor"); // true
 p`"Doctor" | "Lawyer" | "Dentist" | "Teacher"`("Politician"); // false
 ```
 
-## Escaping charachters
+## Escaping characters
 
 You can escape characters by using alternative quotes.
 

@@ -28,7 +28,7 @@ isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
 
 The more complex things get, the more PDSL shines. See the above example in vanilla JS:
 
-```js
+```javascript
 const isValidUser = input =>
   input &&
   input.username &&
