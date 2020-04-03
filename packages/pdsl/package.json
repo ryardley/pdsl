@@ -2,7 +2,7 @@
   "name": "pdsl",
   "version": "5.2.7",
   "description": "Predicate DSL",
-  "main": "lib.js",
+  "main": "index.js",
   "types": "lib/index.d.ts",
   "author": {
     "name": "Rudi Yardley",
