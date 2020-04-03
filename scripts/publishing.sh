@@ -4,6 +4,7 @@ publish_to_dist_tag() {
   local dist_tag="$1"
   exit_if_empty "$dist_tag" "dist_tag is empty exiting."
   exit_if_empty "$LIVE_RUN" "Mocking publishing to ${dist_tag}."
+  yarn build
   $(yarn bin)/lerna publish from-package --dist-tag "$dist_tag" --registry https://registry.npmjs.org/
 }
 

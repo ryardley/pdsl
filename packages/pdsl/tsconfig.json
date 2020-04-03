@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": ".",
+    "target": "es5",
+    "module": "esnext",
+    "allowJs": false,
+    "moduleResolution": "node",
+    "strict": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true
+  },
+  "include": ["./src"],
+  "exclude": ["**/*.js"]
+}

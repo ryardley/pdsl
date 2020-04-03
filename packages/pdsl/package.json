@@ -2,7 +2,7 @@
   "name": "pdsl",
   "version": "5.2.6",
   "description": "Predicate DSL",
-  "main": "lib/index.js",
+  "main": "lib.js",
   "types": "lib/index.d.ts",
   "author": {
     "name": "Rudi Yardley",
@@ -13,12 +13,20 @@
   "scripts": {
     "test": "jest --coverage --coverageDirectory ../../coverage",
     "docs": "jsdoc --destination ../../docs helpers.js",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
     "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( npm dist-tag add pdsl@$pkg_version latest ) || exit 0"
   },
   "homepage": "https://pdsl.dev",
   "bugs": {
     "url": "https://github.com/ryardley/pdsl/issues"
   },
+  "files": [
+    "helpers/*",
+    "lib/*",
+    "helpers.js",
+    "lib.js"
+  ],
   "keywords": [
     "functional",
     "predicate",
@@ -38,8 +46,15 @@
     "pdsl"
   ],
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@types/jest": "^25.1.4",
     "codecov": "^3.5.0",
-    "jest": "^24.8.0",
-    "jsdoc": "^3.6.3"
+    "jest": "^25.2.4",
+    "jsdoc": "^3.6.3",
+    "rollup": "^2.3.1",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "ts-jest": "^25.3.0",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3"
   }
 }

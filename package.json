@@ -2,8 +2,10 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "pretest": "yarn build",
     "test": "lerna run test --concurrency=1 --stream",
     "docs:build": "lerna run --scope docs build --stream",
+    "build": "lerna run --scope pdsl build --stream",
     "bootstrap": "lerna bootstrap --no-ci",
     "clean": "yarn clean:artifacts && yarn clean:packages",
     "clean:artifacts": "lerna run clean --parallel",
