@@ -22,6 +22,7 @@ export const createOr = ctx =>
       )(() => {
         const val = createVal(ctx);
         ctx.batchStart();
+
         const result = val(left)(a) || val(right)(a);
         if (!result) {
           ctx.batchCommit();

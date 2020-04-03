@@ -414,6 +414,7 @@ it("should handle greater than ", () => {
   expect(p`>5`(6)).toBe(true);
   expect(p`>5`(5)).toBe(false);
   expect(p`{age:>5}`({ age: 34 })).toBe(true);
+  expect(p`string[<5 | >20]`("1234567")).toBe(false);
 });
 
 it("should handle a wildcard", () => {

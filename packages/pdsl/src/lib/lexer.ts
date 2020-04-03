@@ -55,7 +55,7 @@ export function lexer(input) {
       // Remove closing string bracket to make
       // string[x] and array[x] a a unary operator
       // eg. "string[ > 7]" -> "string[ > 7"
-      .replace(/((?:string|array)\[)([^\]]*)(\])/g, "$1$2")
+      .replace(/((?:string|array)\[)([^\]]*)(\])/g, "$1($2)")
       // go and globally tokenise everything for parsing
       .match(rex)
       // convert to an object
