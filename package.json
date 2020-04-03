@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "pretest": "yarn build",
     "test": "lerna run test --concurrency=1 --stream",
     "docs:build": "lerna run --scope docs build --stream",
     "build": "lerna run --scope pdsl build --stream",

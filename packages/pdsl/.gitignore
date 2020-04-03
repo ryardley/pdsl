@@ -3,5 +3,4 @@
 /coverage
 /lib
 /helpers
-/helpers.js
-/lib.js
+/index.js
