@@ -7,9 +7,6 @@ route: /kitchen-sink
 # Kitchen sink
 
 ```js
-// `pdsl` expressively defines an input value's constraints
-import p from "pdsl";
-
 const isKitchenSinc = p`
   {
     type: ${/^.+foo$/},

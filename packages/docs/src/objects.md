@@ -28,7 +28,7 @@ p`{ type }`({ type: null }); // false
 
 This is the same as using `!(null | undefined)` which is also the same as using the shorthand: `_`.
 
-```js
+```javascript
 // These are all equivalent
 p`{ name }`;
 p`{ name: _ }`;
@@ -106,11 +106,11 @@ p`{|
   name: "foo",
   exact: {
     hello:"hello"
-  }
+  },
   loose: {
     hello: "hello",
     ...
-  },
+  }
 |}`({
   name: "foo",
   exact: {

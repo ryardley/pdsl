@@ -16,7 +16,7 @@ yarn add --dev @pdsl/babel-plugin-pdsl
 
 You should ensure it is placed before any plugins that affect module import syntax.
 
-```js
+```javascript
 {
   plugins: ["@pdsl/babel-plugin-pdsl"];
 }
@@ -28,7 +28,7 @@ Conceptually this plugin parses p-expressions and replaces them with function ch
 
 Example Input:
 
-```js
+```javascript
 import p from "pdsl";
 
 const notNil = p`!(null|undefined)`;
@@ -39,7 +39,7 @@ const hasNameWithFn = p`{name:${a => a.length > 10}}`;
 
 Example Output
 
-```js
+```javascript
 import { val, not, or, obj, entry, pred } from "pdsl/helpers";
 
 const notNil = val(not(or(val(null), val(undefined))));
