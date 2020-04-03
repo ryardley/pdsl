@@ -11,14 +11,14 @@ export const Code = ({ children, className: outerClassName }) => {
   const theme = usePrismTheme();
   const [o, rerender] = React.useState();
   React.useEffect(() => {
-    if (!window.RunKit) {
+    if (!window?.RunKit) {
       setTimeout(() => {
         rerender({});
       }, 100);
     }
   }, [o]);
 
-  if (window.RunKit && language === "js") {
+  if (window?.RunKit && language === "js") {
     return (
       <Embed
         gutterStyle="none"
