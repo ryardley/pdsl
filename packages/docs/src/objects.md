@@ -9,21 +9,29 @@ route: /objects
 
 Checking for empty objects:
 
-```js
+```javascript
 p`{}`({}); // true
 p`{}`(undefined); // false
 p`{}`({ name: "John" }); // false
+```
+
+```js
+p`{}`({});
 ```
 
 ## Object properties
 
 Test for an object property's existence by simply providing an object with a property name.
 
-```js
+```javascript
 p`{ name }`({ name: "Rudi" }); // true
 p`{ age }`({ age: 0 }); // true
 p`{ color }`({ color: undefined }); // false
 p`{ type }`({ type: null }); // false
+```
+
+```js
+p`{ name }`({ name: "Rudi" });
 ```
 
 This is the same as using `!(null | undefined)` which is also the same as using the shorthand: `_`.
@@ -37,10 +45,14 @@ p`{ name: !(null|undefined) }`;
 
 You can pass expressions to test agains the object's value:
 
-```js
+```javascript
 p`{ name: "Goodbye" | "Hello" }`({ name: "Hello" }); // true
 p`{ name: >19 & <25 }`({ name: 20 }); // true
 p`{ name: 19..25 }`({ name: 20 }); // true
+```
+
+```js
+p`{ name: "Goodbye" | "Hello" }`({ name: "Hello" });
 ```
 
 The property can also contain nested objects.
@@ -67,13 +79,13 @@ validate({
 
 PDSL is loose matches objects by default which means the following:
 
-```js
+```javascript
 p`{ name }`({ name: "A name", age: 234 }); // true
 ```
 
 Exact object matching mode can be turned on by using objects with pipes `|`:
 
-```js
+```javascript
 p`{| name |}`({ name: "A name", age: 234 }); // false
 p`{| name |}`({ name: "A name" }); // true
 ```

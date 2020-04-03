@@ -22,7 +22,6 @@ export const Code = ({ children, className: outerClassName }) => {
     return (
       <Embed
         gutterStyle="none"
-        theme="atom-dark"
         preamble={'var {default:p} = require("pdsl");'}
         source={children.trim()}
       />

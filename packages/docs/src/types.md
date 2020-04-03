@@ -30,7 +30,7 @@ const isArray = p`array`; // Array.isArray(value)
 
 You can test both the type and length of strings and arrays by using the length syntax:
 
-```js
+```javascript
 p`string[5]`("12345"); // true
 p`string[5]`("1234"); // false
 p`string[<5]`("1234"); // true
@@ -46,4 +46,8 @@ You can also pass in a JavaScript primitive to the template string.
 const isNumeric = p`${Number}`; // typeof value === 'number'
 const isBoolean = p`${Boolean}`; // typeof value === 'boolean'
 const isString = p`${String}`; // typeof value === 'string'
+```
+
+```js
+p`number`(6);
 ```

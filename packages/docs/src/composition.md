@@ -7,7 +7,7 @@ route: /composition
 
 You can compose p expressions easily.
 
-```js
+```javascript
 const Nums = /[0-9]/;
 const UpCase = /[A-Z]/;
 const NotNumsAndUpCase = p`!${Nums} & !${UpCase}`;
@@ -24,6 +24,23 @@ isValidUser({ username: "ryardley", password: "Hello1234!", age: 17 }); //false
 isValidUser({ username: "Ryardley", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "12345", password: "Hello1234!", age: 21 }); //false
 isValidUser({ username: "ryardley", password: "12345678", age: 21 }); //false
+```
+
+Have a go:
+
+```js
+const Nums = /[0-9]/;
+const UpCase = /[A-Z]/;
+const NotNumsAndUpCase = p`!${Nums} & !${UpCase}`;
+const Extended = /[^a-zA-Z0-9]/;
+
+const isValidUser = p`{
+  username: string[4..8] & ${NotNumsAndUpCase},
+  password: string[>8] & ${Extended},
+  age: > 17
+}`;
+
+isValidUser({ username: "ryardley", password: "Hello1234!", age: 21 }); //true
 ```
 
 The more complex things get, the more PDSL shines. See the above example in vanilla JS:

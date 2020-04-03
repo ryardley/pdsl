@@ -5,7 +5,6 @@ name: Welcome to PDSL
 
 <div style="display:flex;position:relative; align-items:center; justify-content: center;flex-direction:column;height:75vh">
   <img alt="Welcome to PDSL"  src="/public/pdsl-logo.png" width="200" style="transform:translateX(20px);"/>
-  
 </div>
 
 ---
@@ -72,19 +71,19 @@ If you have Babel in your build pipeline we recommend to use the [babel plugin](
 
 New in version 5.2+ objects no longer have exact matching turned on by default. If you wish to continue using exact matching you can use the [exact matching syntax](/objects#exact-matching-syntax):
 
-```js
+```javascript
 p`{ name: "foo" }`({ name: "foo", age: 20 }); // true
 ```
 
 Exact object matching mode can be turned on by using objects with pipes `|`:
 
-```js
+```javascript
 p`{| name: "foo" |}`({ name: "foo", age: 20 }); // false
 ```
 
 Once you turn exact matching on in an object tree you can only turn it off by using the rest operator:
 
-```js
+```javascript
 p`{| 
   name: "foo",
   exact: {
@@ -109,20 +108,44 @@ p`{|
 
 ### New validation syntax
 
-We now have a new validation syntax!
+We now have a new [validation syntax](/validation)!
 
-```js
-const { validate } = p.schema`{
-  name: 
-    string       <- "Name must be a string" 
-    & string[>7] <- "Name must be longer than 7 characters",
-  age: 
-    (number & > 18) <- "Age must be numeric and over 18"
-}`;
+```javascript
+async function runValidation() {
+  const { validate, validateSync } = p.schema`{
+    name: 
+      string       <- "Name must be a string" 
+      & string[>7] <- "Name must be longer than 7 characters",
+    age: 
+      (number & > 18) <- "Age must be numeric and over 18"
+  }`;
 
-validate({ name: "Rick" }).catch(err => {
-  console.log(err.message); // "Name must be longer than 7 characters"
-});
+  try {
+    await validate({ name: "Rick" });
+  } catch (err) {
+    console.log(err); // "Name must be longer than 7 characters"
+  }
+
+  try {
+    validateSync({ name: 100, age: 24 });
+  } catch (err) {
+    console.log(err); // "Name must be a string"
+  }
+
+  try {
+    await validate({ name: "Rickardo", age: 16 });
+  } catch (err) {
+    console.log(err); // "Age must be numeric and over 18"
+  }
+
+  try {
+    validateSync({ name: "Rickardo", age: 24 });
+  } catch (err) {
+    console.log("Ye gads!");
+  }
+}
+
+runValidation();
 ```
 
 ### New array includes syntax
@@ -133,13 +156,13 @@ Also new we have an [array includes](/arrays#array-includes) function:
 [? <predicate> ]
 ```
 
-```js
+```javascript
 p`[? >50 ]`([1, 2, 100, 12]); // true because 100 is greater than 50
 ```
 
 ### Formik compatability
 
-We now have formik compatability!
+We also now have formik compatability!
 
 ```ts
 import {schema as p} from 'pdsl';
@@ -184,4 +207,5 @@ Help organise our priorities by [telling us what is the most important to you](h
 - Babel Plugin to remove compiler perf overhead (✓)
 - Validation errors (✓)
 - Exact matching syntax (✓)
+- Automatic type creation from queries
 - Syntax Highlighting / VSCode Autocomplete / Prettier formatting
