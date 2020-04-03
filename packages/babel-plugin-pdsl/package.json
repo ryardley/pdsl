@@ -1,6 +1,6 @@
 {
   "name": "@pdsl/babel-plugin-pdsl",
-  "version": "5.2.9",
+  "version": "5.2.10",
   "main": "./src/index.js",
   "license": "MIT",
   "repository": "github:ryardley/babel-plugin-pdsl",
@@ -19,7 +19,7 @@
     "@babel/core": "^7.5.5",
     "babel-plugin-tester": "^7.0.1",
     "jest": "^24.9.0",
-    "pdsl": "^5.2.9"
+    "pdsl": "^5.2.10"
   },
   "peerDependencies": {
     "pdsl": ">=3.5.4"
