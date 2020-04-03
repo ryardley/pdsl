@@ -9,11 +9,15 @@ route: /interpolations
 
 You can interpolate values:
 
-```js
+```javascript
 p`${true}`(true); // true
 p`${false}`(false); // true
 p`> ${9}`(9); // false
 p`> ${8}`(9); // true
+p`${"Rupert"}`("Rupert"); // true
+```
+
+```js
 p`${"Rupert"}`("Rupert"); // true
 ```
 

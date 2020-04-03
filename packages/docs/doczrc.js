@@ -9,6 +9,6 @@ export default {
     "Examples",
     "Helpers",
     "F.A.Q.",
-    "Disclaimer"
+    "Troubleshooting"
   ]
 };

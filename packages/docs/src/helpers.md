@@ -8,7 +8,7 @@ NOTE: This should be considered unsafe API for the time being as it may change.
 
 PDSL provides a number of helpers that can be exported from the `pdsl/helpers` package and may be used standalone or as part of a `p` expression.
 
-```js
+```javascript
 import { Email, pred, btw, gt, regx } from "pdsl/helpers";
 
 btw(1, 10)(20); // false

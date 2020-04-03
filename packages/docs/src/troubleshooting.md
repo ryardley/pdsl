@@ -1,8 +1,9 @@
 ---
-route: /disclaimer
+name: Troubleshooting
+route: /troubleshooting
 ---
 
-# Disclaimer
+# Troubleshooting
 
 This should work however this project is young and there is a chance you may find bugs that are not covered by our test suite. Not all safety checks are in place and you may find issues around this.
 
