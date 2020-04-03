@@ -31,8 +31,13 @@ p`string[5]`("1234"); // false
 
 You can also have any numeric test to apply to the strings length.
 
-```js
+```javascript
 p`string[<5]`("1234"); // true
+p`string[<5 | > 20]`("123456"); // false
+```
+
+```js
+p`string[<5]`("1234");
 ```
 
 ## Empty Strings
