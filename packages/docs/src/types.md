@@ -35,9 +35,9 @@ p`string[5]`("12345"); // true
 p`string[5]`("1234"); // false
 p`string[<5]`("1234"); // true
 
-p`array[5]`(1, 2, 3, 4, 5); // true
-p`array[5]`(1, 2, 3, 4); // false
-p`array[<5]`(1, 2, 3, 4); // true
+p`array[5]`([1, 2, 3, 4, 5]); // true
+p`array[5]`([1, 2, 3, 4]); // false
+p`array[<5]`([1, 2, 3, 4]); // true
 ```
 
 You can also pass in a JavaScript primitive to the template string.
