@@ -9,8 +9,8 @@ name: Welcome to PDSL
 
 <br/><br/>
 
-<h1 style="text-aign:center">Welcome to PDSL</h1>
-<p style="text-aign:center">The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</p>
+<h1 style="text-align:center">Welcome to PDSL</h1>
+<p style="text-align:center">The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</p>
 
 ```js
 const isSoftwareCreator = p`{ 
