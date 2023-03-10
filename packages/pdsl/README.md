@@ -6,7 +6,7 @@
 
 <h1 align="center">Predicate Domain Specific Language</h1>
 <h4 align="center">
-  <a href="https://pdsl.dev">Read the docs!</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://pdsl.site">Read the docs!</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </h4>
 <br/><br/><br/>
 
@@ -40,4 +40,4 @@ isSoftwareCreator(someone); // true | false
 
 ## Documentation
 
-[PDSL Documentation](https://pdsl.dev)
+[PDSL Documentation](https://pdsl.site)

@@ -17,7 +17,7 @@
     "dev": "rollup -c -w",
     "promote-next-latest": "pkg_version=$(npm v . dist-tags.next); [ -n $pkg_version ] && ( npm dist-tag add pdsl@$pkg_version latest ) || exit 0"
   },
-  "homepage": "https://pdsl.dev",
+  "homepage": "https://pdsl.site",
   "bugs": {
     "url": "https://github.com/ryardley/pdsl/issues"
   },
