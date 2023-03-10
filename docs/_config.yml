@@ -2,3 +2,25 @@ highlighter: rouge
 kramdown:
   syntax_highlighter_opts:
     disable: true
+theme: minima
+header_pages:
+  - index.md
+  - boolean.md
+  - numbers.md
+  - strings.md
+  - arrays.md
+  - objects.md
+  - null-and-undefined.md
+  - values.md
+  - interpolations.md
+  - validation.md
+  - composition.md
+  - reference.md
+  - types.md
+  - helpers.md
+  - kitchen-sink.md
+  - usage-with-babel.md
+  - usage-with-formik.md
+  - usage-with-typescript.md
+  - troubleshooting.md
+  - faq.md

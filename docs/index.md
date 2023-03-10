@@ -3,16 +3,14 @@ route: /
 name: Welcome to PDSL
 ---
 
-<div style="display:flex;position:relative; align-items:center; justify-content: center;flex-direction:column;height:75vh">
+<div style="display:flex;position:relative; align-items:center; justify-content: center;flex-direction:column;padding:30px">
   <img alt="Welcome to PDSL"  src="/public/pdsl-logo.png" width="200" style="transform:translateX(20px);"/>
 </div>
 
----
-
 <br/><br/>
 
-<h1>Welcome to PDSL</h1>
-<p>The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</p>
+<h1 style="text-aign:center">Welcome to PDSL</h1>
+<p style="text-aign:center">The expressive declarative toolkit for composing predicates in TypeScript or JavaScript</p>
 
 ```js
 const isSoftwareCreator = p`{ 
